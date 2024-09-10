@@ -3,6 +3,7 @@ import os
 PROJECT_CONFIG_FILE_NAME = '.projectconfig'
 
 project_name = 'Unnamed'
+project_name_shorthand = 'UN'
 project_version = '0.0.0'
 project_version_suffix = 'dev'
 project_author = 'Unknown'
@@ -22,6 +23,9 @@ def LoadConfig():
 				if key == 'NAME':
 					global project_name
 					project_name = value
+				elif key == 'NAME_SHORTHAND':
+					global project_name_shorthand
+					project_name_shorthand = value
 				elif key == 'VERSION':
 					global project_version
 					project_version = value
@@ -35,17 +39,20 @@ def LoadConfig():
 				print(f'Error: Invalid key-value pair in {PROJECT_CONFIG_FILE_NAME}')
 				exit(1)
 
-def GetProjectName():
+def GetName():
 	return project_name
 
-def GetProjectVersion():
+def GetNameShorthand():
+	return project_name_shorthand
+
+def GetVersion():
 	return project_version
 
-def GetProjectVersionSuffix():
+def GetVersionSuffix():
 	return project_version_suffix
 
-def GetProjectVersionString():
-	return f'{GetProjectVersion()}-{GetProjectVersionSuffix()}'
+def GetVersionString():
+	return f'v{GetVersion()}-{GetVersionSuffix()}'
 
-def GetProjectAuthor():
+def GetAuthor():
 	return project_author

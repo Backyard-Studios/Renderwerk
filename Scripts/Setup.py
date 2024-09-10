@@ -17,3 +17,7 @@ if Premake.IsInstalled() == False:
 	Premake.Install()
 
 ProjectConfig.LoadConfig()
+Premake.PreprocessProperties()
+
+# Generate the project files
+Premake.ExecutePremakeCommand('vs2022', '--file=Scripts/Config/premake5.lua')
