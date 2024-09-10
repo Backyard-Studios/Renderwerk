@@ -1,0 +1,19 @@
+# Jetbrains IDEs
+.idea/
+
+# Visual Studio Code
+.vscode/
+
+# Visual Studio
+.vs/
+
+#Binary and Intermediate files
+Binaries/
+Intermediate/
+
+#Project files
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.sln
+*.sln.DotSettings.user
