@@ -17,3 +17,6 @@ Intermediate/
 *.vcxproj.user
 *.sln
 *.sln.DotSettings.user
+
+# Python pycache
+__pycache__/
