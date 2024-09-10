@@ -1,0 +1,15 @@
+root = true
+
+[*]
+charset = utf-8
+indent_style = tab
+indent_size = 4
+tab_width = 4
+max_line_length = 170
+trim_trailing_whitespace = false
+insert_final_newline = true
+
+# LUA files
+[*.lua]
+indent_style = tab
+indent_size = 2
