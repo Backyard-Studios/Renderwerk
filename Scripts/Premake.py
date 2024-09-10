@@ -7,10 +7,10 @@ PREMAKE_DOWNLOAD_URL = f'https://github.com/premake/premake-core/releases/downlo
 PREMAKE_BINARY_FOLDER_PATH = 'Binaries/Tools/premake5'
 PREMAKE_BINARY_FILE_PATH = f'{PREMAKE_BINARY_FOLDER_PATH}/premake5{Utils.GetExecutableExtension()}'
 
-def IsPremakeInstalled():
+def IsInstalled():
 	return Utils.DoesFileExist(PREMAKE_BINARY_FILE_PATH)
 
-def InstallPremake():
+def Install():
 	zip_file_path = f'{PREMAKE_BINARY_FOLDER_PATH}/premake.zip'
 
 	Utils.CreateDirectoryIfNotExists(PREMAKE_BINARY_FOLDER_PATH)
