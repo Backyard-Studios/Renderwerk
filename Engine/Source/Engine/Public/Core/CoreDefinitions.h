@@ -69,3 +69,20 @@
 #else
 #	define ENGINE_API DLL_IMPORT
 #endif
+
+#define APPEND_TEXT(TextA, TextB) TextA##TextB
+
+#define INNER_UNIQUE_NAME(name, line) APPEND_TEXT(name, line)
+#define UNIQUE_NAME(name) INNER_UNIQUE_NAME(name, __LINE__)
+
+#define DELETE_COPY_AND_MOVE(Class) \
+	Class(const Class&) = delete; \
+	Class(Class&&) = delete; \
+	Class& operator=(const Class&) = delete; \
+	Class& operator=(Class&&) = delete;
+
+#define DEFINE_DEFAULT_COPY_AND_MOVE(Class) \
+	Class(const Class&) = default; \
+	Class(Class&&) = default; \
+	Class& operator=(const Class&) = default; \
+	Class& operator=(Class&&) = default;
