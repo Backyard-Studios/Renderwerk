@@ -2,6 +2,8 @@
 
 #include "Renderwerk/Memory/Memory.h"
 
+#if RW_ENABLE_MEMORY_TRACKING
+
 void FMemoryTracking::SetOnAllocateCallback(const FOnAllocateCallback& Callback)
 {
 	OnAllocateCallback = Callback;
@@ -26,3 +28,5 @@ void FMemoryTracking::OnFree(void* Pointer, const uint8 Alignment)
 	if (OnFreeCallback)
 		OnFreeCallback(Pointer, Alignment);
 }
+
+#endif
