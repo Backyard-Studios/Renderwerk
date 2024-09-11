@@ -42,6 +42,7 @@ function rw_default_compiler_flags()
 	characterset('Unicode')
 	callingconvention('FastCall')
 	floatingpoint('Fast') -- If issues arise, change this
+	staticruntime('Off')
 	rw_enable_multi_processor_compilation()
 end
 
@@ -212,7 +213,15 @@ function rw_default_location()
 end
 
 function rw_third_party_location()
-	location(path.join(third_party_folder_path, '%{prj.name}'))
+	location(third_party_folder_path)
+end
+
+function rw_make_third_party_location(append_path)
+	return path.join(third_party_folder_path, append_path)
+end
+
+function rw_make_third_party_project_location(append_path)
+	return rw_make_third_party_location(path.join('%{prj.name}', append_path))
 end
 
 function rw_link_project(name, include_path)

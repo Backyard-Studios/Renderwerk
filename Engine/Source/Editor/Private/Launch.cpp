@@ -1,9 +1,11 @@
 #include "pch.h"
 
+#include <cstdio>
+
 #include "Test.h"
 
 int main()
 {
-	TestFunction(42);
+	printf("TestFunction(42): %d\n", TestFunction(42));
 	return 0;
 }
