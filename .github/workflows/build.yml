@@ -33,9 +33,9 @@ jobs:
       - name: Build
         working-directory: ${{env.GITHUB_WORKSPACE}}
         run: msbuild Renderwerk.sln /m /p:Configuration=${{matrix.build-configuration}} -fl -flp:logfile=Logs/Build-${{matrix.build-configuration}}.log
-      - name: Upload logs
+      - name: Upload logs on failure
         uses: actions/upload-artifact@v4
-        if: always()
+        if: failure()
         with:
-          name: Windows-Build-${{matrix.build-configuration}}.log
+          name: Windows-Build-${{matrix.build-configuration}}-Logs
           path: Logs/Build-${{matrix.build-configuration}}.log
