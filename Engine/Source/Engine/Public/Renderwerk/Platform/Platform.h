@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "Renderwerk/Core/CoreDefinitions.h"
+#include "Renderwerk/Core/CoreTypes.h"
 
 #include <type_traits>
 
@@ -29,17 +30,17 @@ private:
  * Use `GetPlatform()` instead.
  * @relatesalso GetPlatform
  */
-ENGINE_API extern IPlatform* GPlatform;
+ENGINE_API extern TSharedPtr<IPlatform> GPlatform;
 
 /**
  * Safe way to get the platform interface pointer.
  * This will check if the pointer is valid and return it.
  * @return The platform interface.
  */
-ENGINE_API IPlatform* GetPlatform();
+ENGINE_API TSharedPtr<IPlatform> GetPlatform();
 
 template <typename TPlatform>
-TPlatform* GetPlatform() requires (std::is_base_of_v<IPlatform, TPlatform>)
+TSharedPtr<TPlatform> GetPlatform() requires (std::is_base_of_v<IPlatform, TPlatform>)
 {
-	return static_cast<TPlatform*>(GetPlatform());
+	return static_cast<TSharedPtr<TPlatform>>(GetPlatform());
 }

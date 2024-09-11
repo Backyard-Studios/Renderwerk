@@ -14,7 +14,7 @@ void FWin32Platform::Shutdown()
 {
 }
 
-FWin32Platform* GetWin32Platform()
+TSharedPtr<FWin32Platform> GetWin32Platform()
 {
 	return GetPlatform<FWin32Platform>();
 }

@@ -26,4 +26,4 @@ private:
  * @return The win32 platform interface.
  * @relatesalso GetPlatform
  */
-ENGINE_API FWin32Platform* GetWin32Platform();
+ENGINE_API TSharedPtr<FWin32Platform> GetWin32Platform();
