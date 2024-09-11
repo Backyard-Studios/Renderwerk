@@ -2,14 +2,7 @@
 
 #include "Renderwerk/Core/CoreDefinitions.h"
 
-#ifndef RW_ENABLE_MEMORY_TRACKING
-#	define RW_ENABLE_MEMORY_TRACKING 1
-#else
-#	if !RW_ENABLE_MEMORY_TRACKING
-#		undef RW_ENABLE_MEMORY_TRACKING
-#		define RW_ENABLE_MEMORY_TRACKING 1
-#	endif
-#endif
+#if RW_ENABLE_MEMORY_TRACKING
 
 #include "Renderwerk/Memory/Memory.h"
 
@@ -21,7 +14,9 @@
 
 TEST(Memory, UpdatesMemoryTrackingUsage)
 {
+#if RW_PLATFORM_WINDOWS
 	GPlatform = MakeShared<FWin32Platform>();
+#endif
 
 	FMemoryTracking& MemoryTracking = FMemory::GetMemoryTracking();
 	EXPECT_EQ(MemoryTracking.GetUsage(), 0);
@@ -36,7 +31,9 @@ TEST(Memory, UpdatesMemoryTrackingUsage)
 
 TEST(Memory, CallsMemoryTrackingCallbacks)
 {
+#if RW_PLATFORM_WINDOWS
 	GPlatform = MakeShared<FWin32Platform>();
+#endif
 
 	bool bWasCallbackCalled = false;
 	FMemoryTracking& MemoryTracking = FMemory::GetMemoryTracking();
@@ -51,3 +48,5 @@ TEST(Memory, CallsMemoryTrackingCallbacks)
 	FMemory::Free(Memory);
 	EXPECT_EQ(bWasCallbackCalled, true);
 }
+
+#endif
