@@ -8,3 +8,4 @@ rw_project('Engine')
 	rw_precompiled_header()
 
 	rw_copy_output_to_directory(path.join(project_build_output_path, 'Editor'))
+	rw_copy_output_to_directory(path.join(project_build_output_path, 'EngineTests'))

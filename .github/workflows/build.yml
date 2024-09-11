@@ -33,6 +33,11 @@ jobs:
       - name: Build
         working-directory: ${{env.GITHUB_WORKSPACE}}
         run: msbuild Renderwerk.sln /m /p:Configuration=${{matrix.build-configuration}} -fl -flp:logfile=Logs/Build-${{matrix.build-configuration}}.log
+      - name: Test
+        working-directory: ${{env.GITHUB_WORKSPACE}}
+        run: |
+          cd ./Binaries/Engine/windows-${{matrix.build-configuration}}/EngineTests
+          ./EngineTests.exe
       - name: Upload logs on failure
         uses: actions/upload-artifact@v4
         if: failure()
