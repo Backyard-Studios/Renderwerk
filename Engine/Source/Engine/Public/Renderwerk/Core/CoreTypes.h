@@ -63,9 +63,9 @@ template <typename T>
 using TWeakPtr = std::weak_ptr<T>;
 
 template <typename T, typename... TArguments>
-TSharedPtr<T> MakeShared(T* ptr, TArguments&&... arguments)
+TSharedPtr<T> MakeShared(TArguments&&... arguments)
 {
-	return std::make_shared<T>(ptr, std::forward<TArguments>(arguments)...);
+	return std::make_shared<T>(std::forward<TArguments>(arguments)...);
 }
 
 template <typename T, typename... TArguments>
