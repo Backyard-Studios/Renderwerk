@@ -1,7 +1,7 @@
 ﻿#pragma once
 
-#include "Core/CoreDefinitions.h"
-#include "Platform/Platform.h"
+#include "Renderwerk/Core/CoreDefinitions.h"
+#include "Renderwerk/Platform/Platform.h"
 
 /**
  * Win32 platform interface class.

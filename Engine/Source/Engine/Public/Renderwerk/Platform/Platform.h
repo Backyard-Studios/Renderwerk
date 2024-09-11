@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "Core/CoreDefinitions.h"
+#include "Renderwerk/Core/CoreDefinitions.h"
 
 #include <type_traits>
 

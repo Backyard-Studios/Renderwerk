@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
 
-#include "Platform/Win32/Win32Platform.h"
+#include "Renderwerk/Platform/Win32/Win32Platform.h"
 
 FWin32Platform::FWin32Platform() = default;
 
