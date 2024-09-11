@@ -110,19 +110,23 @@ function rw_project(name)
 		rw_set_project_output()
 
 		rw_filter_configuration_debug()
-			rw_configuration_flags(project_configurations.Debug)
+			rw_configuration_flags(build_configurations.Debug)
 		rw_filter_end()
 
 		rw_filter_configuration_development()
-			rw_configuration_flags(project_configurations.Development)
+			rw_configuration_flags(build_configurations.Development)
 		rw_filter_end()
 
 		rw_filter_configuration_shipping()
-			rw_configuration_flags(project_configurations.Shipping)
+			rw_configuration_flags(build_configurations.Shipping)
 		rw_filter_end()
 
 		rw_filter_windows()
-			rw_platform_flags(project_platforms.Windows)
+			rw_platform_flags(build_platforms.Windows)
+		rw_filter_end()
+
+		rw_filter_linux()
+			rw_platform_flags(build_platforms.Linux)
 		rw_filter_end()
 end
 
@@ -155,7 +159,7 @@ function rw_precompiled_header()
 	pchsource '%{prj.location}/pch.cpp'
 end
 
-function rw_kind_console_app()
+function rw_kind_console_app(name)
 	kind('ConsoleApp')
 	defines({
 		macro_prefix .. 'KIND_CONSOLE_APP=1',
@@ -167,7 +171,7 @@ function rw_kind_console_app()
 	})
 end
 
-function rw_kind_windowed_app()
+function rw_kind_windowed_app(name)
 	kind('WindowedApp')
 	defines({
 		macro_prefix .. 'KIND_WINDOWED_APP=1',

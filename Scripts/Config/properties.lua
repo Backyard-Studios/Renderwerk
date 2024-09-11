@@ -23,8 +23,8 @@ root_path = path.getabsolute('$(ROOT_PATH)')
 source_folder_path = path.join(root_path, 'Engine', 'Source')
 third_party_folder_path = path.join(root_path, 'Engine', 'ThirdParty')
 
-project_build_output_path = path.join(root_path, 'Binaries', 'Engine', '%{cfg.system}', '%{cfg.buildcfg}')
-project_intermediate_output_path = path.join(root_path, 'Intermediate', 'Engine', '%{cfg.system}', '%{cfg.buildcfg}')
+project_build_output_path = path.join(root_path, 'Binaries', 'Engine', '%{cfg.system}-%{cfg.buildcfg}')
+project_intermediate_output_path = path.join(root_path, 'Intermediate', 'Engine', '%{cfg.system}-%{cfg.buildcfg}')
 
 build_configurations = {
 	Debug = 'Debug',
