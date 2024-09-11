@@ -1,9 +1,6 @@
 name: Build
 
 on:
-  push:
-    branches:
-      - feature/RW-2-setup-github-workflow-for-building
   pull_request:
     branches:
       - main
