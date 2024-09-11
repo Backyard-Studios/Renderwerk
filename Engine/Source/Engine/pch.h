@@ -7,6 +7,7 @@
 #include <set>
 #include <type_traits>
 #include <vector>
+#include <xutility>
 
 #include "Renderwerk/Core/CoreDefinitions.h"
 #include "Renderwerk/Core/CoreTypes.h"

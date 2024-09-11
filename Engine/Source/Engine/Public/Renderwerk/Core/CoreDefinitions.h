@@ -1,4 +1,5 @@
 #pragma once
+// ReSharper disable CppClangTidyModernizeMacroToEnum
 
 // Platform detection
 #if defined(_WIN32) || defined(__WIN32__)
@@ -68,6 +69,15 @@
 #	define ENGINE_API DLL_EXPORT
 #else
 #	define ENGINE_API DLL_IMPORT
+#endif
+
+// Configuration specific features
+#if RW_CONFIG_DEBUG
+#	define RW_ENABLE_MEMORY_TRACKING 1
+#elif RW_CONFIG_DEVELOPMENT
+#	define RW_ENABLE_MEMORY_TRACKING 1
+#else
+#	define RW_ENABLE_MEMORY_TRACKING 0
 #endif
 
 #define APPEND_TEXT(TextA, TextB) TextA##TextB
