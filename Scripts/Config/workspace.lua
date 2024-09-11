@@ -13,6 +13,7 @@ workspace(project_name)
 
 	defaultplatform(build_platforms.Windows)
 
-	filter({ 'platforms:' .. build_platforms.Windows })
+	rw_filter_windows()
 		system('windows')
 		architecture('x86_64')
+	rw_filter_end()
