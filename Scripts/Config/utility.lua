@@ -87,21 +87,14 @@ end
 function rw_platform_flags(platform)
 	if platform == build_platforms.Windows then
 		defines({
-			macro_prefix .. 'PLATFORM_WINDOWS=1',
-			macro_prefix .. 'PLATFORM=TEXT("Windows")',
 			'WIN32_LEAN_AND_MEAN',
 			'NOMINMAX',
-			macro_prefix .. 'PLATFORM_LINUX=0',
 		})
 		disablewarnings({
 			'4251',
 		})
 	elseif platform == build_platforms.Linux then
-		defines({
-			macro_prefix .. 'PLATFORM_LINUX=1',
-			macro_prefix .. 'PLATFORM=TEXT("Linux")',
-			macro_prefix .. 'PLATFORM_WINDOWS=0',
-		})
+		
 	end
 end
 
