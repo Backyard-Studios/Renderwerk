@@ -2,9 +2,7 @@
 
 #include "Test.h"
 
-#include <cstdio>
-
-int TestFunction(int InValue)
+int TestFunction(const int InValue)
 {
 	return InValue * 2;
 }
