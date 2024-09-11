@@ -1,6 +1,6 @@
 #pragma once
 
-// Platfor detection
+// Platform detection
 #if defined(_WIN32) || defined(__WIN32__)
 #	ifndef _WIN64
 #		error "Only 64-bit Windows is supported"
