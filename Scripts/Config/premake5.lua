@@ -8,3 +8,7 @@ group('Engine')
 
 group('Applications')
 	include('Projects/editor.lua')
+
+group('ThirdParty')
+	include('Projects/ThirdParty/googletest.lua')
+	include('Projects/ThirdParty/googlemock.lua')
