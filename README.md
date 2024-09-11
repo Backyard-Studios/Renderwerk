@@ -18,6 +18,25 @@
 
 </div>
 
+## 🚀 Getting Started
+
+### 📦 Prerequisites
+
+-   [Python 3.9 or above](https://www.python.org/downloads/)
+-   [Visual Studio 2022](https://visualstudio.microsoft.com/downloads/) or [Visual Studio Build Tools 2022](https://visualstudio.microsoft.com/downloads/?q=build+tools) with the following components:
+    -   Desktop development with C++
+    -   MSVC v143
+    -   Windows 11 SDK (10.0.26100.0 or above recommended, not tested with older versions)
+
+### 🛠️ Setting up the workspace
+
+After cloning the repository, run the following commands in the root directory (Choose the appropriate scripts for your OS):
+
+```bash
+# Windows
+.\Setup.bat
+```
+
 ## 📜 License
 
 See [LICENSE](./LICENSE) for more information.
