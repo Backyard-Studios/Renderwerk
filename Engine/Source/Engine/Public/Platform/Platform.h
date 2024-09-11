@@ -27,7 +27,7 @@ private:
 /**
  * Global platform interface pointer. You shouldn't use this directly.
  * Use `GetPlatform()` instead.
- * @relatesalso GetPlatform()
+ * @relatesalso GetPlatform
  */
 ENGINE_API extern IPlatform* GPlatform;
 
