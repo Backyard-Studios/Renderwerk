@@ -4,7 +4,7 @@
 
 #include <cstdio>
 
-void TestFunction(int InValue)
+int TestFunction(int InValue)
 {
-	printf("TestFunction(%d)\n", InValue);
+	return InValue * 2;
 }

@@ -6,4 +6,4 @@
 #	define ENGINE_API __declspec(dllimport)
 #endif
 
-ENGINE_API void TestFunction(int InValue);
+ENGINE_API int TestFunction(int InValue);
