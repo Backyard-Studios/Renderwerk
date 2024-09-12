@@ -19,14 +19,7 @@ private:
 	void Initialize() override;
 	void Shutdown() override;
 
-public:
-	void* Allocate(size_t Size, uint8 Alignment) override;
-	void Free(void* Pointer, uint8 Alignment) override;
-	void Zero(void* Pointer, size_t Size) override;
-	void Copy(void* Destination, const void* Source, size_t Size) override;
-	void Fill(void* Destination, uint8 Value, size_t Size) override;
-	void Move(void* Destination, const void* Source, size_t Size) override;
-	size_t GetAllocationSize(void* Pointer, uint8 Alignment) override;
+private:
 };
 
 /**

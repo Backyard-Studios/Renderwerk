@@ -22,15 +22,6 @@ private:
 	virtual void Initialize() = 0;
 	virtual void Shutdown() = 0;
 
-public:
-	virtual void* Allocate(size64 Size, uint8 Alignment) = 0;
-	virtual void Free(void* Pointer, uint8 Alignment) = 0;
-	virtual void Zero(void* Pointer, size64 Size) = 0;
-	virtual void Copy(void* Destination, const void* Source, size64 Size) = 0;
-	virtual void Fill(void* Destination, uint8 Value, size64 Size) = 0;
-	virtual void Move(void* Destination, const void* Source, size64 Size) = 0;
-	virtual size64 GetAllocationSize(void* Pointer, uint8 Alignment) = 0;
-
 private:
 };
 
