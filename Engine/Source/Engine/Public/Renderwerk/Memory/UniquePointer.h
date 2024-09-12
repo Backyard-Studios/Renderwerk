@@ -3,12 +3,31 @@
 #include "Renderwerk/Core/CoreDefinitions.h"
 #include "Renderwerk/Memory/Memory.h"
 
+template <typename T>
+struct FDefaultDeleter
+{
+public:
+	FDefaultDeleter() = default;
+	FDefaultDeleter(const FDefaultDeleter& Other) = default;
+
+	template <typename TOther>
+	FDefaultDeleter(const FDefaultDeleter<TOther>& Other)
+	{
+	}
+
+	void operator()(T* Pointer) const
+	{
+		if (Pointer != nullptr)
+			FMemory::Delete(Pointer);
+	}
+};
+
 /**
  * @brief A unique pointer that owns a single object.
  * The object is automatically deleted when the unique pointer goes out of scope.
  * @tparam T The type of the object to own.
  */
-template <typename T>
+template <typename T, typename TDeleter = FDefaultDeleter<T>>
 class TUniquePointer
 {
 public:
@@ -22,37 +41,27 @@ public:
 	TUniquePointer(T* InPointer)
 		: Pointer(InPointer)
 	{
-		printf("TUniquePointer::TUniquePointer(T* InPointer)\n");
 	}
 
-	TUniquePointer(const TUniquePointer& Other)
-		: Pointer(Other.Pointer)
+	TUniquePointer(T* InPointer, TDeleter InDeleter)
+		: Pointer(InPointer), Deleter(InDeleter)
 	{
-		Other.Pointer = nullptr;
-		printf("TUniquePointer::TUniquePointer(const TUniquePointer& Other)\n");
 	}
+
+	TUniquePointer(const TUniquePointer& Other) = delete;
 
 	TUniquePointer(TUniquePointer&& Other) noexcept
-		: Pointer(Other.Pointer)
+		: Pointer(Other.Release()), Deleter(Other.Deleter)
 	{
-		Other.Pointer = nullptr;
-		printf("TUniquePointer::TUniquePointer(TUniquePointer&& Other)\n");
 	}
 
 	template <typename TOther>
-	TUniquePointer(const TUniquePointer<TOther>& Other)
-		: Pointer(Other.Pointer)
-	{
-		Other.Pointer = nullptr;
-		printf("TUniquePointer::TUniquePointer(const TUniquePointer<TOther>& Other)\n");
-	}
+	TUniquePointer(TUniquePointer<TOther>& Other) = delete;
 
 	template <typename TOther>
 	TUniquePointer(TUniquePointer<TOther>&& Other) noexcept
-		: Pointer(Other.Pointer)
+		: Pointer(Other.Release()), Deleter(Other.Deleter)
 	{
-		Other.Pointer = nullptr;
-		printf("TUniquePointer::TUniquePointer(TUniquePointer<TOther>&& Other)\n");
 	}
 
 	~TUniquePointer()
@@ -61,45 +70,23 @@ public:
 	}
 
 public:
-	TUniquePointer& operator=(const TUniquePointer& Other)
-	{
-		printf("TUniquePointer::operator=(const TUniquePointer& Other)\n");
-		if (this == &Other)
-			return *this;
-		Reset(Other.Pointer);
-		Other.Reset();
-		return *this;
-	}
+	TUniquePointer& operator=(TUniquePointer& Other) = delete;
 
 	TUniquePointer& operator=(TUniquePointer&& Other) noexcept
 	{
-		printf("TUniquePointer::operator=(TUniquePointer&& Other)\n");
-		if (this == &Other)
-			return *this;
-		Reset(Other.Pointer);
-		Other.Reset();
+		TUniquePointer Temp(std::move(Other));
+		Temp.Swap(*this);
 		return *this;
 	}
 
 	template <typename TOther>
-	TUniquePointer& operator=(const TUniquePointer<TOther>& Other)
-	{
-		printf("TUniquePointer::operator=(const TUniquePointer<TOther>& Other)\n");
-		if (this == &Other)
-			return *this;
-		Reset(Other.Pointer);
-		Other.Reset();
-		return *this;
-	}
+	TUniquePointer& operator=(TUniquePointer<TOther>& Other) = delete;
 
 	template <typename TOther>
 	TUniquePointer& operator=(TUniquePointer<TOther>&& Other) noexcept
 	{
-		printf("TUniquePointer::operator=(TUniquePointer<TOther>&& Other)\n");
-		if (this == &Other)
-			return *this;
-		Reset(Other.Pointer);
-		Other.Reset();
+		TUniquePointer<TOther> Temp(std::move(Other));
+		Temp.Swap(*this);
 		return *this;
 	}
 
@@ -122,10 +109,21 @@ public:
 	 */
 	void Reset(T* NewInstance = nullptr)
 	{
-		if (Pointer == NewInstance)
-			return;
-		delete Pointer;
+		if (Pointer != nullptr)
+			Deleter(Pointer);
 		Pointer = NewInstance;
+	}
+
+	T* Release()
+	{
+		T* TempPointer = Pointer;
+		Pointer = nullptr;
+		return TempPointer;
+	}
+
+	void Swap(const TUniquePointer& Other)
+	{
+		std::swap(Pointer, Other.Pointer);
 	}
 
 	[[nodiscard]] bool IsValid() const { return Pointer != nullptr; }
@@ -135,7 +133,8 @@ public:
 	[[nodiscard]] const T* GetRaw() const { return Pointer; }
 
 private:
-	mutable T* Pointer = nullptr;
+	T* Pointer = nullptr;
+	TDeleter Deleter;
 };
 
 /**
@@ -148,5 +147,6 @@ private:
 template <typename T, typename... TArguments>
 [[nodiscard]] TUniquePointer<T> MakeUnique(TArguments&&... Arguments)
 {
-	return TUniquePointer<T>(new T(std::forward<TArguments>(Arguments)...));
+	T* Instance = FMemory::New<T>(std::forward<TArguments>(Arguments)...);
+	return TUniquePointer<T>(Instance);
 }
