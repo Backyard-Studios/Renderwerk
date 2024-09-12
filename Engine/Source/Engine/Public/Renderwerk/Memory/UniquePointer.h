@@ -3,13 +3,18 @@
 #include "Renderwerk/Core/CoreDefinitions.h"
 #include "Renderwerk/Memory/Memory.h"
 
+/**
+ * @brief A unique pointer that owns a single object.
+ * The object is automatically deleted when the unique pointer goes out of scope.
+ * @tparam T The type of the object to own.
+ */
 template <typename T>
 class TUniquePointer
 {
 public:
 	TUniquePointer() = default;
 
-	TUniquePointer(const nullptr_t InNullptr)
+	TUniquePointer(const std::nullptr_t InNullptr)
 		: Pointer(InNullptr)
 	{
 	}
@@ -111,6 +116,10 @@ public:
 	bool operator!=(const TUniquePointer& Other) const { return Pointer != Other.Pointer; }
 
 public:
+	/**
+	 * @brief Reset the unique pointer with a new instance or nullptr.
+	 * @param NewInstance The new instance to own.
+	 */
 	void Reset(T* NewInstance = nullptr)
 	{
 		if (Pointer == NewInstance)
@@ -129,6 +138,13 @@ private:
 	mutable T* Pointer = nullptr;
 };
 
+/**
+ * @brief Create a new unique pointer.
+ * @tparam T The type of the object to create.
+ * @tparam TArguments The types of the arguments to pass to the constructor.
+ * @param Arguments The arguments to pass to the constructor.
+ * @return The unique pointer.
+ */
 template <typename T, typename... TArguments>
 [[nodiscard]] TUniquePointer<T> MakeUnique(TArguments&&... Arguments)
 {
