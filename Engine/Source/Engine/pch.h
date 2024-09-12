@@ -12,6 +12,12 @@
 #include "Renderwerk/Core/CoreDefinitions.h"
 #include "Renderwerk/Core/CoreTypes.h"
 
+#include "Renderwerk/Memory/Memory.h"
+#include "Renderwerk/Memory/UniquePointer.h"
+
+#include "Renderwerk/Platform/Platform.h"
+
 #ifdef RW_PLATFORM_WINDOWS
 #	include <Windows.h>
+#	include "Renderwerk/Platform/Win32/Win32Platform.h"
 #endif
