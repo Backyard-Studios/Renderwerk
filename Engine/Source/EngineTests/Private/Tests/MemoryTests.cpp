@@ -27,6 +27,8 @@ TEST(Memory, UpdatesMemoryTrackingUsage)
 
 	FMemory::Free(Memory);
 	EXPECT_EQ(MemoryTracking.GetUsage(), 0);
+
+	GPlatform.reset();
 }
 
 TEST(Memory, CallsMemoryTrackingCallbacks)
@@ -47,6 +49,8 @@ TEST(Memory, CallsMemoryTrackingCallbacks)
 	bWasCallbackCalled = false;
 	FMemory::Free(Memory);
 	EXPECT_EQ(bWasCallbackCalled, true);
+
+	GPlatform.reset();
 }
 
 #endif
