@@ -2,10 +2,14 @@
 
 #include "Renderwerk/Core/CoreDefinitions.h"
 #include "Renderwerk/Core/CoreTypes.h"
-#include "Renderwerk/Platform/Platform.h"
 
 #include <type_traits>
 #include <xutility>
+
+#if RW_PLATFORM_WINDOWS
+#	include "Renderwerk/Platform/Win32/Win32Memory.h"
+using FPlatformMemory = FWin32Memory;
+#endif
 
 enum : uint8
 {
@@ -43,7 +47,7 @@ class ENGINE_API FMemory
 public:
 	static void* Allocate(const size64 Size, const uint8 Alignment = MEMORY_DEFAULT_ALIGNMENT)
 	{
-		void* Pointer = GetPlatform()->Allocate(Size, Alignment);
+		void* Pointer = FPlatformMemory::Allocate(Size, Alignment);
 #if RW_ENABLE_MEMORY_TRACKING
 		GetMemoryTracking().OnAllocate(Pointer, Size, Alignment);
 #endif
@@ -55,27 +59,27 @@ public:
 #if RW_ENABLE_MEMORY_TRACKING
 		GetMemoryTracking().OnFree(Memory, Alignment);
 #endif
-		GetPlatform()->Free(Memory, Alignment);
+		FPlatformMemory::Free(Memory, Alignment);
 	}
 
 	static void Zero(void* Memory, const size64 Size)
 	{
-		GetPlatform()->Zero(Memory, Size);
+		FPlatformMemory::Zero(Memory, Size);
 	}
 
 	static void Copy(void* Destination, const void* Source, const size64 Size)
 	{
-		GetPlatform()->Copy(Destination, Source, Size);
+		FPlatformMemory::Copy(Destination, Source, Size);
 	}
 
 	static void Fill(void* Destination, const uint8 Value, const size64 Size)
 	{
-		GetPlatform()->Fill(Destination, Value, Size);
+		FPlatformMemory::Fill(Destination, Value, Size);
 	}
 
 	static void Move(void* Destination, const void* Source, const size64 Size)
 	{
-		GetPlatform()->Move(Destination, Source, Size);
+		FPlatformMemory::Move(Destination, Source, Size);
 	}
 
 	template <typename T, typename... TArguments>

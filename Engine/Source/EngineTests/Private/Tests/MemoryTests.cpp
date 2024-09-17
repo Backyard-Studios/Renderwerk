@@ -8,16 +8,8 @@
 
 #include "Renderwerk/Platform/Platform.h"
 
-#if RW_PLATFORM_WINDOWS
-#	include "Renderwerk/Platform/Win32/Win32Platform.h"
-#endif
-
 TEST(Memory, UpdatesMemoryTrackingUsage)
 {
-#if RW_PLATFORM_WINDOWS
-	GPlatform = MakeShared<FWin32Platform>();
-#endif
-
 	FMemoryTracking& MemoryTracking = FMemory::GetMemoryTracking();
 	EXPECT_EQ(MemoryTracking.GetUsage(), 0);
 
@@ -31,10 +23,6 @@ TEST(Memory, UpdatesMemoryTrackingUsage)
 
 TEST(Memory, CallsMemoryTrackingCallbacks)
 {
-#if RW_PLATFORM_WINDOWS
-	GPlatform = MakeShared<FWin32Platform>();
-#endif
-
 	bool bWasCallbackCalled = false;
 	FMemoryTracking& MemoryTracking = FMemory::GetMemoryTracking();
 	MemoryTracking.SetOnAllocateCallback([&bWasCallbackCalled](void* Pointer, size64 Size, uint8 Alignment) { bWasCallbackCalled = true; });

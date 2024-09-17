@@ -50,31 +50,5 @@ using TSet = std::set<T>;
 
 #pragma endregion
 
-#pragma region Smart Pointers
-// Only temporary until we have proper implementations
-
-template <typename T>
-using TUniquePtr = std::unique_ptr<T>;
-
-template <typename T>
-using TSharedPtr = std::shared_ptr<T>;
-
-template <typename T>
-using TWeakPtr = std::weak_ptr<T>;
-
-template <typename T, typename... TArguments>
-TSharedPtr<T> MakeShared(TArguments&&... arguments)
-{
-	return std::make_shared<T>(std::forward<TArguments>(arguments)...);
-}
-
-template <typename T, typename... TArguments>
-TUniquePtr<T> MakeUnique(TArguments&&... arguments)
-{
-	return std::make_unique<T>(std::forward<TArguments>(arguments)...);
-}
-
-#pragma endregion
-
 template <typename T>
 using TFunction = std::function<T>;
