@@ -50,13 +50,5 @@ using TSet = std::set<T>;
 
 #pragma endregion
 
-#pragma region Smart Pointers
-// Only temporary until we have proper implementations
-
-template <typename T>
-using TWeakPtr = std::weak_ptr<T>;
-
-#pragma endregion
-
 template <typename T>
 using TFunction = std::function<T>;
