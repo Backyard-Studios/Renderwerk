@@ -14,7 +14,9 @@
 #include "Renderwerk/Core/CoreTypes.h"
 
 #include "Renderwerk/Memory/Memory.h"
+#include "Renderwerk/Memory/SharedPointer.h"
 #include "Renderwerk/Memory/UniquePointer.h"
+#include "Renderwerk/Memory/WeakPointer.h"
 
 #include "Renderwerk/Platform/Platform.h"
 

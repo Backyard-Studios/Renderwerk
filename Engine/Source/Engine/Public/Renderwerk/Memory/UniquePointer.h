@@ -126,6 +126,12 @@ public:
 		std::swap(Deleter, Other.Deleter);
 	}
 
+	template <typename TOther>
+	[[nodiscard]] TUniquePointer<TOther> As()
+	{
+		return TUniquePointer<TOther>(*this);
+	}
+
 	[[nodiscard]] bool IsValid() const { return Pointer != nullptr; }
 
 public:
