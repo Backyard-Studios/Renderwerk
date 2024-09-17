@@ -101,7 +101,9 @@ public:
 	{
 		std::swap(Pointer, Other.Pointer);
 		std::swap(Deleter, Other.Deleter);
-		std::swap(ReferenceCount, Other.ReferenceCount);
+		std::atomic<uint32> Temp = std::atomic(ReferenceCount.load());
+		ReferenceCount = Other.ReferenceCount.load();
+		Other.ReferenceCount = Temp.load();
 	}
 
 	template <typename TOther>
