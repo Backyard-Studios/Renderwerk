@@ -54,16 +54,7 @@ using TSet = std::set<T>;
 // Only temporary until we have proper implementations
 
 template <typename T>
-using TSharedPtr = std::shared_ptr<T>;
-
-template <typename T>
 using TWeakPtr = std::weak_ptr<T>;
-
-template <typename T, typename... TArguments>
-TSharedPtr<T> MakeShared(TArguments&&... arguments)
-{
-	return std::make_shared<T>(std::forward<TArguments>(arguments)...);
-}
 
 #pragma endregion
 

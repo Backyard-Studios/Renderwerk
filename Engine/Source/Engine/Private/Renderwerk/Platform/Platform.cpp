@@ -4,9 +4,9 @@
 
 #include <cassert>
 
-TSharedPtr<IPlatform> GPlatform = nullptr;
+TSharedPointer<IPlatform> GPlatform = nullptr;
 
-TSharedPtr<IPlatform> GetPlatform()
+TSharedPointer<IPlatform> GetPlatform()
 {
 	assert(GPlatform != nullptr);
 	return GPlatform;

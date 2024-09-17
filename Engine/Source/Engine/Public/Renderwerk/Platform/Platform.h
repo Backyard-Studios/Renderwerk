@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "Renderwerk/Core/CoreDefinitions.h"
-#include "Renderwerk/Core/CoreTypes.h"
+#include "Renderwerk/Memory/SharedPointer.h"
 
 #include <type_traits>
 
@@ -30,17 +30,17 @@ private:
  * Use `GetPlatform()` instead.
  * @relatesalso GetPlatform
  */
-ENGINE_API extern TSharedPtr<IPlatform> GPlatform;
+ENGINE_API extern TSharedPointer<IPlatform> GPlatform;
 
 /**
  * Safe way to get the platform interface pointer.
  * This will check if the pointer is valid and return it.
  * @return The platform interface.
  */
-ENGINE_API TSharedPtr<IPlatform> GetPlatform();
+ENGINE_API TSharedPointer<IPlatform> GetPlatform();
 
 template <typename TPlatform>
-TSharedPtr<TPlatform> GetPlatform() requires (std::is_base_of_v<IPlatform, TPlatform>)
+TSharedPointer<TPlatform> GetPlatform() requires (std::is_base_of_v<IPlatform, TPlatform>)
 {
-	return std::static_pointer_cast<TPlatform>(GetPlatform());
+	return GetPlatform().As<TPlatform>();
 }
