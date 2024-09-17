@@ -1,6 +1,5 @@
 ﻿#pragma once
 
-#include "Renderwerk/Core/CoreDefinitions.h"
 #include "Renderwerk/Memory/Memory.h"
 
 template <typename T>
@@ -124,6 +123,7 @@ public:
 	void Swap(const TUniquePointer& Other)
 	{
 		std::swap(Pointer, Other.Pointer);
+		std::swap(Deleter, Other.Deleter);
 	}
 
 	[[nodiscard]] bool IsValid() const { return Pointer != nullptr; }
