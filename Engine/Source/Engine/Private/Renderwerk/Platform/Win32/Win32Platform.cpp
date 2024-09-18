@@ -8,8 +8,9 @@ FWin32Platform::FWin32Platform() = default;
 
 FWin32Platform::~FWin32Platform() = default;
 
-void FWin32Platform::Initialize()
+FResult FWin32Platform::Initialize()
 {
+	return RW_RESULT_CODE_SUCCESS;
 }
 
 void FWin32Platform::Shutdown()
