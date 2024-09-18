@@ -2,9 +2,11 @@
 
 #include "Renderwerk/Platform/Win32/Win32Platform.h"
 
-#include <Windows.h>
+#include "Renderwerk/Platform/Guid.h"
 
 #include <dbghelp.h>
+#include <objbase.h>
+#include <Windows.h>
 
 #define CLR_EXCEPTION FORWARD(0xE0434352)
 
@@ -121,4 +123,36 @@ LONG ExceptionHandler(EXCEPTION_POINTERS* ExceptionInfo)
 	MessageBoxA(nullptr, MessageBoxText.c_str(), "Renderwerk | ExceptionHandler", MB_OK | MB_ICONERROR);
 
 	return EXCEPTION_EXECUTE_HANDLER;
+}
+
+FGuid NewGuid()
+{
+	GUID Guid;
+	CoCreateGuid(&Guid);
+
+	TVector<uint8> Bytes =
+	{
+		static_cast<uint8>((Guid.Data1 >> 24) & 0xFF),
+		static_cast<uint8>((Guid.Data1 >> 16) & 0xFF),
+		static_cast<uint8>((Guid.Data1 >> 8) & 0xFF),
+		static_cast<uint8>((Guid.Data1) & 0xff),
+
+		static_cast<uint8>((Guid.Data2 >> 8) & 0xFF),
+		static_cast<uint8>((Guid.Data2) & 0xff),
+
+		static_cast<uint8>((Guid.Data3 >> 8) & 0xFF),
+		static_cast<uint8>((Guid.Data3) & 0xFF),
+
+		(Guid.Data4[0]),
+		(Guid.Data4[1]),
+		(Guid.Data4[2]),
+		(Guid.Data4[3]),
+		(Guid.Data4[4]),
+		(Guid.Data4[5]),
+		(Guid.Data4[6]),
+		(Guid.Data4[7])
+	};
+	return FGuid{
+		Bytes
+	};
 }
