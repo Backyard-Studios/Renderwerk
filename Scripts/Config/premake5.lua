@@ -10,9 +10,4 @@ group('Applications')
 	include('Projects/editor.lua')
 
 group('ThirdParty')
-	include('Projects/ThirdParty/googletest.lua')
-	include('Projects/ThirdParty/googlemock.lua')
 	include('Projects/ThirdParty/tracy.lua')
-
-group('Tests')
-	include('Projects/engine-tests.lua')

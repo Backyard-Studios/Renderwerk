@@ -1,6 +1,3 @@
-[submodule "Engine/ThirdParty/googletest"]
-	path = Engine/ThirdParty/googletest
-	url = https://github.com/google/googletest
 [submodule "Engine/ThirdParty/tracy"]
 	path = Engine/ThirdParty/tracy
 	url = https://github.com/wolfpld/tracy
