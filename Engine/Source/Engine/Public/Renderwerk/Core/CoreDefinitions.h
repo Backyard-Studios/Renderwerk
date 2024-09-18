@@ -65,6 +65,12 @@
 #	define DEPRECATED_MSG(msg) __attribute__((deprecated(msg)))
 #endif
 
+#if RW_PLATFORM_WINDOWS
+#	define RW_PLATFORM_SUPPORTS_SEH 1
+#else
+#	define RW_PLATFORM_SUPPORTS_SEH 0
+#endif
+
 #if RW_COMPILE_ENGINE_API
 #	define ENGINE_API DLL_EXPORT
 #else

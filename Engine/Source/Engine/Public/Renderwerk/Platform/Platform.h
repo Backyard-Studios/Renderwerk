@@ -25,8 +25,15 @@ private:
 	virtual FResult Initialize() = 0;
 	virtual void Shutdown() = 0;
 
-private:
-	friend ENGINE_API int32 LaunchRenderwerk();
+public:
+	[[nodiscard]] INLINE static int32 GetExitCode() { return ExitCode; }
+	static void SetExitCode(const int32 NewExitCode) { ExitCode = NewExitCode; }
+
+protected:
+	INLINE static int32 ExitCode = 0;
+
+	friend int32 Launch();
+	friend void Shutdown();
 };
 
 /**

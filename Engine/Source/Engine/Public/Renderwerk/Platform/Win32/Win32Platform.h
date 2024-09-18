@@ -19,6 +19,9 @@ private:
 	FResult Initialize() override;
 	void Shutdown() override;
 
+public:
+	[[nodiscard]] static std::string GetResultHandleDescription(HRESULT Result);
+
 private:
 };
 
@@ -29,3 +32,11 @@ private:
  * @relatesalso GetPlatform
  */
 ENGINE_API TSharedPointer<FWin32Platform> GetWin32Platform();
+
+/**
+ * Exception handler for the win32 platform.
+ * This function is used in the SEH block to handle exceptions.
+ * @param ExceptionInfo The exception information.
+ * @return The exception handling result.
+ */
+ENGINE_API LONG ExceptionHandler(EXCEPTION_POINTERS* ExceptionInfo);
