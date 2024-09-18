@@ -6,7 +6,7 @@
 
 #include <dbghelp.h>
 
-#define CLR_EXCEPTION 0xE0434352
+#define CLR_EXCEPTION FORWARD(0xE0434352)
 
 using FWriteMiniDump = BOOL(WINAPI *)(HANDLE ProcessHandle, DWORD PID, HANDLE FileHandle,
                                       MINIDUMP_TYPE DumpType,
@@ -27,6 +27,18 @@ FResult FWin32Platform::Initialize()
 
 void FWin32Platform::Shutdown()
 {
+}
+
+void FWin32Platform::Fatal(const FResultCode Code)
+{
+	ULONG_PTR Parameters[] = {Code};
+	RaiseException(E_FATAL, EXCEPTION_NONCONTINUABLE, _countof(Parameters), Parameters);
+}
+
+void FWin32Platform::Assertion(FAssertionData Data)
+{
+	ULONG_PTR Parameters[] = {reinterpret_cast<ULONG_PTR>(&Data)};
+	RaiseException(E_ASSERTION, EXCEPTION_NONCONTINUABLE, _countof(Parameters), Parameters);
 }
 
 std::string FWin32Platform::GetResultHandleDescription(const HRESULT Result)
@@ -83,9 +95,29 @@ LONG ExceptionHandler(EXCEPTION_POINTERS* ExceptionInfo)
 	}
 	FreeLibrary(DebugHelpModuleHandle);
 
-	std::string MessageBoxText = "An unhandled exception occurred.\nA crash dump has been saved to \"CrashDump.dmp\".";
-	MessageBoxText += "\n\nException code: 0x" + std::to_string(ExceptionInfo->ExceptionRecord->ExceptionCode);
-	MessageBoxText += "\nException description: " + GetWin32Platform()->GetResultHandleDescription(ExceptionInfo->ExceptionRecord->ExceptionCode);
+	std::string MessageBoxText = "";
+	if (ExceptionInfo->ExceptionRecord->ExceptionCode == E_ASSERTION)
+	{
+		FAssertionData* Data = reinterpret_cast<FAssertionData*>(ExceptionInfo->ExceptionRecord->ExceptionInformation[0]);
+		MessageBoxText += "An assertion failed. A crash dump has been saved to \"CrashDump.dmp\".";
+		MessageBoxText += "\n\n" + Data->Message;
+		MessageBoxText += "\n\nCode: " + std::to_string(Data->Code);
+		MessageBoxText += "\nDescription: " + ToString(Data->Code);
+		MessageBoxText += "\nCondition: " + Data->Condition;
+	}
+	else if (ExceptionInfo->ExceptionRecord->ExceptionCode == E_FATAL)
+	{
+		FResultCode Code = ExceptionInfo->ExceptionRecord->ExceptionInformation[0];
+		MessageBoxText += "An unhandled exception occurred. A crash dump has been saved to \"CrashDump.dmp\".";
+		MessageBoxText += "\n\nCode: " + std::to_string(Code);
+		MessageBoxText += "\nDescription: " + ToString(Code);
+	}
+	else
+	{
+		MessageBoxText += "An unhandled exception occurred. A crash dump has been saved to \"CrashDump.dmp\".";
+		MessageBoxText += "\n\nCode: " + std::to_string(ExceptionInfo->ExceptionRecord->ExceptionCode);
+		MessageBoxText += "\nDescription: " + GetWin32Platform()->GetResultHandleDescription(ExceptionInfo->ExceptionRecord->ExceptionCode);
+	}
 	MessageBoxA(nullptr, MessageBoxText.c_str(), "Renderwerk | ExceptionHandler", MB_OK | MB_ICONERROR);
 
 	return EXCEPTION_EXECUTE_HANDLER;

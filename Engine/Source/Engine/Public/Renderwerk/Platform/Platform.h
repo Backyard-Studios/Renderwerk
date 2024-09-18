@@ -7,7 +7,7 @@
 
 #include <type_traits>
 
-
+struct FAssertionData;
 /**
  * Platform interface class.
  * This class is used to provide platform specific functionality.
@@ -24,6 +24,10 @@ public:
 private:
 	virtual FResult Initialize() = 0;
 	virtual void Shutdown() = 0;
+
+public:
+	virtual void Fatal(FResultCode Code) = 0;
+	virtual void Assertion(FAssertionData Data) = 0;
 
 public:
 	[[nodiscard]] INLINE static int32 GetExitCode() { return ExitCode; }
