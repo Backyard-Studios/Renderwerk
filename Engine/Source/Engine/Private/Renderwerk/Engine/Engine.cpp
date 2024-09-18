@@ -35,6 +35,10 @@ void FEngine::RequestShutdown()
 
 FResult FEngine::Initialize()
 {
+	WindowManager = MakeShared<FWindowManager>();
+	FWindowSettings WindowSettings = {};
+	MainWindow = WindowManager->Create(WindowSettings);
+
 	return RW_RESULT_CODE_SUCCESS;
 }
 
@@ -42,7 +46,9 @@ FResult FEngine::RunLoop()
 {
 	while (!bIsShutdownRequested)
 	{
-		if (GetAsyncKeyState(VK_ESCAPE) & 0x8000)
+		WindowManager->Update();
+
+		if (MainWindow->GetWindowState().bIsClosed)
 			RequestShutdown();
 
 		RW_PROFILING_MARK_FRAME();
@@ -55,6 +61,11 @@ void FEngine::Shutdown()
 	if (bIsAlreadyShutdown)
 		return;
 	bIsAlreadyShutdown = true;
+
+	if (MainWindow && WindowManager)
+		WindowManager->Remove(MainWindow);
+	MainWindow.Reset();
+	WindowManager.Reset();
 }
 
 TSharedPointer<FEngine> GetEngine()
