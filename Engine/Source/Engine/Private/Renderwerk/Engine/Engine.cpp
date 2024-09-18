@@ -38,6 +38,7 @@ FResult FEngine::Initialize()
 	WindowManager = MakeShared<FWindowManager>();
 	FWindowSettings WindowSettings = {};
 	MainWindow = WindowManager->Create(WindowSettings);
+	MainWindow->Show();
 
 	return RW_RESULT_CODE_SUCCESS;
 }
