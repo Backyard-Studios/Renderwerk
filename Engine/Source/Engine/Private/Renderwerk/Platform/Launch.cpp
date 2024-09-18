@@ -62,5 +62,15 @@ int32 GuardedMain()
 
 int32 LaunchRenderwerk()
 {
+#if RW_ENABLE_PROFILING && RW_ENABLE_MEMORY_TRACKING
+	FMemory::GetMemoryTracking().SetOnAllocateCallback([](const void* Pointer, const size64 Size, uint8 Alignment)
+	{
+		TracyAlloc(Pointer, Size);
+	});
+	FMemory::GetMemoryTracking().SetOnFreeCallback([](const void* Pointer, uint8 Alignment)
+	{
+		TracyFree(Pointer);
+	});
+#endif
 	return GuardedMain();
 }

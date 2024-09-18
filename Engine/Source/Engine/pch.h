@@ -16,6 +16,8 @@
 #include "Renderwerk/Core/CoreTypes.h"
 #include "Renderwerk/Core/Result.h"
 
+#include "Renderwerk/Debug/Profiling.h"
+
 #include "Renderwerk/Memory/Memory.h"
 #include "Renderwerk/Memory/SharedPointer.h"
 #include "Renderwerk/Memory/UniquePointer.h"

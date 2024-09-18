@@ -16,6 +16,8 @@ FResult FEngine::Launch()
 		return RW_RESULT_CODE_FAIL;
 	bIsAlreadyLaunched = true;
 
+	RW_PROFILING_MARK_THREAD("MainThread");
+
 	FResult Result = Initialize();
 	if (Result.IsError())
 		return Result;
@@ -42,6 +44,8 @@ FResult FEngine::RunLoop()
 	{
 		if (GetAsyncKeyState(VK_ESCAPE) & 0x8000)
 			RequestShutdown();
+
+		RW_PROFILING_MARK_FRAME();
 	}
 	return RW_RESULT_CODE_SUCCESS;
 }

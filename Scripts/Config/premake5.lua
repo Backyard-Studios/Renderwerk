@@ -10,3 +10,4 @@ group('Applications')
 	include('Projects/editor.lua')
 
 group('ThirdParty')
+	include('Projects/ThirdParty/tracy.lua')

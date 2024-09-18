@@ -17,3 +17,8 @@ workspace(project_name)
 		system('windows')
 		architecture('x86_64')
 	rw_filter_end()
+
+	defines({
+		'TRACY_ENABLE',
+		'TRACY_ON_DEMAND',
+	})

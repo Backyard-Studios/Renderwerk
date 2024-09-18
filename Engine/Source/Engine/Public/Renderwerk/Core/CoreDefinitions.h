@@ -80,10 +80,13 @@
 // Configuration specific features
 #if RW_CONFIG_DEBUG
 #	define RW_ENABLE_MEMORY_TRACKING 1
+#	define RW_ENABLE_PROFILING 1
 #elif RW_CONFIG_DEVELOPMENT
 #	define RW_ENABLE_MEMORY_TRACKING 1
+#	define RW_ENABLE_PROFILING 1
 #else
 #	define RW_ENABLE_MEMORY_TRACKING 0
+#	define RW_ENABLE_PROFILING 0
 #endif
 
 #define FORWARD(...) __VA_ARGS__
