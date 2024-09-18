@@ -3,6 +3,9 @@
 #include "Renderwerk/Core/CoreDefinitions.h"
 #include "Renderwerk/Platform/Platform.h"
 
+#define E_FATAL MAKE_HRESULT(SEVERITY_ERROR, FACILITY_ITF, 0x0001)
+#define E_ASSERTION MAKE_HRESULT(SEVERITY_ERROR, FACILITY_ITF, 0x0002)
+
 /**
  * Win32 platform interface class.
  * This class is used to provide win32 specific functionality.
@@ -20,6 +23,9 @@ private:
 	void Shutdown() override;
 
 public:
+	void Fatal(FResultCode Code) override;
+	void Assertion(FAssertionData Data) override;
+
 	[[nodiscard]] static std::string GetResultHandleDescription(HRESULT Result);
 
 private:

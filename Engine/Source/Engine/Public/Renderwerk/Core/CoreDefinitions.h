@@ -86,6 +86,8 @@
 #	define RW_ENABLE_MEMORY_TRACKING 0
 #endif
 
+#define FORWARD(...) __VA_ARGS__
+
 #define APPEND_TEXT(TextA, TextB) TextA##TextB
 
 #define INNER_UNIQUE_NAME(name, line) APPEND_TEXT(name, line)
