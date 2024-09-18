@@ -26,6 +26,11 @@ FResult FEngine::Launch()
 	return RW_RESULT_CODE_SUCCESS;
 }
 
+void FEngine::RequestShutdown()
+{
+	bIsShutdownRequested = true;
+}
+
 FResult FEngine::Initialize()
 {
 	return RW_RESULT_CODE_SUCCESS;
@@ -33,6 +38,11 @@ FResult FEngine::Initialize()
 
 FResult FEngine::RunLoop()
 {
+	while (!bIsShutdownRequested)
+	{
+		if (GetAsyncKeyState(VK_ESCAPE) & 0x8000)
+			RequestShutdown();
+	}
 	return RW_RESULT_CODE_SUCCESS;
 }
 

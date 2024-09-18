@@ -14,6 +14,8 @@ public:
 public:
 	FResult Launch();
 
+	void RequestShutdown();
+
 private:
 	FResult Initialize();
 	FResult RunLoop();
@@ -22,6 +24,8 @@ private:
 private:
 	bool bIsAlreadyLaunched = false;
 	bool bIsAlreadyShutdown = false;
+
+	bool bIsShutdownRequested = false;
 
 	friend void Shutdown();
 };
