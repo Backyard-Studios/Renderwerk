@@ -8,6 +8,8 @@
 #include <objbase.h>
 #include <Windows.h>
 
+#include "Renderwerk/Platform/Win32/Win32Window.h"
+
 #define CLR_EXCEPTION FORWARD(0xE0434352)
 
 using FWriteMiniDump = BOOL(WINAPI *)(HANDLE ProcessHandle, DWORD PID, HANDLE FileHandle,
@@ -17,6 +19,20 @@ using FWriteMiniDump = BOOL(WINAPI *)(HANDLE ProcessHandle, DWORD PID, HANDLE Fi
                                       PMINIDUMP_CALLBACK_INFORMATION CallbackParam
 );
 
+LRESULT CALLBACK WindowProcess(const HWND WindowHandle, const UINT Message, const WPARAM WParam, const LPARAM LParam)
+{
+	if (FWin32Window* Window = reinterpret_cast<FWin32Window*>(GetWindowLongPtr(WindowHandle, GWLP_USERDATA)))
+	{
+		return Window->WindowProcess(WindowHandle, Message, WParam, LParam);
+	}
+	if (Message == WM_CREATE)
+	{
+		CREATESTRUCT* CreateStruct = reinterpret_cast<CREATESTRUCT*>(LParam);
+		SetWindowLongPtr(WindowHandle, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(CreateStruct->lpCreateParams));
+	}
+	return DefWindowProc(WindowHandle, Message, WParam, LParam);
+}
+
 FWin32Platform::FWin32Platform() = default;
 
 FWin32Platform::~FWin32Platform() = default;
@@ -24,11 +40,25 @@ FWin32Platform::~FWin32Platform() = default;
 FResult FWin32Platform::Initialize()
 {
 	SetUnhandledExceptionFilter(ExceptionHandler);
+
+	WindowClass = {};
+	WindowClass.cbSize = sizeof(WNDCLASSEX);
+	WindowClass.style = CS_HREDRAW | CS_VREDRAW;
+	WindowClass.lpfnWndProc = WindowProcess;
+	WindowClass.hInstance = GetModuleHandle(nullptr);
+	WindowClass.hCursor = LoadCursor(nullptr, IDC_ARROW);
+	WindowClass.hbrBackground = nullptr;
+	WindowClass.lpszClassName = TEXT("RenderwerkWindowClass");
+	WindowClass.hIcon = LoadIcon(nullptr, IDI_APPLICATION);
+	WindowClass.hIconSm = LoadIcon(nullptr, IDI_APPLICATION);
+	RegisterClassEx(&WindowClass);
+
 	return RW_RESULT_CODE_SUCCESS;
 }
 
 void FWin32Platform::Shutdown()
 {
+	UnregisterClass(WindowClass.lpszClassName, WindowClass.hInstance);
 }
 
 void FWin32Platform::Fatal(const FResultCode Code)
