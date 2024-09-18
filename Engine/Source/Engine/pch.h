@@ -1,10 +1,12 @@
 #pragma once
 
+#include <algorithm>
 #include <atomic>
 #include <cstdint>
 #include <functional>
 #include <map>
 #include <memory>
+#include <ranges>
 #include <set>
 #include <string>
 #include <type_traits>
@@ -23,6 +25,7 @@
 #include "Renderwerk/Memory/UniquePointer.h"
 #include "Renderwerk/Memory/WeakPointer.h"
 
+#include "Renderwerk/Platform/Guid.h"
 #include "Renderwerk/Platform/Platform.h"
 
 #ifdef RW_PLATFORM_WINDOWS
