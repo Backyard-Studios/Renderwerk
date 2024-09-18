@@ -23,3 +23,6 @@ __pycache__/
 
 # Preprocessed files
 Scripts/Config/properties_preprocessed.lua
+
+# Crash reports
+*.dmp

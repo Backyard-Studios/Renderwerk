@@ -3,7 +3,10 @@
 #include "Renderwerk/Core/CoreDefinitions.h"
 #include "Renderwerk/Memory/SharedPointer.h"
 
+#include "Renderwerk/Core/Result.h"
+
 #include <type_traits>
+
 
 /**
  * Platform interface class.
@@ -19,10 +22,18 @@ public:
 	DELETE_COPY_AND_MOVE(IPlatform)
 
 private:
-	virtual void Initialize() = 0;
+	virtual FResult Initialize() = 0;
 	virtual void Shutdown() = 0;
 
-private:
+public:
+	[[nodiscard]] INLINE static int32 GetExitCode() { return ExitCode; }
+	static void SetExitCode(const int32 NewExitCode) { ExitCode = NewExitCode; }
+
+protected:
+	INLINE static int32 ExitCode = 0;
+
+	friend int32 Launch();
+	friend void Shutdown();
 };
 
 /**

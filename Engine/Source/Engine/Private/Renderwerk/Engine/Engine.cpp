@@ -10,27 +10,37 @@ FEngine::FEngine() = default;
 
 FEngine::~FEngine() = default;
 
-void FEngine::Launch()
+FResult FEngine::Launch()
 {
 	if (bIsAlreadyLaunched)
-		return; // TODO: Log warning
+		return RW_RESULT_CODE_FAIL;
 	bIsAlreadyLaunched = true;
 
-	Initialize();
-	RunLoop();
+	FResult Result = Initialize();
+	if (Result.IsError())
+		return Result;
+	Result = RunLoop();
+	if (Result.IsError())
+		return Result;
 	Shutdown();
+	return RW_RESULT_CODE_SUCCESS;
 }
 
-void FEngine::Initialize()
+FResult FEngine::Initialize()
 {
+	return RW_RESULT_CODE_SUCCESS;
 }
 
-void FEngine::RunLoop()
+FResult FEngine::RunLoop()
 {
+	return RW_RESULT_CODE_SUCCESS;
 }
 
 void FEngine::Shutdown()
 {
+	if (bIsAlreadyShutdown)
+		return;
+	bIsAlreadyShutdown = true;
 }
 
 TSharedPointer<FEngine> GetEngine()
