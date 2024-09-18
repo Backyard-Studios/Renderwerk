@@ -25,7 +25,8 @@ struct ENGINE_API FWindowState
 	uint32 ClientHeight = 0;
 	int32 PositionX = 0;
 	int32 PositionY = 0;
-	std::string Title = "";
+	bool bIsMoving = false;
+	bool bIsResizing = false;
 	bool bIsVisible = false;
 	bool bIsClosed = false;
 	bool bIsDestroyed = false;
@@ -52,7 +53,6 @@ public:
 		State.ClientHeight = InWindowSettings.Height;
 		State.PositionX = InWindowSettings.PositionX;
 		State.PositionY = InWindowSettings.PositionY;
-		State.Title = InWindowSettings.Title;
 		State.bIsVisible = InWindowSettings.bIsVisibleAfterCreation;
 		State.ParentWindow = InWindowSettings.ParentWindow;
 	}
@@ -74,6 +74,8 @@ public:
 	virtual void SetPosition(int32 PositionX, int32 PositionY) = 0;
 	virtual void SetSize(int32 Width, int32 Height) = 0;
 	virtual void SetTitle(const std::string& Title) = 0;
+
+	[[nodiscard]] virtual void* GetNativeHandle() const = 0;
 
 public:
 	[[nodiscard]] FWindowState GetWindowState() const { return State; }

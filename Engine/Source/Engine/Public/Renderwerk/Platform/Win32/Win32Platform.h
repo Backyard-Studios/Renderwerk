@@ -28,7 +28,11 @@ public:
 
 	[[nodiscard]] static std::string GetResultHandleDescription(HRESULT Result);
 
+public:
+	[[nodiscard]] WNDCLASSEX GetWindowClass() const { return WindowClass; }
+
 private:
+	WNDCLASSEX WindowClass = {};
 };
 
 /**

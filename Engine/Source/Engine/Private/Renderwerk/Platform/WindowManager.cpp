@@ -2,6 +2,10 @@
 
 #include "Renderwerk/Platform/WindowManager.h"
 
+#if RW_PLATFORM_WINDOWS
+#	include "Renderwerk/Platform/Win32/Win32Window.h"
+#endif
+
 FWindowManager::FWindowManager()
 {
 }
@@ -39,7 +43,9 @@ bool FWindowManager::Exists(const TSharedPointer<IWindow>& Id) const
 
 TSharedPointer<IWindow> FWindowManager::Create(const FWindowSettings& Settings)
 {
-	TSharedPointer<IWindow> Window; // TODO: Create platform specific window
+#if RW_PLATFORM_WINDOWS
+	TSharedPointer<IWindow> Window = MakeShared<FWin32Window>(Settings);
+#endif
 	Windows.insert({Window->GetGuid(), Window});
 	return Window;
 }

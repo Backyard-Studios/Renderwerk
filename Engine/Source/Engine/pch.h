@@ -17,6 +17,7 @@
 #include "Renderwerk/Core/CoreDefinitions.h"
 #include "Renderwerk/Core/CoreTypes.h"
 #include "Renderwerk/Core/Result.h"
+#include "Renderwerk/Core/StringUtils.h"
 
 #include "Renderwerk/Debug/Profiling.h"
 
