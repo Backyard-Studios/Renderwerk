@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "Renderwerk/Core/CoreDefinitions.h"
+#include "Renderwerk/Core/Result.h"
 
 #include "Renderwerk/Memory/SharedPointer.h"
 
@@ -11,11 +12,11 @@ public:
 	~FEngine();
 
 public:
-	void Launch();
+	FResult Launch();
 
 private:
-	void Initialize();
-	void RunLoop();
+	FResult Initialize();
+	FResult RunLoop();
 	void Shutdown();
 
 private:

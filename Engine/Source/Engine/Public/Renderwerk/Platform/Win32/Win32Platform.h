@@ -16,7 +16,7 @@ public:
 	DELETE_COPY_AND_MOVE(FWin32Platform)
 
 private:
-	void Initialize() override;
+	FResult Initialize() override;
 	void Shutdown() override;
 
 private:

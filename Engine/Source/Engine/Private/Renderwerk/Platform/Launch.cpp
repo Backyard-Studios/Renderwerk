@@ -1,5 +1,7 @@
 ﻿#include "pch.h"
 
+#include "Renderwerk/Core/Result.h"
+
 #include "Renderwerk/Platform/Launch.h"
 
 #include "Renderwerk/Engine/Engine.h"
@@ -11,12 +13,19 @@
 
 int32 LaunchRenderwerk()
 {
+	RegisterDefaultResultDescriptions();
+
 #if RW_PLATFORM_WINDOWS
 	GPlatform = MakeShared<FWin32Platform>();
 #endif
+	FResult Result = GPlatform->Initialize();
+	if (Result.IsError())
+		return Result.GetErrorCode();
 
 	GEngine = MakeShared<FEngine>();
-	GEngine->Launch();
+	Result = GEngine->Launch();
+	if (Result.IsError())
+		return Result.GetErrorCode();
 
 	GEngine.Reset();
 	GPlatform.Reset();
