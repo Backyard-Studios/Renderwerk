@@ -2,6 +2,10 @@
 
 #include "Renderwerk/Platform/Guid.h"
 
+#include <algorithm>
+#include <cassert>
+#include <ranges>
+
 bool IsValidHexChar(const char Char)
 {
 	if (Char > 47 && Char < 58)

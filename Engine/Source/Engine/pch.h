@@ -1,10 +1,12 @@
 #pragma once
 
+#include <algorithm>
 #include <atomic>
 #include <cstdint>
 #include <functional>
 #include <map>
 #include <memory>
+#include <ranges>
 #include <set>
 #include <string>
 #include <type_traits>
