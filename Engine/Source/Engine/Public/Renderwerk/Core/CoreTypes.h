@@ -4,6 +4,7 @@
 #include <functional>
 #include <map>
 #include <memory>
+#include <queue>
 #include <set>
 #include <vector>
 
@@ -47,6 +48,9 @@ using TMap = std::map<TKey, TValue>;
 
 template <typename T>
 using TSet = std::set<T>;
+
+template <typename T>
+using TQueue = std::queue<T>;
 
 #pragma endregion
 

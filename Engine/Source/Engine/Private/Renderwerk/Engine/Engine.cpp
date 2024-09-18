@@ -52,6 +52,8 @@ FResult FEngine::RunLoop()
 		if (MainWindow->GetWindowState().bIsClosed)
 			RequestShutdown();
 
+		WindowManager->ClearRemoveQueue();
+
 		RW_PROFILING_MARK_FRAME();
 	}
 	return RW_RESULT_CODE_SUCCESS;

@@ -6,6 +6,7 @@
 #include <functional>
 #include <map>
 #include <memory>
+#include <queue>
 #include <ranges>
 #include <set>
 #include <string>

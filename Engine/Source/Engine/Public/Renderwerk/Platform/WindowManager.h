@@ -15,6 +15,7 @@ public:
 
 public:
 	void Update();
+	void ClearRemoveQueue();
 
 	[[nodiscard]] bool Exists(const FGuid& Id) const;
 	[[nodiscard]] bool Exists(const TSharedPointer<IWindow>& Id) const;
@@ -26,4 +27,5 @@ public:
 
 private:
 	TMap<FGuid, TSharedPointer<IWindow>> Windows;
+	TQueue<FGuid> RemoveQueue;
 };

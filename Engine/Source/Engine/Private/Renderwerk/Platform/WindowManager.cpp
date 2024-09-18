@@ -22,13 +22,39 @@ void FWindowManager::Update()
 	RW_PROFILING_MARK_FUNCTION();
 
 #if RW_PLATFORM_WINDOWS
-	MSG Message = {};
-	while (PeekMessage(&Message, nullptr, 0, 0, PM_REMOVE))
 	{
-		TranslateMessage(&Message);
-		DispatchMessage(&Message);
+		RW_PROFILING_MARK_SCOPE("Win32MessageHandling");
+
+		MSG Message = {};
+		while (PeekMessage(&Message, nullptr, 0, 0, PM_REMOVE))
+		{
+			TranslateMessage(&Message);
+			DispatchMessage(&Message);
+		}
 	}
 #endif
+
+	{
+		RW_PROFILING_MARK_SCOPE("CollectDestroyedWindows");
+
+		for (const TSharedPointer<IWindow>& Window : Windows | std::views::values)
+		{
+			if (Window->GetWindowState().bIsDestroyed)
+				Remove(Window);
+		}
+	}
+}
+
+void FWindowManager::ClearRemoveQueue()
+{
+	RW_PROFILING_MARK_FUNCTION();
+
+	while (!RemoveQueue.empty())
+	{
+		FGuid Id = RemoveQueue.front();
+		RemoveQueue.pop();
+		Windows.erase(Id);
+	}
 }
 
 bool FWindowManager::Exists(const FGuid& Id) const
@@ -59,9 +85,7 @@ void FWindowManager::Remove(const FGuid& Id)
 {
 	if (!Exists(Id))
 		return;
-	TSharedPointer<IWindow> Window = Get(Id);
-	Windows.erase(Id);
-	Window.Reset();
+	RemoveQueue.push(Id);
 }
 
 void FWindowManager::Remove(const TSharedPointer<IWindow>& Id)
