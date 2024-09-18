@@ -29,6 +29,7 @@
 
 #include "Renderwerk/Platform/Guid.h"
 #include "Renderwerk/Platform/Platform.h"
+#include "Renderwerk/Platform/Thread.h"
 
 #ifdef RW_PLATFORM_WINDOWS
 #	include <Windows.h>
