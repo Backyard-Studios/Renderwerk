@@ -38,6 +38,9 @@ FResult FEngine::RunLoop()
 
 void FEngine::Shutdown()
 {
+	if (bIsAlreadyShutdown)
+		return;
+	bIsAlreadyShutdown = true;
 }
 
 TSharedPointer<FEngine> GetEngine()

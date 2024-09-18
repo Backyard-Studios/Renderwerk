@@ -21,6 +21,9 @@ private:
 
 private:
 	bool bIsAlreadyLaunched = false;
+	bool bIsAlreadyShutdown = false;
+
+	friend void Shutdown();
 };
 
 ENGINE_API extern TSharedPointer<FEngine> GEngine;
