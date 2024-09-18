@@ -43,6 +43,7 @@ function rw_default_compiler_flags()
 	callingconvention('FastCall')
 	floatingpoint('Fast') -- If issues arise, change this
 	staticruntime('Off')
+	editandcontinue('Off')
 	rw_enable_multi_processor_compilation()
 end
 
