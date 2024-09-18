@@ -23,6 +23,7 @@
 #include "Renderwerk/Memory/UniquePointer.h"
 #include "Renderwerk/Memory/WeakPointer.h"
 
+#include "Renderwerk/Platform/Guid.h"
 #include "Renderwerk/Platform/Platform.h"
 
 #ifdef RW_PLATFORM_WINDOWS
