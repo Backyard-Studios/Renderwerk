@@ -27,9 +27,11 @@ public:
 
 public:
 	[[nodiscard]] FResult Initialize();
-	void Shutdown() const;
+	void Destroy() const;
 
 public:
+	[[nodiscard]] VkInstance GetInstance() const { return Instance; }
+
 	[[nodiscard]] TVector<FVulkanComponent> GetActivatedLayers() const { return ActivatedLayers; }
 	[[nodiscard]] TVector<FVulkanComponent> GetActivatedExtensions() const { return ActivatedExtensions; }
 

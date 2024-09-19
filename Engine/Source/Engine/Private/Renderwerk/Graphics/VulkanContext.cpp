@@ -48,19 +48,19 @@ FResult FVulkanContext::Initialize()
 
 	RW_LOG_DEBUG("Activated Instance Layers:");
 	for (FVulkanComponent ActivatedLayer : ActivatedLayers)
-		RW_LOG_DEBUG("\t- {} (Spec Version: {}, Implementation Version: {})", ActivatedLayer.Name, FormatVulkanVersion(ActivatedLayer.SpecVersion),
+		RW_LOG_DEBUG("\t- {} (Spec Version: {}, Implementation Version: {})", ActivatedLayer.Name, VulkanFormatVersion(ActivatedLayer.SpecVersion),
 	             ActivatedLayer.ImplementationVersion);
 
 	RW_LOG_DEBUG("Activated Instance Extensions:");
 	for (FVulkanComponent ActivatedExtension : ActivatedExtensions)
-		RW_LOG_DEBUG("\t- {} (Spec Version: {})", ActivatedExtension.Name, FormatVulkanVersion(ActivatedExtension.SpecVersion));
+		RW_LOG_DEBUG("\t- {} (Spec Version: {})", ActivatedExtension.Name, VulkanFormatVersion(ActivatedExtension.SpecVersion));
 
 	if (Settings.bEnableDebugging)
 		RW_CHECK_RESULT(CreateDebugMessenger());
 	return RW_RESULT_CODE_SUCCESS;
 }
 
-void FVulkanContext::Shutdown() const
+void FVulkanContext::Destroy() const
 {
 	if (Settings.bEnableDebugging)
 	{

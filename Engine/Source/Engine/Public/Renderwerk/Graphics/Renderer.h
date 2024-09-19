@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include "VulkanAdapter.h"
 #include "VulkanContext.h"
 
 #include "Renderwerk/Core/CoreDefinitions.h"
@@ -27,9 +28,14 @@ private:
 	void Shutdown();
 
 private:
+	FResult SelectSuitableAdapter(const TSharedPointer<FVulkanContext>& VulkanContext, const VkSurfaceKHR& Surface, const FVulkanAdapterRequirements& Requirements);
+
+private:
 	FRendererSettings Settings;
 
 	TSharedPointer<FVulkanContext> VulkanContext = nullptr;
+	VkSurfaceKHR Surface = VK_NULL_HANDLE;
+	TSharedPointer<FVulkanAdapter> VulkanAdapter = nullptr;
 
 	friend class ENGINE_API FEngine;
 };

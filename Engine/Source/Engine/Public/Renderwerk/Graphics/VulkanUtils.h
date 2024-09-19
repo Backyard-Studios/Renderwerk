@@ -23,7 +23,22 @@ ENGINE_API INLINE std::string VulkanAPIVersionToString(const uint32 APIVersion)
 	}
 }
 
-ENGINE_API INLINE std::string FormatVulkanVersion(const uint32 Version)
+ENGINE_API INLINE std::string VulkanFormatVersion(const uint32 Version)
 {
 	return std::format("{}.{}.{}", VK_VERSION_MAJOR(Version), VK_VERSION_MINOR(Version), VK_VERSION_PATCH(Version));
+}
+
+ENGINE_API INLINE std::string ToString(const VkPhysicalDeviceType DeviceType)
+{
+	switch (DeviceType)
+	{
+	case VK_PHYSICAL_DEVICE_TYPE_OTHER: return "Other";
+	case VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU: return "Integrated GPU";
+	case VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU: return "Discrete GPU";
+	case VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU: return "Virtual GPU";
+	case VK_PHYSICAL_DEVICE_TYPE_CPU: return "CPU";
+	case VK_PHYSICAL_DEVICE_TYPE_MAX_ENUM:
+	default:
+		return "Unknown";
+	}
 }
