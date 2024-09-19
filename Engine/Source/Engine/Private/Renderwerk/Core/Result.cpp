@@ -7,8 +7,8 @@ FResult::FResult()
 {
 }
 
-FResult::FResult(const FResultCode InCode)
-	: Code(InCode)
+FResult::FResult(const FResultCode InCode, const std::string& InReason)
+	: Code(InCode), Reason(InReason.empty() ? ToString(InCode) : InReason)
 {
 }
 
@@ -39,6 +39,11 @@ uint32 FResult::GetSeverity() const
 uint32 FResult::GetErrorCode() const
 {
 	return RW_RESULT_GET_ERROR_CODE(Code);
+}
+
+std::string FResult::GetReason() const
+{
+	return Reason;
 }
 
 bool operator==(const FResult& Lhs, const FResult& Rhs)
