@@ -8,11 +8,11 @@
 struct ENGINE_API FAssertionData
 {
 	std::string Condition;
-	FResultCode Code;
+	FResult Result;
 	std::string Message;
 
-	FAssertionData(const std::string& Condition, const FResultCode Code, const std::string& Message)
-		: Condition(Condition), Code(Code), Message(Message)
+	FAssertionData(const std::string& Condition, const FResult& Result, const std::string& Message)
+		: Condition(Condition), Result(Result), Message(Message)
 	{
 	}
 };

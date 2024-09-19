@@ -2,6 +2,7 @@
 
 #include "Renderwerk/Core/CoreDefinitions.h"
 #include "Renderwerk/Core/Result.h"
+#include "Renderwerk/Graphics/Renderer.h"
 
 #include "Renderwerk/Memory/SharedPointer.h"
 #include "Renderwerk/Platform/WindowManager.h"
@@ -36,6 +37,8 @@ private:
 
 	TSharedPointer<FWindowManager> WindowManager;
 	TSharedPointer<IWindow> MainWindow;
+
+	TSharedPointer<FRenderer> Renderer;
 
 	friend void Shutdown();
 };

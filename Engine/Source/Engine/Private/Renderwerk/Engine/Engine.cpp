@@ -46,6 +46,15 @@ FResult FEngine::Initialize()
 	MainWindow = WindowManager->Create(WindowSettings);
 	MainWindow->Show();
 
+	FRendererSettings RendererSettings = {};
+	RendererSettings.Window = MainWindow;
+#ifdef RW_CONFIG_DEBUG
+	RendererSettings.bEnableValidation = true;
+	RendererSettings.bEnableDebugging = true;
+#endif
+	Renderer = MakeShared<FRenderer>(RendererSettings);
+	RW_CHECK_RESULT(Renderer->Initialize())
+
 	RW_LOG_INFO("Engine initialized");
 	return RW_RESULT_CODE_SUCCESS;
 }
@@ -71,6 +80,10 @@ void FEngine::Shutdown()
 	if (bIsAlreadyShutdown)
 		return;
 	bIsAlreadyShutdown = true;
+
+	if (Renderer)
+		Renderer->Shutdown();
+	Renderer.Reset();
 
 	if (MainWindow && WindowManager)
 		WindowManager->Remove(MainWindow);

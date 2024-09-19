@@ -13,6 +13,13 @@ using FResultCode = uint64;
 
 #define RW_DEFINE_ERROR_CODE(ErrorCode) ErrorCode
 
+#define RW_CHECK_RESULT(ResultExpression) \
+	{ \
+		FResult UNIQUE_NAME(Result) = ResultExpression; \
+		if (UNIQUE_NAME(Result).IsError()) \
+			return UNIQUE_NAME(Result); \
+	}
+
 #pragma region Severity
 
 #define RW_RESULT_SEVERITY_SUCCESS RW_DEFINE_ERROR_CODE(0)
@@ -26,6 +33,7 @@ using FResultCode = uint64;
 
 #define RW_RESULT_CODE_FAIL RW_MAKE_RESULT_CODE(RW_RESULT_SEVERITY_ERROR, 1)
 #define RW_RESULT_CODE_UNKNOWN_ERROR RW_MAKE_RESULT_CODE(RW_RESULT_SEVERITY_ERROR, 2)
+#define RW_RESULT_CODE_INVALID_OBJECT RW_MAKE_RESULT_CODE(RW_RESULT_SEVERITY_ERROR, 3)
 
 #pragma endregion
 

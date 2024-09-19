@@ -26,7 +26,7 @@ private:
 	virtual void Shutdown() = 0;
 
 public:
-	virtual void Fatal(FResultCode Code) = 0;
+	virtual void Fatal(const FResult& Result) = 0;
 	virtual void Assertion(FAssertionData Data) = 0;
 
 public:

@@ -23,7 +23,7 @@ private:
 	void Shutdown() override;
 
 public:
-	void Fatal(FResultCode Code) override;
+	void Fatal(const FResult& Result) override;
 	void Assertion(FAssertionData Data) override;
 
 	[[nodiscard]] static std::string GetResultHandleDescription(HRESULT Result);
