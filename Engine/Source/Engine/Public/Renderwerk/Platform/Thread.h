@@ -19,6 +19,7 @@ enum class ENGINE_API EThreadState : uint8
 
 class ENGINE_API IThread
 {
+public:
 	using FThreadFunction = TFunction<void()>;
 
 public:
@@ -34,7 +35,7 @@ public:
 public:
 	virtual void Start() = 0;
 	virtual void Join() = 0;
-	virtual void ForceKill() = 0;
+	virtual void ForceKill(bool bWaitForCompletion = false) = 0;
 
 public:
 	[[nodiscard]] virtual void* GetNativeHandle() const = 0;

@@ -26,6 +26,8 @@ public:
 	[[nodiscard]] TSharedPointer<FWindowManager> GetWindowManager() const { return WindowManager; }
 	[[nodiscard]] TSharedPointer<IWindow> GetMainWindow() const { return MainWindow; }
 
+	[[nodiscard]] bool IsShutdownRequested() const { return bIsShutdownRequested; }
+
 private:
 	bool bIsAlreadyLaunched = false;
 	bool bIsAlreadyShutdown = false;
