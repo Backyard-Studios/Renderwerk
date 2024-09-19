@@ -238,3 +238,15 @@ function rw_copy_output_to_directory(directory)
 		('{COPY} %{cfg.buildtarget.relpath} "' .. directory .. '"')
 	})
 end
+
+function rw_link_vulkan()
+	includedirs({
+		path.join(vulkan_sdk_path, 'Include'),
+	})
+	libdirs({
+		path.join(vulkan_sdk_path, 'Lib'),
+	})
+	links({
+		'vulkan-1',
+	})
+end

@@ -19,3 +19,5 @@ rw_project('Editor')
 	rw_precompiled_header()
 
 	rw_link_project('Engine')
+
+	rw_link_vulkan()
