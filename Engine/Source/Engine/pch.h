@@ -17,6 +17,7 @@
 #include "Renderwerk/Core/Assertion.h"
 #include "Renderwerk/Core/CoreDefinitions.h"
 #include "Renderwerk/Core/CoreTypes.h"
+#include "Renderwerk/Core/LogManager.h"
 #include "Renderwerk/Core/Result.h"
 #include "Renderwerk/Core/StringUtils.h"
 

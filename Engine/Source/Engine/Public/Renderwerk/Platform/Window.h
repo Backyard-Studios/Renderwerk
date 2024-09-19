@@ -30,6 +30,7 @@ struct ENGINE_API FWindowState
 	bool bIsVisible = false;
 	bool bIsClosed = false;
 	bool bIsDestroyed = false;
+	std::string Title = "";
 	TSharedPointer<IWindow> ParentWindow = nullptr;
 };
 
@@ -54,6 +55,7 @@ public:
 		State.PositionX = InWindowSettings.PositionX;
 		State.PositionY = InWindowSettings.PositionY;
 		State.bIsVisible = InWindowSettings.bIsVisibleAfterCreation;
+		State.Title = InWindowSettings.Title;
 		State.ParentWindow = InWindowSettings.ParentWindow;
 	}
 

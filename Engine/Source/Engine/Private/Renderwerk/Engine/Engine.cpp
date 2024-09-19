@@ -20,10 +20,16 @@ FResult FEngine::Launch()
 
 	FResult Result = Initialize();
 	if (Result.IsError())
+	{
+		RW_LOG_ERROR("Failed to initialize engine: {}", Result.GetReason());
 		return Result;
+	}
 	Result = RunLoop();
 	if (Result.IsError())
+	{
+		RW_LOG_ERROR("Failure during loop: {}", Result.GetReason());
 		return Result;
+	}
 	Shutdown();
 	return RW_RESULT_CODE_SUCCESS;
 }
@@ -40,6 +46,7 @@ FResult FEngine::Initialize()
 	MainWindow = WindowManager->Create(WindowSettings);
 	MainWindow->Show();
 
+	RW_LOG_INFO("Engine initialized");
 	return RW_RESULT_CODE_SUCCESS;
 }
 
@@ -67,6 +74,7 @@ void FEngine::Shutdown()
 
 	if (MainWindow && WindowManager)
 		WindowManager->Remove(MainWindow);
+	WindowManager->ClearRemoveQueue();
 	MainWindow.Reset();
 	WindowManager.Reset();
 }

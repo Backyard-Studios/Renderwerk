@@ -53,6 +53,7 @@ void FWindowManager::ClearRemoveQueue()
 	{
 		FGuid Id = RemoveQueue.front();
 		RemoveQueue.pop();
+		RW_LOG_INFO("Removing window {} [Title: {}]", Id.ToString(), Windows.at(Id)->GetWindowState().Title);
 		Windows.erase(Id);
 	}
 }
@@ -73,6 +74,7 @@ TSharedPointer<IWindow> FWindowManager::Create(const FWindowSettings& Settings)
 	TSharedPointer<IWindow> Window = MakeShared<FWin32Window>(Settings);
 #endif
 	Windows.insert({Window->GetGuid(), Window});
+	RW_LOG_INFO("New Window created: {} [Title: {}, Size: {}x{}]", Window->GetGuid().ToString(), Settings.Title, Settings.Width, Settings.Height);
 	return Window;
 }
 
@@ -85,6 +87,7 @@ void FWindowManager::Remove(const FGuid& Id)
 {
 	if (!Exists(Id))
 		return;
+	RW_LOG_DEBUG("Window {} marked for removal", Id.ToString());
 	RemoveQueue.push(Id);
 }
 

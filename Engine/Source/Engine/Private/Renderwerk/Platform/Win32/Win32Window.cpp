@@ -94,6 +94,7 @@ void FWin32Window::SetSize(const int32 Width, const int32 Height)
 
 void FWin32Window::SetTitle(const std::string& Title)
 {
+	State.Title = Title;
 	SetWindowText(WindowHandle, ToWide(Title.c_str()).c_str());
 }
 

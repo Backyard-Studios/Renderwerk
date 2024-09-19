@@ -53,6 +53,7 @@ FResult FWin32Platform::Initialize()
 	WindowClass.hIconSm = LoadIcon(nullptr, IDI_APPLICATION);
 	RegisterClassEx(&WindowClass);
 
+	RW_LOG_INFO("Win32 platform initialized");
 	return RW_RESULT_CODE_SUCCESS;
 }
 
@@ -110,7 +111,10 @@ LONG ExceptionHandler(EXCEPTION_POINTERS* ExceptionInfo)
 	IPlatform::SetExitCode(1);
 
 	if (ExceptionInfo->ExceptionRecord->ExceptionCode == CLR_EXCEPTION)
+	{
+		RW_LOG_ERROR("Unhandled CLR exception occurred. Forwarding exception handler");
 		return EXCEPTION_CONTINUE_SEARCH;
+	}
 
 	HMODULE DebugHelpModuleHandle = LoadLibrary(TEXT("dbghelp.dll"));
 	if (FWriteMiniDump WriteMiniDump = reinterpret_cast<FWriteMiniDump>(GetProcAddress(DebugHelpModuleHandle, "MiniDumpWriteDump")))
@@ -136,6 +140,10 @@ LONG ExceptionHandler(EXCEPTION_POINTERS* ExceptionInfo)
 		MessageBoxText += "\n\nCode: " + std::to_string(Data->Code);
 		MessageBoxText += "\nDescription: " + ToString(Data->Code);
 		MessageBoxText += "\nCondition: " + Data->Condition;
+		RW_LOG_CRITICAL("An assertion failed. A crash dump has been saved to \"CrashDump.dmp\".");
+		RW_LOG_CRITICAL("Code: {0}", Data->Code);
+		RW_LOG_CRITICAL("Description: {0}", ToString(Data->Code));
+		RW_LOG_CRITICAL("Condition: {0}", Data->Condition);
 	}
 	else if (ExceptionInfo->ExceptionRecord->ExceptionCode == E_FATAL)
 	{
@@ -143,12 +151,18 @@ LONG ExceptionHandler(EXCEPTION_POINTERS* ExceptionInfo)
 		MessageBoxText += "An unhandled exception occurred. A crash dump has been saved to \"CrashDump.dmp\".";
 		MessageBoxText += "\n\nCode: " + std::to_string(Code);
 		MessageBoxText += "\nDescription: " + ToString(Code);
+		RW_LOG_CRITICAL("An unhandled exception occurred. A crash dump has been saved to \"CrashDump.dmp\".");
+		RW_LOG_CRITICAL("Code: {0}", Code);
+		RW_LOG_CRITICAL("Description: {0}", ToString(Code));
 	}
 	else
 	{
 		MessageBoxText += "An unhandled exception occurred. A crash dump has been saved to \"CrashDump.dmp\".";
 		MessageBoxText += "\n\nCode: " + std::to_string(ExceptionInfo->ExceptionRecord->ExceptionCode);
 		MessageBoxText += "\nDescription: " + GetWin32Platform()->GetResultHandleDescription(ExceptionInfo->ExceptionRecord->ExceptionCode);
+		RW_LOG_CRITICAL("An unhandled exception occurred. A crash dump has been saved to \"CrashDump.dmp\".");
+		RW_LOG_CRITICAL("Code: {0}", ExceptionInfo->ExceptionRecord->ExceptionCode);
+		RW_LOG_CRITICAL("Description: {0}", GetWin32Platform()->GetResultHandleDescription(ExceptionInfo->ExceptionRecord->ExceptionCode));
 	}
 	MessageBoxA(nullptr, MessageBoxText.c_str(), "Renderwerk | ExceptionHandler", MB_OK | MB_ICONERROR);
 
