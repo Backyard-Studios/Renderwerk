@@ -17,6 +17,15 @@ struct ENGINE_API FRendererSettings
 	bool bEnableDebugging = false;
 };
 
+struct ENGINE_API FRenderFrame
+{
+	VkCommandPool CommandPool = VK_NULL_HANDLE;
+	VkCommandBuffer CommandBuffer = VK_NULL_HANDLE;
+	VkSemaphore ImageAvailableSemaphore = VK_NULL_HANDLE;
+	VkSemaphore RenderFinishedSemaphore = VK_NULL_HANDLE;
+	VkFence InFlightFence = VK_NULL_HANDLE;
+};
+
 class ENGINE_API FRenderer
 {
 public:
@@ -28,6 +37,10 @@ public:
 private:
 	[[nodiscard]] FResult Initialize();
 	void Shutdown();
+
+public:
+	FResult BeginFrame();
+	FResult EndFrame();
 
 private:
 	FResult SelectSuitableAdapter(const TSharedPointer<FVulkanContext>& VulkanContext, const VkSurfaceKHR& Surface, const FVulkanAdapterRequirements& Requirements);
@@ -41,6 +54,11 @@ private:
 	TSharedPointer<FVulkanDevice> VulkanDevice = nullptr;
 
 	TSharedPointer<FVulkanSwapchain> Swapchain = nullptr;
+	uint8 MaxFrames = 0;
+
+	TVector<FRenderFrame> Frames;
+	uint8 FrameIndex = 0;
+	uint32 ImageIndex = 0;
 
 	friend class ENGINE_API FEngine;
 };

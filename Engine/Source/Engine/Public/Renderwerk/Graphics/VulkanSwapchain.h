@@ -30,8 +30,18 @@ public:
 	[[nodiscard]] FResult Initialize();
 	void Destroy();
 
+	[[nodiscard]] uint32 GetImageCount() const { return static_cast<uint32>(Images.size()); }
+
+	[[nodiscard]] VkImage GetImage(const uint32 Index) const { return Images[Index]; }
+	[[nodiscard]] VkImageView GetImageView(const uint32 Index) const { return ImageViews[Index]; }
+
 public:
 	[[nodiscard]] VkSwapchainKHR GetHandle() const { return Swapchain; }
+
+	[[nodiscard]] VkExtent2D GetExtent() const { return Extent; }
+
+	[[nodiscard]] TVector<VkImage> GetImages() const { return Images; }
+	[[nodiscard]] TVector<VkImageView> GetImageViews() const { return ImageViews; }
 
 private:
 	void ChooseSurfaceFormat(const FVulkanSurfaceProperties& SurfaceProperties);

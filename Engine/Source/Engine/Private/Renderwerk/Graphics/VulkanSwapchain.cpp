@@ -23,6 +23,7 @@ FResult FVulkanSwapchain::Initialize()
 	RW_LOG_DEBUG("Surface format: {} {}", ToString(SurfaceFormat.format), ToString(SurfaceFormat.colorSpace));
 	RW_LOG_DEBUG("Present mode: {}", ToString(PresentMode));
 	RW_CHECK_RESULT(CreateSwapchain(VK_NULL_HANDLE, &Swapchain));
+	RW_CHECK_RESULT(AcquireImages());
 	return RW_RESULT_CODE_SUCCESS;
 }
 
