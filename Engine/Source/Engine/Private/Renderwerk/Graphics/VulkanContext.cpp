@@ -11,16 +11,32 @@ VkBool32 DebugUtilsMessengerCallback(const VkDebugUtilsMessageSeverityFlagBitsEX
 	switch (Severity)
 	{
 	case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
-		RW_LOG_TRACE("Vulkan Message: {0}", CallbackData->pMessage);
+		RW_LOG_TRACE("Vulkan Verbose: {0}", CallbackData->pMessage);
 		break;
 	case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
-		RW_LOG_INFO("Vulkan Message: {0}", CallbackData->pMessage);
+		RW_LOG_INFO("Vulkan Info: {0}", CallbackData->pMessage);
 		break;
 	case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
-		RW_LOG_WARN("Vulkan Message: {0}", CallbackData->pMessage);
+		RW_LOG_WARN("Vulkan Warning: {0}", CallbackData->pMessage);
 		break;
 	case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
-		RW_LOG_ERROR("Vulkan Message: {0}", CallbackData->pMessage);
+		{
+			std::string Message = CallbackData->pMessage;
+			size64 WallPos = Message.find_first_of("|");
+			if (WallPos != std::string::npos)
+			{
+				Message = Message.substr(WallPos + 1);
+				WallPos = Message.find_first_of("|");
+				if (WallPos != std::string::npos)
+				{
+					Message = Message.substr(WallPos + 2);
+					size64 SpecPos = Message.find_first_of(".");
+					if (SpecPos != std::string::npos)
+						Message = Message.substr(0, SpecPos);
+				}
+			}
+			RW_LOG_ERROR("Vulkan Error: {0}", Message);
+		}
 		break;
 	case VK_DEBUG_UTILS_MESSAGE_SEVERITY_FLAG_BITS_MAX_ENUM_EXT:
 	default:
@@ -115,10 +131,7 @@ FResult FVulkanContext::CreateDebugMessenger()
 	DebugMessengerCreateInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
 	DebugMessengerCreateInfo.pNext = nullptr;
 	DebugMessengerCreateInfo.flags = 0;
-	DebugMessengerCreateInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT |
-		VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT |
-		VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
-		VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+	DebugMessengerCreateInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
 	DebugMessengerCreateInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
 		VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
 		VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;

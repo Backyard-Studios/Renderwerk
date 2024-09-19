@@ -52,11 +52,46 @@ FResult FRenderer::Initialize()
 	RW_LOG_INFO("\t- API Version: {}", VulkanFormatVersion(VulkanAdapter->GetDeviceProperties().apiVersion));
 	RW_LOG_INFO("\t- Driver Version: {}", VulkanFormatVersion(VulkanAdapter->GetDeviceProperties().driverVersion));
 
+	FVulkanDeviceDesc DeviceDesc = {};
+	DeviceDesc.Adapter = VulkanAdapter;
+	DeviceDesc.Surface = Surface;
+	DeviceDesc.QueueRequirements = AdapterRequirements.QueueRequirements;
+	DeviceDesc.RequiredLayers = AdapterRequirements.RequiredLayers;
+	DeviceDesc.RequiredExtensions = AdapterRequirements.RequiredExtensions;
+	DeviceDesc.EnabledFeatures = AdapterRequirements.RequiredFeatures;
+
+	VkPhysicalDeviceBufferDeviceAddressFeatures BufferDeviceAddressFeatures = {};
+	BufferDeviceAddressFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES;
+	BufferDeviceAddressFeatures.bufferDeviceAddress = VK_TRUE;
+
+	VkPhysicalDeviceDescriptorIndexingFeatures DescriptorIndexingFeatures = {};
+	DescriptorIndexingFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES;
+	DescriptorIndexingFeatures.pNext = &BufferDeviceAddressFeatures;
+
+	VkPhysicalDeviceDynamicRenderingFeatures DynamicRenderingFeatures = {};
+	DynamicRenderingFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES;
+	DynamicRenderingFeatures.pNext = &DescriptorIndexingFeatures;
+	DynamicRenderingFeatures.dynamicRendering = VK_TRUE;
+
+	VkPhysicalDeviceSynchronization2Features Synchronization2Features = {};
+	Synchronization2Features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SYNCHRONIZATION_2_FEATURES;
+	Synchronization2Features.pNext = &DynamicRenderingFeatures;
+	Synchronization2Features.synchronization2 = VK_TRUE;
+
+	DeviceDesc.NextChain = &Synchronization2Features;
+
+	VulkanDevice = MakeShared<FVulkanDevice>(DeviceDesc);
+
+	RW_CHECK_RESULT(VulkanDevice->Initialize())
+
 	return RW_RESULT_CODE_SUCCESS;
 }
 
 void FRenderer::Shutdown()
 {
+	if (VulkanDevice)
+		VulkanDevice->Destroy();
+	VulkanDevice.Reset();
 	VulkanAdapter.Reset();
 	vkDestroySurfaceKHR(VulkanContext->GetInstance(), Surface, nullptr);
 	if (VulkanContext)

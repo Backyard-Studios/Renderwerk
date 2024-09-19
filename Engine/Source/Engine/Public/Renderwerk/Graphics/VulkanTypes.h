@@ -31,3 +31,10 @@ struct ENGINE_API FVulkanRequireableComponent : FVulkanComponent
 	{
 	}
 };
+
+ENGINE_API INLINE TVector<const char*> VulkanMapComponents(const TVector<FVulkanRequireableComponent>& Components)
+{
+	TVector<const char*> Result;
+	std::ranges::transform(Components, std::back_inserter(Result), [](const FVulkanRequireableComponent& Component) { return Component.Name; });
+	return Result;
+}
