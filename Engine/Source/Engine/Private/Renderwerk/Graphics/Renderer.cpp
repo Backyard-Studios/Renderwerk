@@ -26,7 +26,6 @@ FResult FRenderer::Initialize()
 	VulkanContextSettings.RequestedExtensions.push_back({VK_KHR_WIN32_SURFACE_EXTENSION_NAME, true});
 #endif
 	VulkanContext = MakeShared<FVulkanContext>(VulkanContextSettings);
-
 	RW_CHECK_RESULT(VulkanContext->Initialize());
 
 #if RW_PLATFORM_WINDOWS
@@ -39,6 +38,7 @@ FResult FRenderer::Initialize()
 
 	FVulkanAdapterRequirements AdapterRequirements = {};
 	AdapterRequirements.MinAPIVersion = VulkanContextSettings.APIVersion;
+	AdapterRequirements.RequiredExtensions.push_back({VK_KHR_SWAPCHAIN_EXTENSION_NAME, true});
 	AdapterRequirements.RequiredFeatures.samplerAnisotropy = true;
 	AdapterRequirements.RequiredFeatures12.bufferDeviceAddress = true;
 	AdapterRequirements.RequiredFeatures12.descriptorIndexing = true;
@@ -81,14 +81,31 @@ FResult FRenderer::Initialize()
 	DeviceDesc.NextChain = &Synchronization2Features;
 
 	VulkanDevice = MakeShared<FVulkanDevice>(DeviceDesc);
-
 	RW_CHECK_RESULT(VulkanDevice->Initialize())
+
+	FVulkanSwapchainDesc SwapchainDesc = {};
+	SwapchainDesc.Allocator = nullptr;
+	SwapchainDesc.Window = Settings.Window;
+	SwapchainDesc.Surface = Surface;
+	SwapchainDesc.Device = VulkanDevice;
+	Swapchain = MakeShared<FVulkanSwapchain>(SwapchainDesc);
+	RW_CHECK_RESULT(Swapchain->Initialize())
 
 	return RW_RESULT_CODE_SUCCESS;
 }
 
 void FRenderer::Shutdown()
 {
+	if (VulkanDevice)
+	{
+		FResult Result = VulkanDevice->WaitForIdle();
+		if (Result.IsError())
+			RW_LOG_ERROR("Failed to wait for device to be idle");
+	}
+
+	if (Swapchain)
+		Swapchain->Destroy();
+	Swapchain.Reset();
 	if (VulkanDevice)
 		VulkanDevice->Destroy();
 	VulkanDevice.Reset();
@@ -130,7 +147,7 @@ FResult FRenderer::SelectSuitableAdapter(const TSharedPointer<FVulkanContext>& V
 
 		FVulkanQueueData QueueData = {};
 		RW_CHECK_RESULT(VulkanAdapter->QueryQueueData(Surface, Requirements.QueueRequirements, &QueueData), "Failed to query queue data for Vulkan adapter")
-		return RW_RESULT_SEVERITY_SUCCESS;
+		return RW_RESULT_CODE_SUCCESS;
 	}
 	VulkanAdapter.Reset();
 	return FResult(RW_RESULT_CODE_FAIL, "Failed to find suitable Vulkan adapter");

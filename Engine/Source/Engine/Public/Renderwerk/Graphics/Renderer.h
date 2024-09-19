@@ -3,6 +3,7 @@
 #include "VulkanAdapter.h"
 #include "VulkanContext.h"
 #include "VulkanDevice.h"
+#include "VulkanSwapchain.h"
 
 #include "Renderwerk/Core/CoreDefinitions.h"
 #include "Renderwerk/Platform/Window.h"
@@ -38,6 +39,8 @@ private:
 	VkSurfaceKHR Surface = VK_NULL_HANDLE;
 	TSharedPointer<FVulkanAdapter> VulkanAdapter = nullptr;
 	TSharedPointer<FVulkanDevice> VulkanDevice = nullptr;
+
+	TSharedPointer<FVulkanSwapchain> Swapchain = nullptr;
 
 	friend class ENGINE_API FEngine;
 };

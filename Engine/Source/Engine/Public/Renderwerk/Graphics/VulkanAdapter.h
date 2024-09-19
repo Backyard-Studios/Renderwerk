@@ -30,6 +30,13 @@ struct ENGINE_API FVulkanQueueRequirements
 	bool8 bUseBestQueueForTransport = true;
 };
 
+struct ENGINE_API FVulkanSurfaceProperties
+{
+	VkSurfaceCapabilitiesKHR Capabilities = {};
+	TVector<VkSurfaceFormatKHR> Formats;
+	TVector<VkPresentModeKHR> PresentModes;
+};
+
 class ENGINE_API FVulkanAdapter
 {
 public:
@@ -42,6 +49,7 @@ public:
 	FResult Initialize();
 
 	FResult QueryQueueData(const VkSurfaceKHR& Surface, const FVulkanQueueRequirements& Requirements, FVulkanQueueData* OutQueueData) const;
+	FResult QuerySurfaceProperties(const VkSurfaceKHR& Surface, FVulkanSurfaceProperties* OutSurfaceProperties) const;
 
 	bool8 SupportsLayers(const TVector<FVulkanRequireableComponent>& Layers) const;
 	bool8 SupportsExtensions(const TVector<FVulkanRequireableComponent>& Extensions) const;

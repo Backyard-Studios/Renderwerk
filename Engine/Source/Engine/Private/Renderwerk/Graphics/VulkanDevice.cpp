@@ -16,7 +16,6 @@ FVulkanDevice::~FVulkanDevice()
 
 FResult FVulkanDevice::Initialize()
 {
-	FVulkanQueueData QueueData = {};
 	RW_CHECK_RESULT(Description.Adapter->QueryQueueData(Description.Surface, Description.QueueRequirements, &QueueData))
 
 	TVector<uint32> QueueIndices;

@@ -32,7 +32,7 @@ FResult FVulkanAdapter::Initialize()
 	vkGetPhysicalDeviceFeatures2(PhysicalDevice, &TempFeatures);
 	Features = TempFeatures.features;
 
-	return RW_RESULT_SEVERITY_SUCCESS;
+	return RW_RESULT_CODE_SUCCESS;
 }
 
 FResult FVulkanAdapter::QueryQueueData(const VkSurfaceKHR& Surface, const FVulkanQueueRequirements& Requirements, FVulkanQueueData* OutQueueData) const
@@ -107,7 +107,26 @@ FResult FVulkanAdapter::QueryQueueData(const VkSurfaceKHR& Surface, const FVulka
 	if (!OutQueueData->IsValid())
 		return FResult(RW_RESULT_CODE_INVALID_OBJECT, "Failed to find suitable queue family for Vulkan adapter");
 
-	return RW_RESULT_SEVERITY_SUCCESS;
+	return RW_RESULT_CODE_SUCCESS;
+}
+
+FResult FVulkanAdapter::QuerySurfaceProperties(const VkSurfaceKHR& Surface, FVulkanSurfaceProperties* OutSurfaceProperties) const
+{
+	RW_ASSERT(OutSurfaceProperties != nullptr, RW_RESULT_CODE_INVALID_OBJECT, "OutSurfaceProperties is nullptr")
+
+	RW_CHECK_VKRESULT(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(PhysicalDevice, Surface, &OutSurfaceProperties->Capabilities), "Failed to query surface capabilities")
+
+	uint32 FormatCount = 0;
+	vkGetPhysicalDeviceSurfaceFormatsKHR(PhysicalDevice, Surface, &FormatCount, nullptr);
+	OutSurfaceProperties->Formats.resize(FormatCount);
+	vkGetPhysicalDeviceSurfaceFormatsKHR(PhysicalDevice, Surface, &FormatCount, OutSurfaceProperties->Formats.data());
+
+	uint32 PresentModeCount = 0;
+	vkGetPhysicalDeviceSurfacePresentModesKHR(PhysicalDevice, Surface, &PresentModeCount, nullptr);
+	OutSurfaceProperties->PresentModes.resize(PresentModeCount);
+	vkGetPhysicalDeviceSurfacePresentModesKHR(PhysicalDevice, Surface, &PresentModeCount, OutSurfaceProperties->PresentModes.data());
+
+	return RW_RESULT_CODE_SUCCESS;
 }
 
 bool8 FVulkanAdapter::SupportsLayers(const TVector<FVulkanRequireableComponent>& Layers) const

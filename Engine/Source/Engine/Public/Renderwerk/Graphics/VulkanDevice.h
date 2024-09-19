@@ -34,9 +34,12 @@ public:
 
 public:
 	[[nodiscard]] VkDevice GetHandle() const { return Device; }
+	[[nodiscard]] TSharedPointer<FVulkanAdapter> GetAdapter() const { return Description.Adapter; }
 
 	[[nodiscard]] TVector<const char*> GetActivatedLayers() const { return ActivatedLayers; }
 	[[nodiscard]] TVector<const char*> GetActivatedExtensions() const { return ActivatedExtensions; }
+
+	[[nodiscard]] FVulkanQueueData GetQueueData() const { return QueueData; }
 
 	[[nodiscard]] VkQueue GetGraphicsQueue() const { return GraphicsQueue; }
 	[[nodiscard]] VkQueue GetPresentQueue() const { return PresentQueue; }
@@ -48,6 +51,8 @@ private:
 
 	TVector<const char*> ActivatedLayers;
 	TVector<const char*> ActivatedExtensions;
+
+	FVulkanQueueData QueueData = {};
 
 	VkDevice Device = VK_NULL_HANDLE;
 
