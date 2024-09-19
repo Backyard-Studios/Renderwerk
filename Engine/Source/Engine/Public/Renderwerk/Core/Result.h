@@ -36,7 +36,7 @@ class ENGINE_API FResult
 {
 public:
 	FResult();
-	FResult(FResultCode InCode);
+	FResult(FResultCode InCode, const std::string& InReason = "");
 	~FResult();
 
 	DEFINE_DEFAULT_COPY_AND_MOVE(FResult)
@@ -64,7 +64,12 @@ public:
 	 */
 	[[nodiscard]] uint32 GetErrorCode() const;
 
-public:
+	/**
+	 * @brief Returns the reason of the result.
+	 * @return The reason of the result.
+	 */
+	[[nodiscard]] std::string GetReason() const;
+
 	friend bool operator==(const FResult& Lhs, const FResult& Rhs);
 	friend bool operator!=(const FResult& Lhs, const FResult& Rhs);
 
@@ -72,6 +77,7 @@ public:
 
 private:
 	FResultCode Code;
+	std::string Reason;
 };
 
 ENGINE_API void RegisterResultDescription(FResultCode Code, std::string Description);
