@@ -18,14 +18,14 @@ public:
 	void ClearRemoveQueue();
 
 	[[nodiscard]] bool Exists(const FGuid& Id) const;
-	[[nodiscard]] bool Exists(const TSharedPointer<IWindow>& Id) const;
-	[[nodiscard]] TSharedPointer<IWindow> Create(const FWindowSettings& Settings);
-	[[nodiscard]] TSharedPointer<IWindow> Get(const FGuid& Id) const;
+	[[nodiscard]] bool Exists(const TSharedPointer<FWindow>& Id) const;
+	[[nodiscard]] TSharedPointer<FWindow> Create(const FWindowSettings& Settings);
+	[[nodiscard]] TSharedPointer<FWindow> Get(const FGuid& Id) const;
 
 	void Remove(const FGuid& Id);
-	void Remove(const TSharedPointer<IWindow>& Id);
+	void Remove(const TSharedPointer<FWindow>& Id);
 
 private:
-	TMap<FGuid, TSharedPointer<IWindow>> Windows;
+	TMap<FGuid, TSharedPointer<FWindow>> Windows;
 	TQueue<FGuid> RemoveQueue;
 };

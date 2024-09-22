@@ -6,11 +6,6 @@
 #include <type_traits>
 #include <xutility>
 
-#if RW_PLATFORM_WINDOWS
-#	include "Renderwerk/Platform/Win32/Win32Memory.h"
-using FPlatformMemory = FWin32Memory;
-#endif
-
 enum : uint8
 {
 	MEMORY_DEFAULT_ALIGNMENT = 16
@@ -47,39 +42,39 @@ class ENGINE_API FMemory
 public:
 	static void* Allocate(const size64 Size, const uint8 Alignment = MEMORY_DEFAULT_ALIGNMENT)
 	{
-		void* Pointer = FPlatformMemory::Allocate(Size, Alignment);
+		void* Pointer = _aligned_malloc(Size, Alignment);
 #if RW_ENABLE_MEMORY_TRACKING
 		GetMemoryTracking().OnAllocate(Pointer, Size, Alignment);
 #endif
 		return Pointer;
 	}
 
-	static void Free(void* Memory, const uint8 Alignment = MEMORY_DEFAULT_ALIGNMENT)
+	static void Free(void* Pointer, const uint8 Alignment = MEMORY_DEFAULT_ALIGNMENT)
 	{
 #if RW_ENABLE_MEMORY_TRACKING
-		GetMemoryTracking().OnFree(Memory, Alignment);
+		GetMemoryTracking().OnFree(Pointer, Alignment);
 #endif
-		FPlatformMemory::Free(Memory, Alignment);
+		_aligned_free(Pointer);
 	}
 
-	static void Zero(void* Memory, const size64 Size)
+	static void Zero(void* Pointer, const size64 Size)
 	{
-		FPlatformMemory::Zero(Memory, Size);
+		ZeroMemory(Pointer, Size);
 	}
 
 	static void Copy(void* Destination, const void* Source, const size64 Size)
 	{
-		FPlatformMemory::Copy(Destination, Source, Size);
+		CopyMemory(Destination, Source, Size);
 	}
 
 	static void Fill(void* Destination, const uint8 Value, const size64 Size)
 	{
-		FPlatformMemory::Fill(Destination, Value, Size);
+		FillMemory(Destination, Size, Value);
 	}
 
 	static void Move(void* Destination, const void* Source, const size64 Size)
 	{
-		FPlatformMemory::Move(Destination, Source, Size);
+		MoveMemory(Destination, Source, Size);
 	}
 
 	template <typename T, typename... TArguments>

@@ -2,17 +2,13 @@
 
 #include "Renderwerk/Platform/WindowManager.h"
 
-#if RW_PLATFORM_WINDOWS
-#	include "Renderwerk/Platform/Win32/Win32Window.h"
-#endif
-
 FWindowManager::FWindowManager()
 {
 }
 
 FWindowManager::~FWindowManager()
 {
-	for (TSharedPointer<IWindow>& Window : Windows | std::views::values)
+	for (TSharedPointer<FWindow>& Window : Windows | std::views::values)
 		Window.Reset();
 	Windows.clear();
 }
@@ -37,7 +33,7 @@ void FWindowManager::Update()
 	{
 		RW_PROFILING_MARK_SCOPE("CollectDestroyedWindows");
 
-		for (const TSharedPointer<IWindow>& Window : Windows | std::views::values)
+		for (const TSharedPointer<FWindow>& Window : Windows | std::views::values)
 		{
 			if (Window->GetWindowState().bIsDestroyed)
 				Remove(Window);
@@ -63,22 +59,20 @@ bool FWindowManager::Exists(const FGuid& Id) const
 	return Windows.contains(Id);
 }
 
-bool FWindowManager::Exists(const TSharedPointer<IWindow>& Id) const
+bool FWindowManager::Exists(const TSharedPointer<FWindow>& Id) const
 {
 	return Exists(Id->GetGuid());
 }
 
-TSharedPointer<IWindow> FWindowManager::Create(const FWindowSettings& Settings)
+TSharedPointer<FWindow> FWindowManager::Create(const FWindowSettings& Settings)
 {
-#if RW_PLATFORM_WINDOWS
-	TSharedPointer<IWindow> Window = MakeShared<FWin32Window>(Settings);
-#endif
+	TSharedPointer<FWindow> Window = MakeShared<FWindow>(Settings);
 	Windows.insert({Window->GetGuid(), Window});
 	RW_LOG_INFO("New Window created: {} [Title: {}, Size: {}x{}]", Window->GetGuid().ToString(), Settings.Title, Settings.Width, Settings.Height);
 	return Window;
 }
 
-TSharedPointer<IWindow> FWindowManager::Get(const FGuid& Id) const
+TSharedPointer<FWindow> FWindowManager::Get(const FGuid& Id) const
 {
 	return Windows.at(Id);
 }
@@ -91,7 +85,7 @@ void FWindowManager::Remove(const FGuid& Id)
 	RemoveQueue.push(Id);
 }
 
-void FWindowManager::Remove(const TSharedPointer<IWindow>& Id)
+void FWindowManager::Remove(const TSharedPointer<FWindow>& Id)
 {
 	Remove(Id->GetGuid());
 }

@@ -20,7 +20,7 @@ struct ENGINE_API FAssertionData
 #define RW_ASSERT(Condition, Code, ...) \
 	if (!(Condition)) \
 	{ \
-		GetPlatform()->Assertion(FAssertionData(#Condition, Code, std::format(__VA_ARGS__))); \
+		FPlatform::Assertion(FAssertionData(#Condition, Code, std::format(__VA_ARGS__))); \
 	} else {}
 
 #if RW_CONFIG_DEBUG || RW_CONFIG_DEVELOPMENT

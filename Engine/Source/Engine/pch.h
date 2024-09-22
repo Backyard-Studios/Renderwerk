@@ -34,5 +34,4 @@
 
 #ifdef RW_PLATFORM_WINDOWS
 #	include <Windows.h>
-#	include "Renderwerk/Platform/Win32/Win32Platform.h"
 #endif

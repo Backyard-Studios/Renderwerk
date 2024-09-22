@@ -6,6 +6,8 @@
 #include <cassert>
 #include <ranges>
 
+#include <objbase.h>
+
 bool IsValidHexChar(const char Char)
 {
 	if (Char > 47 && Char < 58)
@@ -124,4 +126,37 @@ bool FGuid::operator>(const FGuid& Other) const
 FGuid::operator std::string() const
 {
 	return ToString();
+}
+
+
+FGuid NewGuid()
+{
+	GUID Guid;
+	CoCreateGuid(&Guid);
+
+	TVector<uint8> Bytes =
+	{
+		static_cast<uint8>((Guid.Data1 >> 24) & 0xFF),
+		static_cast<uint8>((Guid.Data1 >> 16) & 0xFF),
+		static_cast<uint8>((Guid.Data1 >> 8) & 0xFF),
+		static_cast<uint8>((Guid.Data1) & 0xff),
+
+		static_cast<uint8>((Guid.Data2 >> 8) & 0xFF),
+		static_cast<uint8>((Guid.Data2) & 0xff),
+
+		static_cast<uint8>((Guid.Data3 >> 8) & 0xFF),
+		static_cast<uint8>((Guid.Data3) & 0xFF),
+
+		(Guid.Data4[0]),
+		(Guid.Data4[1]),
+		(Guid.Data4[2]),
+		(Guid.Data4[3]),
+		(Guid.Data4[4]),
+		(Guid.Data4[5]),
+		(Guid.Data4[6]),
+		(Guid.Data4[7])
+	};
+	return FGuid{
+		Bytes
+	};
 }
