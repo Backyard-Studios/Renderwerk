@@ -7,6 +7,8 @@
 #include "volk.h"
 #include "VulkanAdapter.h"
 
+#include "Renderwerk/Platform/Window.h"
+
 struct ENGINE_API FVulkanContextDesc
 {
 	bool bEnableValidationLayers = false;
@@ -24,6 +26,8 @@ public:
 public:
 	[[nodiscard]] FResult Initialize();
 	void Destroy();
+
+	[[nodiscard]] FResult CreateSurface(const TSharedPointer<FWindow>& Window, VkSurfaceKHR* OutSurface) const;
 
 	[[nodiscard]] TSharedPointer<FVulkanAdapter> GetAdapterByIndex(uint32 Index) const;
 	[[nodiscard]] TSharedPointer<FVulkanAdapter> GetSuitableAdapter() const;

@@ -23,6 +23,8 @@ FResult FRenderer::Initialize()
 	FResult VulkanContextInitializeResult = VulkanContext->Initialize();
 	CHECK_RESULT(VulkanContextInitializeResult)
 
+	CHECK_RESULT(VulkanContext->CreateSurface(Description.Window, &Surface));
+
 	if (Description.AdapterIndex == UINT32_MAX)
 		Adapter = VulkanContext->GetSuitableAdapter();
 	else
@@ -35,12 +37,26 @@ FResult FRenderer::Initialize()
 	RW_LOG_INFO("\t- Type: {}", ToString(Adapter->GetProperties().deviceType));
 	RW_LOG_INFO("\t- API Version: {}", VulkanFormatVersion(Adapter->GetProperties().apiVersion));
 
+	Device = MakeShared<FVulkanDevice>(FVulkanDeviceDesc{VulkanContext, Adapter, Surface});
+	CHECK_RESULT(Device->Initialize());
+
 	return RESULT_SUCCESS;
 }
 
 void FRenderer::Destroy()
 {
+	if (Device)
+	{
+		FResult WaitResult = Device->WaitForIdle();
+		if (WaitResult.IsError()) [[unlikely]]
+			RW_LOG_ERROR("Failed to wait for Vulkan device to become idle");
+	}
+
+	if (Device)
+		Device->Destroy();
+	Device.Reset();
 	Adapter.Reset();
+	vkDestroySurfaceKHR(VulkanContext->GetInstance(), Surface, VulkanContext->GetAllocator());
 	if (VulkanContext)
 		VulkanContext->Destroy();
 	VulkanContext.Reset();

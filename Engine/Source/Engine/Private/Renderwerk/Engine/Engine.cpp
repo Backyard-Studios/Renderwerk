@@ -60,6 +60,7 @@ FResult FEngine::Initialize()
 	MainWindow->Show();
 
 	FRendererDesc RendererDesc = {};
+	RendererDesc.Window = MainWindow;
 	Renderer = MakeShared<FRenderer>(RendererDesc);
 	DeletionQueue.Add([this]()
 	{

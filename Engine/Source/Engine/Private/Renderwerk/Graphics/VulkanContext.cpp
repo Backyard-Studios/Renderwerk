@@ -46,7 +46,7 @@ FResult FVulkanContext::Initialize()
 
 	TVector<FVulkanRequireableComponent> Extensions = {
 		{VK_KHR_SURFACE_EXTENSION_NAME, true},
-		{"VK_KHR_win32_surface", true},
+		{VK_KHR_WIN32_SURFACE_EXTENSION_NAME, true},
 	};
 #if RW_CONFIG_DEBUG
 	Extensions.push_back({VK_EXT_DEBUG_UTILS_EXTENSION_NAME, true});
@@ -78,6 +78,18 @@ void FVulkanContext::Destroy()
 	FMemory::Delete(Allocator);
 	Allocator = nullptr;
 	volkFinalize();
+}
+
+FResult FVulkanContext::CreateSurface(const TSharedPointer<FWindow>& Window, VkSurfaceKHR* OutSurface) const
+{
+	VkWin32SurfaceCreateInfoKHR SurfaceCreateInfo;
+	SurfaceCreateInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
+	SurfaceCreateInfo.pNext = nullptr;
+	SurfaceCreateInfo.flags = 0;
+	SurfaceCreateInfo.hinstance = FPlatform::GetWindowClass().hInstance;
+	SurfaceCreateInfo.hwnd = Window->GetHandle();
+	CHECK_VKRESULT(vkCreateWin32SurfaceKHR(Instance, &SurfaceCreateInfo, Allocator, OutSurface), "Failed to create Vulkan surface")
+	return RESULT_SUCCESS;
 }
 
 TSharedPointer<FVulkanAdapter> FVulkanContext::GetAdapterByIndex(const uint32 Index) const

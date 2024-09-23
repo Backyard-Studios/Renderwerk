@@ -247,4 +247,7 @@ function rw_link_vulkan()
 	libdirs({
 		path.join(vulkan_sdk_path, 'Lib'),
 	})
+	defines({
+		'VK_USE_PLATFORM_WIN32_KHR=1',
+	})
 end
