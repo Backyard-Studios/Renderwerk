@@ -1,56 +1,61 @@
 ﻿#include "pch.h"
 
-#include "Renderwerk/Platform/Win32/Win32Thread.h"
+#include "Renderwerk/Platform/Threading/Thread.h"
 
-FWin32Thread::FWin32Thread(const FThreadFunction& InThreadFunction, const EThreadPriority& InPriority)
-	: IThread(InThreadFunction, InPriority)
+FThread::FThread() = default;
+
+FThread::~FThread() = default;
+
+FResult FThread::Initialize(const FThreadFunction& InThreadFunction, const EThreadPriority& InPriority)
 {
+	ThreadFunction = InThreadFunction;
+	Priority = InPriority;
+
 	LPTHREAD_START_ROUTINE Win32ThreadFunction = [](const LPVOID Param) -> DWORD
 	{
-		FWin32Thread* Thread = static_cast<FWin32Thread*>(Param);
+		FThread* Thread = static_cast<FThread*>(Param);
 		Thread->ThreadFunction();
 		return 0;
 	};
 	ThreadHandle = CreateThread(nullptr, 0, Win32ThreadFunction, this, CREATE_SUSPENDED, reinterpret_cast<LPDWORD>(&ThreadId));
 	SetThreadPriority(ThreadHandle, ConvertThreadPriority(Priority));
+	return RESULT_SUCCESS;
 }
 
-FWin32Thread::~FWin32Thread()
+void FThread::Destroy()
 {
+	if (State == EThreadState::Running)
+		ForceKill();
 	if (ThreadHandle)
 		CloseHandle(ThreadHandle);
+	ThreadHandle = nullptr;
 }
 
-void FWin32Thread::Start()
+void FThread::Start()
 {
 	DWORD Result = ResumeThread(ThreadHandle);
-	RW_ASSERT(Result != -1, RW_RESULT_CODE_FAIL, "Failed to resume thread");
+	RW_ASSERT(Result != -1, RESULT_FAILED, "Failed to resume thread");
 	State = EThreadState::Running;
 }
 
-void FWin32Thread::Join()
+void FThread::Join()
 {
 	DWORD Result = WaitForSingleObject(ThreadHandle, INFINITE);
-	RW_ASSERT(Result == WAIT_OBJECT_0, RW_RESULT_CODE_FAIL, "Failed to wait for thread");
+	RW_ASSERT(Result == WAIT_OBJECT_0, RESULT_FAILED, "Failed to wait for thread");
 	State = EThreadState::Finished;
 }
 
-void FWin32Thread::ForceKill(const bool bWaitForCompletion)
+void FThread::ForceKill(const bool bWaitForCompletion)
 {
 	if (bWaitForCompletion)
 		Join();
 
 	bool Result = TerminateThread(ThreadHandle, 0);
-	RW_ASSERT(Result, RW_RESULT_CODE_FAIL, "Failed to terminate thread");
+	RW_ASSERT(Result, RESULT_FAILED, "Failed to terminate thread");
 	State = EThreadState::Finished;
 }
 
-void* FWin32Thread::GetNativeHandle() const
-{
-	return ThreadHandle;
-}
-
-int32 FWin32Thread::ConvertThreadPriority(const EThreadPriority& InPriority)
+int32 FThread::ConvertThreadPriority(const EThreadPriority& InPriority)
 {
 	switch (InPriority)
 	{

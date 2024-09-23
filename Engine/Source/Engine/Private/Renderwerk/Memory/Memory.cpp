@@ -24,7 +24,7 @@ void FMemoryTracking::OnAllocate(void* Pointer, const size64 Size, const uint8 A
 
 void FMemoryTracking::OnFree(void* Pointer, const uint8 Alignment)
 {
-	Usage -= FPlatformMemory::GetAllocationSize(Pointer, Alignment);
+	Usage -= _aligned_msize(Pointer, Alignment, 0);
 	if (OnFreeCallback)
 		OnFreeCallback(Pointer, Alignment);
 }

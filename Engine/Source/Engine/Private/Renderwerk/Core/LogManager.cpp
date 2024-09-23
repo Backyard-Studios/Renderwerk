@@ -28,7 +28,7 @@ FResult FLogManager::Initialize()
 	spdlog::set_level(spdlog::level::warn);
 #endif
 
-	return RW_RESULT_CODE_SUCCESS;
+	return RESULT_SUCCESS;
 }
 
 void FLogManager::Shutdown()

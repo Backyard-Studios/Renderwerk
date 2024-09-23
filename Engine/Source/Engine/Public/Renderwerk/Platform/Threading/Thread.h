@@ -17,38 +17,44 @@ enum class ENGINE_API EThreadState : uint8
 	Finished
 };
 
-class ENGINE_API IThread
+/**
+ * @brief A simple thread class that wraps the Windows API thread functions.
+ */
+class ENGINE_API FThread
 {
 public:
 	using FThreadFunction = TFunction<void()>;
 
 public:
-	IThread(FThreadFunction InThreadFunction, const EThreadPriority& InPriority = EThreadPriority::Normal)
-		: ThreadFunction(std::move(InThreadFunction)), Priority(InPriority)
-	{
-	}
+	FThread();
+	~FThread();
 
-	virtual ~IThread() = default;
-
-	DEFINE_DEFAULT_COPY_AND_MOVE(IThread)
+	DEFINE_DEFAULT_COPY_AND_MOVE(FThread)
 
 public:
-	virtual void Start() = 0;
-	virtual void Join() = 0;
-	virtual void ForceKill(bool bWaitForCompletion = false) = 0;
+	[[nodiscard]] FResult Initialize(const FThreadFunction& InThreadFunction, const EThreadPriority& InPriority = EThreadPriority::Normal);
+	void Destroy();
 
 public:
-	[[nodiscard]] virtual void* GetNativeHandle() const = 0;
+	void Start();
+	void Join();
+	void ForceKill(bool bWaitForCompletion = false);
 
 public:
+	[[nodiscard]] HANDLE GetHandle() const { return ThreadHandle; }
+
 	[[nodiscard]] EThreadPriority GetPriority() const { return Priority; }
 	[[nodiscard]] uint64 GetThreadId() const { return ThreadId; }
 	[[nodiscard]] EThreadState GetState() const { return State; }
 
+private:
+	static int32 ConvertThreadPriority(const EThreadPriority& InPriority);
+
 protected:
 	FThreadFunction ThreadFunction;
-	EThreadPriority Priority;
+	EThreadPriority Priority = EThreadPriority::Normal;
 
+	HANDLE ThreadHandle = nullptr;
 	uint64 ThreadId = 0;
 	EThreadState State = EThreadState::Idle;
 };

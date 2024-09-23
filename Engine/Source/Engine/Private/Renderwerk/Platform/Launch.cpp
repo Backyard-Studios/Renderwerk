@@ -8,36 +8,27 @@
 #include "Renderwerk/Engine/Engine.h"
 #include "Renderwerk/Platform/Platform.h"
 
-#if RW_PLATFORM_WINDOWS
-#	include "Renderwerk/Platform/Win32/Win32Platform.h"
-#endif
-
 int32 Launch()
 {
-	RegisterDefaultResultDescriptions();
-
 	RW_LOG_TRACE("Initializing platform...");
-#if RW_PLATFORM_WINDOWS
-	GPlatform = MakeShared<FWin32Platform>();
-#endif
-	FResult Result = GPlatform->Initialize();
+	FResult Result = FPlatform::Initialize();
 	if (Result.IsError())
 	{
 		RW_LOG_ERROR("Failed to initialize platform: {}", Result.GetReason());
-		return Result.GetErrorCode();
+		return Result.GetCode();
 	}
 
 	RW_LOG_TRACE("Launching engine...");
 	GEngine = MakeShared<FEngine>();
 	Result = GEngine->Launch();
 	if (Result.IsError())
-		return Result.GetErrorCode();
+		return Result.GetCode();
 	return 0;
 }
 
 void Shutdown()
 {
-	if (IPlatform::GetExitCode() != 0)
+	if (FPlatform::GetExitCode() != 0)
 		RW_LOG_ERROR("Trying to shutdown gracefully after an error occurred");
 
 	if (GEngine)
@@ -45,39 +36,35 @@ void Shutdown()
 		GEngine->Shutdown();
 		GEngine.Reset();
 	}
-	if (GPlatform)
-	{
-		GPlatform->Shutdown();
-		GPlatform.Reset();
-	}
+	FPlatform::Shutdown();
 	RW_LOG_INFO("Successfully shut down");
 }
 
 int32 GuardedMain()
 {
 	int32 ExitCode = 0;
-#if RW_PLATFORM_SUPPORTS_SEH
-	__try
-	{
-#endif
-		ExitCode = Launch();
-#if RW_PLATFORM_SUPPORTS_SEH
-	}
-	__except (ExceptionHandler(GetExceptionInformation()))
-	{
-	}
-#endif
-	if (IPlatform::GetExitCode() == 0)
-		IPlatform::SetExitCode(ExitCode);
+	// #if RW_PLATFORM_SUPPORTS_SEH
+	// 	__try
+	// 	{
+	// #endif
+	ExitCode = Launch();
+	// #if RW_PLATFORM_SUPPORTS_SEH
+	// 	}
+	// 	__except (ExceptionHandler(GetExceptionInformation()))
+	// 	{
+	// 	}
+	// #endif
+	if (FPlatform::GetExitCode() == 0)
+		FPlatform::SetExitCode(ExitCode);
 	Shutdown();
-	return IPlatform::GetExitCode();
+	return FPlatform::GetExitCode();
 }
 
 int32 LaunchRenderwerk()
 {
 	FResult Result = FLogManager::Initialize();
 	if (Result.IsError())
-		return Result.GetErrorCode();
+		return Result.GetCode();
 #if RW_ENABLE_MEMORY_TRACKING
 	RW_LOG_DEBUG("Memory tracking enabled");
 #endif

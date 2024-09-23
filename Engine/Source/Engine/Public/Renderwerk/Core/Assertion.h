@@ -8,10 +8,10 @@
 struct ENGINE_API FAssertionData
 {
 	std::string Condition;
-	FResultCode Code;
+	EResultCode Code;
 	std::string Message;
 
-	FAssertionData(const std::string& Condition, const FResultCode Code, const std::string& Message)
+	FAssertionData(const std::string& Condition, const EResultCode Code, const std::string& Message)
 		: Condition(Condition), Code(Code), Message(Message)
 	{
 	}
@@ -20,7 +20,7 @@ struct ENGINE_API FAssertionData
 #define RW_ASSERT(Condition, Code, ...) \
 	if (!(Condition)) \
 	{ \
-		GetPlatform()->Assertion(FAssertionData(#Condition, Code, std::format(__VA_ARGS__))); \
+		FPlatform::Assertion(FAssertionData(#Condition, Code, std::format(__VA_ARGS__))); \
 	} else {}
 
 #if RW_CONFIG_DEBUG || RW_CONFIG_DEVELOPMENT

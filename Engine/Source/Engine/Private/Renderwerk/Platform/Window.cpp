@@ -1,15 +1,25 @@
 ﻿#include "pch.h"
 
-#include "Renderwerk/Platform/Win32/Win32Window.h"
+#include "Renderwerk/Platform/Window.h"
 
-FWin32Window::FWin32Window(const FWindowSettings& InWindowSettings)
-	: FWin32Window(InWindowSettings, NewGuid())
+FWindow::FWindow(const FWindowSettings& InWindowSettings)
+	: FWindow(InWindowSettings, NewGuid())
 {
 }
 
-FWin32Window::FWin32Window(const FWindowSettings& InWindowSettings, const FGuid& InGuid)
-	: IWindow(InWindowSettings, InGuid)
+FWindow::FWindow(const FWindowSettings& InWindowSettings, const FGuid& InGuid)
+	: Settings(InWindowSettings), Guid(InGuid)
 {
+	State.WindowWidth = InWindowSettings.Width;
+	State.WindowHeight = InWindowSettings.Height;
+	State.ClientWidth = InWindowSettings.Width;
+	State.ClientHeight = InWindowSettings.Height;
+	State.PositionX = InWindowSettings.PositionX;
+	State.PositionY = InWindowSettings.PositionY;
+	State.bIsVisible = InWindowSettings.bIsVisibleAfterCreation;
+	State.Title = InWindowSettings.Title;
+	State.ParentWindow = InWindowSettings.ParentWindow;
+
 	uint32 WindowStyle = WS_OVERLAPPEDWINDOW;
 	uint32 WindowExStyle = WS_EX_APPWINDOW;
 
@@ -21,89 +31,88 @@ FWin32Window::FWin32Window(const FWindowSettings& InWindowSettings, const FGuid&
 
 	HWND ParentHandle = nullptr;
 	if (Settings.ParentWindow)
-		ParentHandle = static_cast<HWND>(Settings.ParentWindow->GetNativeHandle());
+		ParentHandle = Settings.ParentWindow->GetHandle();
 
 	WindowHandle = CreateWindowEx(WindowExStyle,
-	                              GetWin32Platform()->GetWindowClass().lpszClassName,
+	                              FPlatform::GetWindowClass().lpszClassName,
 	                              ToWide(Settings.Title.c_str()).c_str(),
 	                              WindowStyle,
 	                              PositionX, PositionY,
 	                              static_cast<int32>(Settings.Width), static_cast<int32>(Settings.Height),
 	                              ParentHandle,
 	                              nullptr,
-	                              GetWin32Platform()->GetWindowClass().hInstance,
+	                              FPlatform::GetWindowClass().hInstance,
 	                              this);
 }
 
-FWin32Window::~FWin32Window()
+FWindow::~FWindow()
 {
 	if (WindowHandle && IsWindow(WindowHandle))
 		DestroyWindow(WindowHandle);
 }
 
-void FWin32Window::Show()
+void FWindow::Show() const
 {
 	ShowWindow(WindowHandle, SW_SHOW);
+	UpdateWindow(WindowHandle);
 }
 
-void FWin32Window::Hide()
+void FWindow::Hide() const
 {
 	ShowWindow(WindowHandle, SW_HIDE);
+	UpdateWindow(WindowHandle);
 }
 
-void FWin32Window::Minimize()
+void FWindow::Minimize() const
 {
 	ShowWindow(WindowHandle, SW_MINIMIZE);
+	UpdateWindow(WindowHandle);
 }
 
-void FWin32Window::Maximize()
+void FWindow::Maximize() const
 {
 	ShowWindow(WindowHandle, SW_MAXIMIZE);
+	UpdateWindow(WindowHandle);
 }
 
-void FWin32Window::Restore()
+void FWindow::Restore() const
 {
 	ShowWindow(WindowHandle, SW_RESTORE);
 }
 
-void FWin32Window::Focus()
+void FWindow::Focus() const
 {
 	SetFocus(WindowHandle);
 	SetForegroundWindow(WindowHandle);
 }
 
-void FWin32Window::Close()
+void FWindow::Close() const
 {
 	CloseWindow(WindowHandle);
 }
 
-void FWin32Window::Destroy()
+void FWindow::Destroy() const
 {
 	DestroyWindow(WindowHandle);
 }
 
-void FWin32Window::SetPosition(const int32 PositionX, const int32 PositionY)
+void FWindow::SetPosition(const int32 PositionX, const int32 PositionY) const
 {
 	SetWindowPos(WindowHandle, nullptr, PositionX, PositionY, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 }
 
-void FWin32Window::SetSize(const int32 Width, const int32 Height)
+void FWindow::SetSize(const int32 Width, const int32 Height) const
 {
 	SetWindowPos(WindowHandle, nullptr, 0, 0, Width, Height, SWP_NOMOVE | SWP_NOZORDER);
 }
 
-void FWin32Window::SetTitle(const std::string& Title)
+void FWindow::SetTitle(const std::string& Title)
 {
 	State.Title = Title;
 	SetWindowText(WindowHandle, ToWide(Title.c_str()).c_str());
 }
 
-void* FWin32Window::GetNativeHandle() const
-{
-	return WindowHandle;
-}
-
-LRESULT FWin32Window::WindowProcess(const HWND InWindowHandle, const UINT Message, const WPARAM WParam, const LPARAM LParam)
+LRESULT FWindow::WindowProcess(const HWND InWindowHandle, const UINT Message, const WPARAM WParam, const LPARAM LParam)
 {
 	switch (Message)
 	{
@@ -134,7 +143,7 @@ LRESULT FWin32Window::WindowProcess(const HWND InWindowHandle, const UINT Messag
 	return DefWindowProc(InWindowHandle, Message, WParam, LParam);
 }
 
-void FWin32Window::OnSizeMessage(const LPARAM LParam)
+void FWindow::OnSizeMessage(const LPARAM LParam)
 {
 	State.ClientWidth = LOWORD(LParam);
 	State.ClientHeight = HIWORD(LParam);
@@ -145,18 +154,18 @@ void FWin32Window::OnSizeMessage(const LPARAM LParam)
 	State.WindowHeight = WindowRect.bottom - WindowRect.top;
 }
 
-void FWin32Window::OnMoveMessage(const LPARAM LParam)
+void FWindow::OnMoveMessage(const LPARAM LParam)
 {
 	State.PositionX = LOWORD(LParam);
 	State.PositionY = HIWORD(LParam);
 }
 
-void FWin32Window::OnCloseMessage()
+void FWindow::OnCloseMessage()
 {
 	State.bIsClosed = true;
 }
 
-void FWin32Window::OnEnterSizeMoveMessage(const WPARAM WParam)
+void FWindow::OnEnterSizeMoveMessage(const WPARAM WParam)
 {
 	if (WParam == SC_MOVE)
 		State.bIsMoving = true;
@@ -164,7 +173,7 @@ void FWin32Window::OnEnterSizeMoveMessage(const WPARAM WParam)
 		State.bIsResizing = true;
 }
 
-void FWin32Window::OnExitSizeMoveMessage(const WPARAM WParam)
+void FWindow::OnExitSizeMoveMessage(const WPARAM WParam)
 {
 	if (WParam == SC_MOVE)
 		State.bIsMoving = false;
@@ -172,12 +181,12 @@ void FWin32Window::OnExitSizeMoveMessage(const WPARAM WParam)
 		State.bIsResizing = false;
 }
 
-void FWin32Window::OnShowWindowMessage(const WPARAM WParam)
+void FWindow::OnShowWindowMessage(const WPARAM WParam)
 {
 	State.bIsVisible = WParam != 0;
 }
 
-void FWin32Window::OnDestroyMessage()
+void FWindow::OnDestroyMessage()
 {
 	State.bIsDestroyed = true;
 }
