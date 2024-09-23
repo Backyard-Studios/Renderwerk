@@ -86,6 +86,14 @@ FResult FEngine::RunLoop()
 
 		WindowManager->ClearRemoveQueue();
 
+		{
+			RW_PROFILING_MARK_SCOPE("RendererFrame");
+			CHECK_RESULT(Renderer->BeginFrame());
+			{
+			}
+			CHECK_RESULT(Renderer->EndFrame());
+		}
+
 		RW_PROFILING_MARK_FRAME();
 	}
 	return RESULT_SUCCESS;

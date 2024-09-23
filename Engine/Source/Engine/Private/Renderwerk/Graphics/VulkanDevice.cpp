@@ -15,7 +15,6 @@ FVulkanDevice::~FVulkanDevice()
 
 FResult FVulkanDevice::Initialize()
 {
-	FVulkanQueueData QueueData;
 	CHECK_RESULT(Description.Adapter->QueryQueueData(Description.Surface, &QueueData));
 
 	TSet<uint32> Indices = {QueueData.GraphicsIndex, QueueData.PresentIndex, QueueData.TransferIndex, QueueData.ComputeIndex};

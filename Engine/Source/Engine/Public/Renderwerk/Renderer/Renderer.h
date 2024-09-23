@@ -3,11 +3,26 @@
 #include "Renderwerk/Core/CoreDefinitions.h"
 #include "Renderwerk/Graphics/VulkanContext.h"
 #include "Renderwerk/Graphics/VulkanDevice.h"
+#include "Renderwerk/Graphics/VulkanSwapchain.h"
+
+enum class ENGINE_API EBufferingMode : uint8
+{
+	DoubleBuffering = 2,
+	TripleBuffering = 3,
+};
+
+ENGINE_API std::string ToString(const EBufferingMode& BufferingMode);
 
 struct ENGINE_API FRendererDesc
 {
 	TSharedPointer<FWindow> Window;
 	uint32 AdapterIndex = UINT32_MAX; // This will be set by the settings system in the future. For now it should hold an invalid value.
+	EBufferingMode BufferingMode = EBufferingMode::TripleBuffering;
+};
+
+struct ENGINE_API FRenderFrameData
+{
+	uint32 ImageIndex; // The acquired swapchain image index.
 };
 
 class ENGINE_API FRenderer
@@ -22,6 +37,9 @@ public:
 	[[nodiscard]] FResult Initialize();
 	void Destroy();
 
+	[[nodiscard]] FResult BeginFrame();
+	[[nodiscard]] FResult EndFrame();
+
 private:
 	FRendererDesc Description;
 
@@ -31,4 +49,8 @@ private:
 
 	TSharedPointer<FVulkanAdapter> Adapter;
 	TSharedPointer<FVulkanDevice> Device;
+	TSharedPointer<FVulkanSwapchain> Swapchain;
+
+	uint8 FrameIndex = 0;
+	TVector<FRenderFrameData> RenderFrames;
 };

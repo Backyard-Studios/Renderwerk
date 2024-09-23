@@ -4,6 +4,17 @@
 
 #include "Renderwerk/Graphics/VulkanUtils.h"
 
+std::string ToString(const EBufferingMode& BufferingMode)
+{
+	switch (BufferingMode)
+	{
+	case EBufferingMode::DoubleBuffering: return "DoubleBuffering";
+	case EBufferingMode::TripleBuffering: return "TripleBuffering";
+	default:
+		return "Unknown";
+	}
+}
+
 FRenderer::FRenderer(const FRendererDesc& InDescription)
 	: Description(InDescription)
 {
@@ -40,6 +51,21 @@ FResult FRenderer::Initialize()
 	Device = MakeShared<FVulkanDevice>(FVulkanDeviceDesc{VulkanContext, Adapter, Surface});
 	CHECK_RESULT(Device->Initialize());
 
+	FVulkanSwapchainDesc SwapchainDesc = {};
+	SwapchainDesc.Context = VulkanContext;
+	SwapchainDesc.Device = Device;
+	SwapchainDesc.Window = Description.Window;
+	SwapchainDesc.Surface = Surface;
+	CHECK_RESULT(Adapter->QuerySurfaceProperties(Surface, &SwapchainDesc.SurfaceProperties))
+	Swapchain = MakeShared<FVulkanSwapchain>(SwapchainDesc);
+	CHECK_RESULT(Swapchain->Initialize());
+
+	RenderFrames.resize(static_cast<uint8>(Description.BufferingMode));
+	for (FRenderFrameData RenderFrame : RenderFrames)
+	{
+		RenderFrame.ImageIndex = UINT32_MAX;
+	}
+
 	return RESULT_SUCCESS;
 }
 
@@ -52,6 +78,10 @@ void FRenderer::Destroy()
 			RW_LOG_ERROR("Failed to wait for Vulkan device to become idle");
 	}
 
+	RenderFrames.clear();
+	if (Swapchain)
+		Swapchain->Destroy();
+	Swapchain.Reset();
 	if (Device)
 		Device->Destroy();
 	Device.Reset();
@@ -60,4 +90,23 @@ void FRenderer::Destroy()
 	if (VulkanContext)
 		VulkanContext->Destroy();
 	VulkanContext.Reset();
+}
+
+FResult FRenderer::BeginFrame()
+{
+	RW_PROFILING_MARK_FUNCTION();
+
+	FRenderFrameData& FrameData = RenderFrames.at(FrameIndex);
+
+	return RESULT_SUCCESS;
+}
+
+FResult FRenderer::EndFrame()
+{
+	RW_PROFILING_MARK_FUNCTION();
+
+	FRenderFrameData& FrameData = RenderFrames.at(FrameIndex);
+
+	FrameIndex = (FrameIndex + 1) % static_cast<uint8>(Description.BufferingMode);
+	return RESULT_SUCCESS;
 }

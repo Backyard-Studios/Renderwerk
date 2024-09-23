@@ -30,6 +30,9 @@ public:
 public:
 	[[nodiscard]] VkDevice GetHandle() const { return Device; }
 
+	[[nodiscard]] FVulkanQueueData GetQueueData() const { return QueueData; }
+	[[nodiscard]] TSharedPointer<FVulkanAdapter> GetAdapter() const { return Description.Adapter; }
+
 private:
 	TVector<VkLayerProperties> AcquireAvailableLayers();
 	TVector<VkExtensionProperties> AcquireAvailableExtensions();
@@ -40,5 +43,6 @@ private:
 private:
 	FVulkanDeviceDesc Description;
 
+	FVulkanQueueData QueueData;
 	VkDevice Device = VK_NULL_HANDLE;
 };
