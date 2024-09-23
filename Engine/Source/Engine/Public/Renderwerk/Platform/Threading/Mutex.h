@@ -13,7 +13,7 @@ public:
 	DEFINE_DEFAULT_COPY_AND_MOVE(FMutex)
 
 public:
-	bool TryLock();
+	bool8 TryLock();
 	void Lock();
 	void Unlock();
 

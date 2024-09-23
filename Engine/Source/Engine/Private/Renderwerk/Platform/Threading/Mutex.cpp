@@ -12,7 +12,7 @@ FMutex::~FMutex()
 	DeleteCriticalSection(&CriticalSection);
 }
 
-bool FMutex::TryLock()
+bool8 FMutex::TryLock()
 {
 	BOOL Result = TryEnterCriticalSection(&CriticalSection);
 	return Result != 0;
