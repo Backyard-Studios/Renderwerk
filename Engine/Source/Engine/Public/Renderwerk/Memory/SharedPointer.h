@@ -12,49 +12,52 @@ class TSharedPointer
 	friend class TSharedPointer;
 
 public:
-	TSharedPointer() = default;
+	TSharedPointer()
+		: Pointer(nullptr), ReferenceCount(FMemory::New<std::atomic<uint32>>(1))
+	{
+	}
 
 	TSharedPointer(const std::nullptr_t InNullptr)
-		: Pointer(InNullptr), ReferenceCount(1)
+		: Pointer(InNullptr), ReferenceCount(FMemory::New<std::atomic<uint32>>(1))
 	{
 	}
 
 	TSharedPointer(T* InPointer)
-		: Pointer(InPointer), ReferenceCount(1)
+		: Pointer(InPointer), ReferenceCount(FMemory::New<std::atomic<uint32>>(1))
 	{
 	}
 
 	TSharedPointer(T* InPointer, TDeleter InDeleter)
-		: Pointer(InPointer), Deleter(InDeleter), ReferenceCount(1)
+		: Pointer(InPointer), Deleter(InDeleter), ReferenceCount(FMemory::New<std::atomic<uint32>>(1))
 	{
 	}
 
 	TSharedPointer(const TSharedPointer& Other)
-		: Pointer(Other.Pointer), Deleter(Other.Deleter), ReferenceCount(Other.ReferenceCount.load())
+		: Pointer(Other.Pointer), Deleter(Other.Deleter), ReferenceCount(Other.ReferenceCount)
 	{
 		IncrementReferenceCount();
 	}
 
 	TSharedPointer(TSharedPointer&& Other) noexcept
-		: Pointer(Other.Pointer), Deleter(Other.Deleter), ReferenceCount(Other.ReferenceCount.load())
+		: Pointer(Other.Pointer), Deleter(Other.Deleter), ReferenceCount(Other.ReferenceCount)
 	{
 		Other.Pointer = nullptr;
-		Other.ReferenceCount = 1;
+		Other.ReferenceCount = nullptr;
 	}
 
 	template <typename TOther>
 	TSharedPointer(TSharedPointer<TOther>& Other)
-		: Pointer(static_cast<T*>(Other.Pointer)), Deleter(Other.Deleter), ReferenceCount(Other.ReferenceCount.load())
+		: Pointer(static_cast<T*>(Other.Pointer)), Deleter(Other.Deleter), ReferenceCount(Other.ReferenceCount)
 	{
 		IncrementReferenceCount();
 	}
 
 	template <typename TOther>
 	TSharedPointer(TSharedPointer<TOther>&& Other) noexcept
-		: Pointer(static_cast<T*>(Other.Pointer)), Deleter(Other.Deleter), ReferenceCount(Other.ReferenceCount.load())
+		: Pointer(static_cast<T*>(Other.Pointer)), Deleter(Other.Deleter), ReferenceCount(Other.ReferenceCount)
 	{
 		Other.Pointer = nullptr;
-		Other.ReferenceCount = 1;
+		Other.ReferenceCount = nullptr;
 	}
 
 	~TSharedPointer()
@@ -101,9 +104,7 @@ public:
 	{
 		std::swap(Pointer, Other.Pointer);
 		std::swap(Deleter, Other.Deleter);
-		std::atomic<uint32> Temp = std::atomic(ReferenceCount.load());
-		ReferenceCount = Other.ReferenceCount.load();
-		Other.ReferenceCount = Temp.load();
+		std::swap(ReferenceCount, Other.ReferenceCount);
 	}
 
 	template <typename TOther>
@@ -118,7 +119,7 @@ public:
 	[[nodiscard]] T* GetRaw() { return Pointer; }
 	[[nodiscard]] const T* GetRaw() const { return Pointer; }
 
-	[[nodiscard]] uint32 GetReferenceCount() const { return ReferenceCount.load(); }
+	[[nodiscard]] uint32 GetReferenceCount() const { return ReferenceCount->load(); }
 
 private:
 	void IncrementReferenceCount()
@@ -129,14 +130,17 @@ private:
 
 	void DecrementReferenceCount()
 	{
-		if (Pointer)
+		if (ReferenceCount == nullptr)
+			return;
+		--ReferenceCount;
+		if (GetReferenceCount() == 0)
 		{
-			--ReferenceCount;
-			if (ReferenceCount == 0)
-			{
+			if (Pointer)
 				Deleter(Pointer);
-				Pointer = nullptr;
-			}
+			Pointer = nullptr;
+
+			FMemory::Delete(ReferenceCount);
+			ReferenceCount = nullptr;
 		}
 	}
 
@@ -144,7 +148,7 @@ private:
 	T* Pointer;
 	TDeleter Deleter;
 
-	std::atomic<uint32> ReferenceCount;
+	std::atomic<uint32>* ReferenceCount;
 };
 
 template <typename T, typename... TArguments>
