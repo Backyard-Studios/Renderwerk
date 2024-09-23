@@ -3,11 +3,11 @@
 #include "Renderwerk/Core/Result.h"
 
 FResult::FResult()
-	: Code(RW_RESULT_CODE_SUCCESS)
+	: Code(RESULT_SUCCESS)
 {
 }
 
-FResult::FResult(const FResultCode InCode, const std::string& InReason)
+FResult::FResult(const EResultCode InCode, const std::string& InReason)
 	: Code(InCode), Reason(InReason.empty() ? ToString(InCode) : InReason)
 {
 }
@@ -18,27 +18,17 @@ FResult::~FResult()
 
 bool FResult::IsSuccess() const
 {
-	return GetSeverity() == RW_RESULT_SEVERITY_SUCCESS;
+	return GetCode() == RESULT_SUCCESS;
 }
 
 bool FResult::IsError() const
 {
-	return GetSeverity() == RW_RESULT_SEVERITY_ERROR;
+	return !IsSuccess();
 }
 
-FResultCode FResult::GetCode() const
+EResultCode FResult::GetCode() const
 {
 	return Code;
-}
-
-uint32 FResult::GetSeverity() const
-{
-	return RW_RESULT_GET_SEVERITY(Code);
-}
-
-uint32 FResult::GetErrorCode() const
-{
-	return RW_RESULT_GET_ERROR_CODE(Code);
 }
 
 std::string FResult::GetReason() const
@@ -61,25 +51,15 @@ bool FResult::operator()() const
 	return IsSuccess();
 }
 
-TMap<FResultCode, std::string> ResultDescriptions;
-
-void RegisterResultDescription(const FResultCode Code, std::string Description)
+std::string ToString(const EResultCode Code)
 {
-	ResultDescriptions.insert_or_assign(Code, Description);
-}
-
-void RegisterDefaultResultDescriptions()
-{
-	RegisterResultDescription(RW_RESULT_CODE_SUCCESS, "Success");
-	RegisterResultDescription(RW_RESULT_CODE_FAIL, "Fail");
-	RegisterResultDescription(RW_RESULT_CODE_UNKNOWN_ERROR, "Unknown error");
-}
-
-std::string ToString(const FResultCode Code)
-{
-	if (ResultDescriptions.contains(Code))
-		return ResultDescriptions.at(Code);
-	return "Unknown error";
+	switch (Code)
+	{
+	case RESULT_SUCCESS: return "Success";
+	case RESULT_FAILED: return "Failed";
+	default:
+		return "Unknown error";
+	}
 }
 
 std::string ToString(const FResult& Result)

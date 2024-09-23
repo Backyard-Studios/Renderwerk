@@ -10,21 +10,19 @@
 
 int32 Launch()
 {
-	RegisterDefaultResultDescriptions();
-
 	RW_LOG_TRACE("Initializing platform...");
 	FResult Result = FPlatform::Initialize();
 	if (Result.IsError())
 	{
 		RW_LOG_ERROR("Failed to initialize platform: {}", Result.GetReason());
-		return Result.GetErrorCode();
+		return Result.GetCode();
 	}
 
 	RW_LOG_TRACE("Launching engine...");
 	GEngine = MakeShared<FEngine>();
 	Result = GEngine->Launch();
 	if (Result.IsError())
-		return Result.GetErrorCode();
+		return Result.GetCode();
 	return 0;
 }
 
@@ -66,7 +64,7 @@ int32 LaunchRenderwerk()
 {
 	FResult Result = FLogManager::Initialize();
 	if (Result.IsError())
-		return Result.GetErrorCode();
+		return Result.GetCode();
 #if RW_ENABLE_MEMORY_TRACKING
 	RW_LOG_DEBUG("Memory tracking enabled");
 #endif

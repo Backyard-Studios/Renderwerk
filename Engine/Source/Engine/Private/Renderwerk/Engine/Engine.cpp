@@ -13,7 +13,7 @@ FEngine::~FEngine() = default;
 FResult FEngine::Launch()
 {
 	if (bIsAlreadyLaunched)
-		return RW_RESULT_CODE_FAIL;
+		return RESULT_FAILED;
 	bIsAlreadyLaunched = true;
 
 	RW_PROFILING_MARK_THREAD("MainThread");
@@ -31,7 +31,7 @@ FResult FEngine::Launch()
 		return Result;
 	}
 	Shutdown();
-	return RW_RESULT_CODE_SUCCESS;
+	return RESULT_SUCCESS;
 }
 
 void FEngine::RequestShutdown()
@@ -47,7 +47,7 @@ FResult FEngine::Initialize()
 	MainWindow->Show();
 
 	RW_LOG_INFO("Engine initialized");
-	return RW_RESULT_CODE_SUCCESS;
+	return RESULT_SUCCESS;
 }
 
 FResult FEngine::RunLoop()
@@ -63,7 +63,7 @@ FResult FEngine::RunLoop()
 
 		RW_PROFILING_MARK_FRAME();
 	}
-	return RW_RESULT_CODE_SUCCESS;
+	return RESULT_SUCCESS;
 }
 
 void FEngine::Shutdown()

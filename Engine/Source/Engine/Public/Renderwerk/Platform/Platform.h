@@ -22,7 +22,7 @@ private:
 	static void Shutdown();
 
 public:
-	static void Fatal(FResultCode Code);
+	static void Fatal(EResultCode Code);
 	static void Assertion(FAssertionData Data);
 
 	[[nodiscard]] static std::string GetResultHandleDescription(HRESULT Result);

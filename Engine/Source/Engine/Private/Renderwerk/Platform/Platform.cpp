@@ -47,7 +47,7 @@ FResult FPlatform::Initialize()
 	RegisterClassEx(&WindowClass);
 
 	RW_LOG_INFO("Win32 platform initialized");
-	return RW_RESULT_CODE_SUCCESS;
+	return RESULT_SUCCESS;
 }
 
 void FPlatform::Shutdown()
@@ -55,7 +55,7 @@ void FPlatform::Shutdown()
 	UnregisterClass(WindowClass.lpszClassName, WindowClass.hInstance);
 }
 
-void FPlatform::Fatal(const FResultCode Code)
+void FPlatform::Fatal(const EResultCode Code)
 {
 	ULONG_PTR Parameters[] = {Code};
 	RaiseException(E_FATAL, EXCEPTION_NONCONTINUABLE, _countof(Parameters), Parameters);
@@ -129,18 +129,18 @@ LONG ExceptionHandler(EXCEPTION_POINTERS* ExceptionInfo)
 		MessageBoxText += "\nDescription: " + ToString(Data->Code);
 		MessageBoxText += "\nCondition: " + Data->Condition;
 		RW_LOG_CRITICAL("An assertion failed. A crash dump has been saved to \"CrashDump.dmp\".");
-		RW_LOG_CRITICAL("Code: {0}", Data->Code);
+		RW_LOG_CRITICAL("Code: {0}", static_cast<uint32>(Data->Code));
 		RW_LOG_CRITICAL("Description: {0}", ToString(Data->Code));
 		RW_LOG_CRITICAL("Condition: {0}", Data->Condition);
 	}
 	else if (ExceptionInfo->ExceptionRecord->ExceptionCode == E_FATAL)
 	{
-		FResultCode Code = ExceptionInfo->ExceptionRecord->ExceptionInformation[0];
+		EResultCode Code = static_cast<EResultCode>(ExceptionInfo->ExceptionRecord->ExceptionInformation[0]);
 		MessageBoxText += "An unhandled exception occurred. A crash dump has been saved to \"CrashDump.dmp\".";
 		MessageBoxText += "\n\nCode: " + std::to_string(Code);
 		MessageBoxText += "\nDescription: " + ToString(Code);
 		RW_LOG_CRITICAL("An unhandled exception occurred. A crash dump has been saved to \"CrashDump.dmp\".");
-		RW_LOG_CRITICAL("Code: {0}", Code);
+		RW_LOG_CRITICAL("Code: {0}", static_cast<uint32>(Code));
 		RW_LOG_CRITICAL("Description: {0}", ToString(Code));
 	}
 	else

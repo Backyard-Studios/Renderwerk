@@ -24,14 +24,14 @@ FThread::~FThread()
 void FThread::Start()
 {
 	DWORD Result = ResumeThread(ThreadHandle);
-	RW_ASSERT(Result != -1, RW_RESULT_CODE_FAIL, "Failed to resume thread");
+	RW_ASSERT(Result != -1, RESULT_FAILED, "Failed to resume thread");
 	State = EThreadState::Running;
 }
 
 void FThread::Join()
 {
 	DWORD Result = WaitForSingleObject(ThreadHandle, INFINITE);
-	RW_ASSERT(Result == WAIT_OBJECT_0, RW_RESULT_CODE_FAIL, "Failed to wait for thread");
+	RW_ASSERT(Result == WAIT_OBJECT_0, RESULT_FAILED, "Failed to wait for thread");
 	State = EThreadState::Finished;
 }
 
@@ -41,7 +41,7 @@ void FThread::ForceKill(const bool bWaitForCompletion)
 		Join();
 
 	bool Result = TerminateThread(ThreadHandle, 0);
-	RW_ASSERT(Result, RW_RESULT_CODE_FAIL, "Failed to terminate thread");
+	RW_ASSERT(Result, RESULT_FAILED, "Failed to terminate thread");
 	State = EThreadState::Finished;
 }
 
