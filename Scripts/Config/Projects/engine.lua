@@ -17,3 +17,5 @@ rw_project('Engine')
 		'TRACY_ENABLE',
 		'TRACY_ON_DEMAND',
 	})
+
+	rw_link_vulkan()

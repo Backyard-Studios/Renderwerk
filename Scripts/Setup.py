@@ -3,6 +3,7 @@ import subprocess
 
 import Utils
 import Premake
+import Vulkan
 import ProjectConfig
 
 if Utils.GetArchitecture() != '64bit':
@@ -12,6 +13,10 @@ if Utils.GetArchitecture() != '64bit':
 # Pull the LFS files and update the submodules
 subprocess.call(["git", "lfs", "pull"])
 subprocess.call(["git", "submodule", "update", "--init", "--recursive"])
+
+if Vulkan.IsInstalled() == False:
+	Vulkan.Install()
+	exit(0)
 
 if Premake.IsInstalled() == False:
 	Premake.Install()

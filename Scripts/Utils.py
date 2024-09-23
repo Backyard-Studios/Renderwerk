@@ -23,12 +23,19 @@ def GetExecutableExtension():
 def DoesFileExist(file_path):
 	return os.path.exists(file_path)
 
+def DoesDirectoryExist(directory_path):
+	return os.path.exists(directory_path)
+
 def CreateDirectoryIfNotExists(directory_path):
 	if not os.path.exists(directory_path):
 		os.makedirs(directory_path)
 
+
 def DownloadFile(url, output_path):
 	if not os.path.exists(output_path):
+		opener = urllib.request.build_opener()
+		opener.addheaders = [('User-Agent', 'Mozilla/5.0')]
+		urllib.request.install_opener(opener)
 		urllib.request.urlretrieve(url, output_path)
 	else:
 		print(f'{output_path} already exists, skipping download.')
