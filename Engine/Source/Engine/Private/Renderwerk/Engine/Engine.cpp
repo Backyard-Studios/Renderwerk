@@ -42,8 +42,22 @@ void FEngine::RequestShutdown()
 FResult FEngine::Initialize()
 {
 	WindowManager = MakeShared<FWindowManager>();
+	DeletionQueue.Add([this]()
+	{
+		if (WindowManager)
+			WindowManager->ClearRemoveQueue();
+		WindowManager.Reset();
+	});
+
 	FWindowSettings WindowSettings = {};
 	MainWindow = WindowManager->Create(WindowSettings);
+	DeletionQueue.Add([this]()
+	{
+		if (MainWindow && WindowManager)
+			WindowManager->Remove(MainWindow);
+		MainWindow.Reset();
+	});
+
 	MainWindow->Show();
 
 	RW_LOG_INFO("Engine initialized");
@@ -71,12 +85,7 @@ void FEngine::Shutdown()
 	if (bIsAlreadyShutdown)
 		return;
 	bIsAlreadyShutdown = true;
-
-	if (MainWindow && WindowManager)
-		WindowManager->Remove(MainWindow);
-	WindowManager->ClearRemoveQueue();
-	MainWindow.Reset();
-	WindowManager.Reset();
+	DeletionQueue.Flush();
 }
 
 TSharedPointer<FEngine> GetEngine()

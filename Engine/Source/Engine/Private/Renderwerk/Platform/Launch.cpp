@@ -43,17 +43,17 @@ void Shutdown()
 int32 GuardedMain()
 {
 	int32 ExitCode = 0;
-#if RW_PLATFORM_SUPPORTS_SEH
-	__try
-	{
-#endif
-		ExitCode = Launch();
-#if RW_PLATFORM_SUPPORTS_SEH
-	}
-	__except (ExceptionHandler(GetExceptionInformation()))
-	{
-	}
-#endif
+	// #if RW_PLATFORM_SUPPORTS_SEH
+	// 	__try
+	// 	{
+	// #endif
+	ExitCode = Launch();
+	// #if RW_PLATFORM_SUPPORTS_SEH
+	// 	}
+	// 	__except (ExceptionHandler(GetExceptionInformation()))
+	// 	{
+	// 	}
+	// #endif
 	if (FPlatform::GetExitCode() == 0)
 		FPlatform::SetExitCode(ExitCode);
 	Shutdown();

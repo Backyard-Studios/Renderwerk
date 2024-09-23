@@ -52,6 +52,9 @@ using TSet = std::set<T>;
 template <typename T>
 using TQueue = std::queue<T>;
 
+template <typename T>
+using TDeque = std::deque<T>;
+
 #pragma endregion
 
 template <typename T>
