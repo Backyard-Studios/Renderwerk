@@ -2,7 +2,7 @@
 
 #include "Renderwerk/Core/CoreDefinitions.h"
 #include "Renderwerk/Core/Result.h"
-#include "Renderwerk/Memory/DeltionQueue.h"
+#include "Renderwerk/Memory/DeletionQueue.h"
 
 #include "Renderwerk/Memory/SharedPointer.h"
 #include "Renderwerk/Platform/WindowManager.h"
