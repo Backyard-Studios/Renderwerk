@@ -65,7 +65,7 @@ FResult FVulkanContext::Initialize()
 
 	VkResult InstanceCreateResult = vkCreateInstance(&InstanceCreateInfo, Allocator, &Instance);
 	CHECK_VKRESULT(InstanceCreateResult, "Failed to create Vulkan instance")
-	RW_LOG_DEBUG("Created Vulkan instance");
+	RW_LOG_DEBUG("Vulkan instance created");
 
 	volkLoadInstanceOnly(Instance);
 
@@ -78,6 +78,34 @@ void FVulkanContext::Destroy()
 	FMemory::Delete(Allocator);
 	Allocator = nullptr;
 	volkFinalize();
+}
+
+TSharedPointer<FVulkanAdapter> FVulkanContext::GetAdapterByIndex(const uint32 Index) const
+{
+	uint32 PhysicalDeviceCount = 0;
+	vkEnumeratePhysicalDevices(Instance, &PhysicalDeviceCount, nullptr);
+	RW_ASSERT(Index < (PhysicalDeviceCount - 1), RESULT_FAILED, "Invalid adapter index");
+	TVector<VkPhysicalDevice> PhysicalDevices(PhysicalDeviceCount);
+	vkEnumeratePhysicalDevices(Instance, &PhysicalDeviceCount, PhysicalDevices.data());
+	return MakeShared<FVulkanAdapter>(PhysicalDevices.at(Index), Index);
+}
+
+TSharedPointer<FVulkanAdapter> FVulkanContext::GetSuitableAdapter() const
+{
+	uint32 PhysicalDeviceCount = 0;
+	vkEnumeratePhysicalDevices(Instance, &PhysicalDeviceCount, nullptr);
+	TVector<VkPhysicalDevice> PhysicalDevices(PhysicalDeviceCount);
+	vkEnumeratePhysicalDevices(Instance, &PhysicalDeviceCount, PhysicalDevices.data());
+	for (uint32 Index = 0; Index < PhysicalDeviceCount; ++Index)
+	{
+		TSharedPointer<FVulkanAdapter> Adapter = MakeShared<FVulkanAdapter>(PhysicalDevices.at(Index), Index);
+		FResult InitializeResult = Adapter->Initialize();
+		RW_ASSERT(InitializeResult.IsSuccess(), RESULT_FAILED, "{}", InitializeResult.GetReason());
+		if (!Adapter->IsDiscrete())
+			continue;
+		return Adapter;
+	}
+	return nullptr;
 }
 
 VkAllocationCallbacks* FVulkanContext::CreateAllocator()

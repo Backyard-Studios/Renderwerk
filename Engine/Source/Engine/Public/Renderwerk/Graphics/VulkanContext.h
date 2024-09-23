@@ -5,10 +5,12 @@
 #include "Renderwerk/Graphics/VulkanTypes.h"
 
 #include "volk.h"
+#include "VulkanAdapter.h"
 
 struct ENGINE_API FVulkanContextDesc
 {
 	bool bEnableValidationLayers = false;
+	uint32 AdapterIndex = UINT32_MAX; // If this has an invalid value, the best suitable adapter will be selected.
 };
 
 struct ENGINE_API FVulkanContext
@@ -22,6 +24,9 @@ public:
 public:
 	[[nodiscard]] FResult Initialize();
 	void Destroy();
+
+	[[nodiscard]] TSharedPointer<FVulkanAdapter> GetAdapterByIndex(uint32 Index) const;
+	[[nodiscard]] TSharedPointer<FVulkanAdapter> GetSuitableAdapter() const;
 
 public:
 	[[nodiscard]] VkAllocationCallbacks* GetAllocator() const { return Allocator; }
