@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
 
-#include "Renderwerk/Platform/Thread.h"
+#include "Renderwerk/Platform/Threading/Thread.h"
 
 FThread::FThread(const FThreadFunction& InThreadFunction, const EThreadPriority& InPriority)
 	: ThreadFunction(InThreadFunction), Priority(InPriority)

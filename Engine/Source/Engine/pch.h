@@ -30,7 +30,8 @@
 
 #include "Renderwerk/Platform/Guid.h"
 #include "Renderwerk/Platform/Platform.h"
-#include "Renderwerk/Platform/Thread.h"
+#include "Renderwerk/Platform/Threading/Mutex.h"
+#include "Renderwerk/Platform/Threading/Thread.h"
 
 #ifdef RW_PLATFORM_WINDOWS
 #	include <Windows.h>
