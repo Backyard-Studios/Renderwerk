@@ -57,8 +57,17 @@ FResult FEngine::Initialize()
 			WindowManager->Remove(MainWindow);
 		MainWindow.Reset();
 	});
-
 	MainWindow->Show();
+
+	Renderer = MakeShared<FRenderer>();
+	DeletionQueue.Add([this]()
+	{
+		if (Renderer)
+			Renderer->Destroy();
+		Renderer.Reset();
+	});
+	FResult RendererInitializeResult = Renderer->Initialize();
+	CHECK_RESULT(RendererInitializeResult)
 
 	RW_LOG_INFO("Engine initialized");
 	return RESULT_SUCCESS;

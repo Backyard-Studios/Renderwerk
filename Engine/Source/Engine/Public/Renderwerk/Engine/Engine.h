@@ -6,6 +6,7 @@
 
 #include "Renderwerk/Memory/SharedPointer.h"
 #include "Renderwerk/Platform/WindowManager.h"
+#include "Renderwerk/Renderer/Renderer.h"
 
 class ENGINE_API FEngine
 {
@@ -38,6 +39,8 @@ private:
 	FDeletionQueue DeletionQueue;
 	TSharedPointer<FWindowManager> WindowManager;
 	TSharedPointer<FWindow> MainWindow;
+
+	TSharedPointer<FRenderer> Renderer;
 
 	friend void Shutdown();
 };

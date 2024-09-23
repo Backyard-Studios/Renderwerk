@@ -22,7 +22,7 @@ bool8 FSignal::Wait(const std::function<bool8()>& Predicate, const uint64 Timeou
 bool8 FSignal::Wait(const FMutex& InMutex, const uint64 Timeout)
 {
 	CRITICAL_SECTION CriticalSection = InMutex.GetHandle();
-	BOOL Result = SleepConditionVariableCS(&ConditionVariable, &CriticalSection, Timeout);
+	BOOL Result = SleepConditionVariableCS(&ConditionVariable, &CriticalSection, static_cast<DWORD>(Timeout));
 	return Result != 0;
 }
 
@@ -31,7 +31,7 @@ bool8 FSignal::Wait(const FMutex& InMutex, const std::function<bool8()>& Predica
 	CRITICAL_SECTION CriticalSection = InMutex.GetHandle();
 	while (!Predicate())
 	{
-		BOOL Result = SleepConditionVariableCS(&ConditionVariable, &CriticalSection, Timeout);
+		BOOL Result = SleepConditionVariableCS(&ConditionVariable, &CriticalSection, static_cast<DWORD>(Timeout));
 		if (Result == 0)
 			return false;
 	}

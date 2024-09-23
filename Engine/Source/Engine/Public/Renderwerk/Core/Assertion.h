@@ -18,10 +18,12 @@ struct ENGINE_API FAssertionData
 };
 
 #define RW_ASSERT(Condition, Code, ...) \
-	if (!(Condition)) \
 	{ \
-		FPlatform::Assertion(FAssertionData(#Condition, Code, std::format(__VA_ARGS__))); \
-	} else {}
+		if (!(Condition)) [[unlikely]] \
+		{ \
+			FPlatform::Assertion(FAssertionData(#Condition, Code, std::format(__VA_ARGS__))); \
+		} else {} \
+	}
 
 #if RW_CONFIG_DEBUG || RW_CONFIG_DEVELOPMENT
 #	define RW_DEBUG_ASSERT(Condition, Code, ...) RW_ASSERT(Condition, Code, __VA_ARGS__)

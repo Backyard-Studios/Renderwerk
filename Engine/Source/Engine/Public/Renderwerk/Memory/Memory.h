@@ -57,6 +57,14 @@ public:
 		_aligned_free(Pointer);
 	}
 
+	static void* Reallocate(void* Pointer, const size64 Size, const uint8 Alignment = MEMORY_DEFAULT_ALIGNMENT)
+	{
+#if RW_ENABLE_MEMORY_TRACKING
+		GetMemoryTracking().OnAllocate(Pointer, Size, Alignment);
+#endif
+		return _aligned_realloc(Pointer, Size, Alignment);
+	}
+
 	static void Zero(void* Pointer, const size64 Size)
 	{
 		ZeroMemory(Pointer, Size);

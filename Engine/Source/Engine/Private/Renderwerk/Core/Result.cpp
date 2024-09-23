@@ -57,6 +57,7 @@ std::string ToString(const EResultCode Code)
 	{
 	case RESULT_SUCCESS: return "Success";
 	case RESULT_FAILED: return "Failed";
+	case RESULT_VULKAN_FAILED_RESULT: return "Vulkan failed result";
 	default:
 		return "Unknown error";
 	}

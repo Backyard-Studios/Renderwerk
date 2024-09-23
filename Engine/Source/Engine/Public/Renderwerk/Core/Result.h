@@ -5,10 +5,18 @@
 
 #include <string>
 
+#define CHECK_RESULT(ResultExpression) \
+	{ \
+		FResult UNIQUE_NAME(Result) = ResultExpression; \
+		if (UNIQUE_NAME(Result).IsError()) [[unlikely]] \
+			return UNIQUE_NAME(Result); \
+	}
+
 enum ENGINE_API EResultCode : uint32
 {
 	RESULT_SUCCESS = 0,
 	RESULT_FAILED,
+	RESULT_VULKAN_FAILED_RESULT,
 };
 
 /**
