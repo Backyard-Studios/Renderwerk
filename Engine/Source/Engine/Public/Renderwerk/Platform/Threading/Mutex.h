@@ -4,6 +4,9 @@
 
 #include <Windows.h>
 
+/**
+ * @brief A mutex is a synchronization primitive that can be used to protect shared data from being simultaneously accessed by multiple threads.
+ */
 struct ENGINE_API FMutex
 {
 public:
@@ -13,8 +16,20 @@ public:
 	DEFINE_DEFAULT_COPY_AND_MOVE(FMutex)
 
 public:
-	bool8 TryLock();
+	/**
+	 * @brief Attempts to lock the mutex.
+	 * @return true if the lock was acquired, false otherwise.
+	 */
+	[[nodiscard]] bool8 TryLock();
+
+	/**
+	 * @brief Locks the mutex.
+	 */
 	void Lock();
+
+	/**
+	 * @brief Unlocks the mutex.
+	 */
 	void Unlock();
 
 public:
@@ -24,6 +39,9 @@ private:
 	CRITICAL_SECTION CriticalSection;
 };
 
+/**
+ * @brief A scoped lock is a lock that is automatically acquired when the object is created and released when the object is destroyed.
+ */
 struct ENGINE_API FScopedLock
 {
 public:

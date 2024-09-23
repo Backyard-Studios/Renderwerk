@@ -17,16 +17,23 @@ enum class ENGINE_API EThreadState : uint8
 	Finished
 };
 
+/**
+ * @brief A simple thread class that wraps the Windows API thread functions.
+ */
 class ENGINE_API FThread
 {
 public:
 	using FThreadFunction = TFunction<void()>;
 
 public:
-	FThread(const FThreadFunction& InThreadFunction, const EThreadPriority& InPriority = EThreadPriority::Normal);
+	FThread();
 	~FThread();
 
 	DEFINE_DEFAULT_COPY_AND_MOVE(FThread)
+
+public:
+	[[nodiscard]] FResult Initialize(const FThreadFunction& InThreadFunction, const EThreadPriority& InPriority = EThreadPriority::Normal);
+	void Destroy();
 
 public:
 	void Start();
@@ -45,9 +52,9 @@ private:
 
 protected:
 	FThreadFunction ThreadFunction;
-	EThreadPriority Priority;
+	EThreadPriority Priority = EThreadPriority::Normal;
 
-	HANDLE ThreadHandle;
+	HANDLE ThreadHandle = nullptr;
 	uint64 ThreadId = 0;
 	EThreadState State = EThreadState::Idle;
 };

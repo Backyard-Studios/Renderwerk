@@ -2,9 +2,15 @@
 
 #include "Renderwerk/Platform/Threading/Thread.h"
 
-FThread::FThread(const FThreadFunction& InThreadFunction, const EThreadPriority& InPriority)
-	: ThreadFunction(InThreadFunction), Priority(InPriority)
+FThread::FThread() = default;
+
+FThread::~FThread() = default;
+
+FResult FThread::Initialize(const FThreadFunction& InThreadFunction, const EThreadPriority& InPriority)
 {
+	ThreadFunction = InThreadFunction;
+	Priority = InPriority;
+
 	LPTHREAD_START_ROUTINE Win32ThreadFunction = [](const LPVOID Param) -> DWORD
 	{
 		FThread* Thread = static_cast<FThread*>(Param);
@@ -13,12 +19,16 @@ FThread::FThread(const FThreadFunction& InThreadFunction, const EThreadPriority&
 	};
 	ThreadHandle = CreateThread(nullptr, 0, Win32ThreadFunction, this, CREATE_SUSPENDED, reinterpret_cast<LPDWORD>(&ThreadId));
 	SetThreadPriority(ThreadHandle, ConvertThreadPriority(Priority));
+	return RESULT_SUCCESS;
 }
 
-FThread::~FThread()
+void FThread::Destroy()
 {
+	if (State == EThreadState::Running)
+		ForceKill();
 	if (ThreadHandle)
 		CloseHandle(ThreadHandle);
+	ThreadHandle = nullptr;
 }
 
 void FThread::Start()
