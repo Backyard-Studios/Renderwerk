@@ -242,11 +242,9 @@ end
 function rw_link_vulkan()
 	includedirs({
 		path.join(vulkan_sdk_path, 'Include'),
+		rw_make_third_party_location(path.join('volk')),
 	})
 	libdirs({
 		path.join(vulkan_sdk_path, 'Lib'),
-	})
-	links({
-		'vulkan-1',
 	})
 end
