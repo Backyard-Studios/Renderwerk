@@ -4,13 +4,13 @@
 
 #include <Windows.h>
 
-struct ENGINE_API FConditionVariable
+struct ENGINE_API FSignal
 {
 public:
-	FConditionVariable();
-	~FConditionVariable();
+	FSignal();
+	~FSignal();
 
-	DEFINE_DEFAULT_COPY_AND_MOVE(FConditionVariable)
+	DEFINE_DEFAULT_COPY_AND_MOVE(FSignal)
 
 public:
 	bool8 Wait(const FMutex& Mutex, uint64 Timeout = INFINITE);
