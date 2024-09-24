@@ -1,14 +1,16 @@
 ﻿#include "pch.h"
 
 #include "Renderwerk/Graphics/VulkanContext.h"
-
 #include "Renderwerk/Graphics/VulkanTypes.h"
+#include "Renderwerk/Graphics/VulkanUtils.h"
 
 #define VOLK_IMPLEMENTATION
 // ReSharper disable once CppUnusedIncludeDirective
 #include "volk.h"
 
-#include "Renderwerk/Graphics/VulkanUtils.h"
+#define VMA_IMPLEMENTATION
+// ReSharper disable once CppUnusedIncludeDirective
+#include "vk_mem_alloc.h"
 
 FVulkanContext::FVulkanContext(const FVulkanContextDesc& InDescription)
 	: Description(InDescription)

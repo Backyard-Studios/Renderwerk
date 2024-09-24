@@ -51,6 +51,20 @@ FResult FRenderer::Initialize()
 	Device = MakeShared<FVulkanDevice>(FVulkanDeviceDesc{VulkanContext, Adapter, Surface});
 	CHECK_RESULT(Device->Initialize());
 
+	VmaVulkanFunctions VulkanFunctions = {};
+	VulkanFunctions.vkGetInstanceProcAddr = vkGetInstanceProcAddr;
+	VulkanFunctions.vkGetDeviceProcAddr = vkGetDeviceProcAddr;
+
+	VmaAllocatorCreateInfo AllocatorCreateInfo = {};
+	AllocatorCreateInfo.flags = VMA_ALLOCATOR_CREATE_BUFFER_DEVICE_ADDRESS_BIT | VMA_ALLOCATOR_CREATE_EXT_MEMORY_BUDGET_BIT;
+	AllocatorCreateInfo.vulkanApiVersion = VK_API_VERSION_1_3;
+	AllocatorCreateInfo.pAllocationCallbacks = VulkanContext->GetAllocator();
+	AllocatorCreateInfo.instance = VulkanContext->GetInstance();
+	AllocatorCreateInfo.physicalDevice = Adapter->GetHandle();
+	AllocatorCreateInfo.device = Device->GetHandle();
+	AllocatorCreateInfo.pVulkanFunctions = &VulkanFunctions;
+	CHECK_VKRESULT(vmaCreateAllocator(&AllocatorCreateInfo, &ResourceAllocator), "Failed to create Vulkan memory allocator")
+
 	FVulkanSwapchainDesc SwapchainDesc = {};
 	SwapchainDesc.Context = VulkanContext;
 	SwapchainDesc.Device = Device;
@@ -106,6 +120,7 @@ void FRenderer::Destroy()
 	if (Swapchain)
 		Swapchain->Destroy();
 	Swapchain.Reset();
+	vmaDestroyAllocator(ResourceAllocator);
 	if (Device)
 		Device->Destroy();
 	Device.Reset();
@@ -129,6 +144,7 @@ FResult FRenderer::BeginFrame()
 {
 	RW_PROFILING_MARK_FUNCTION();
 
+	vmaSetCurrentFrameIndex(ResourceAllocator, FrameIndex);
 	FRenderFrameData& FrameData = RenderFrames.at(FrameIndex);
 	TSharedPointer<FVulkanCommandBuffer> CommandBuffer = FrameData.MainFrameCommandBuffer;
 

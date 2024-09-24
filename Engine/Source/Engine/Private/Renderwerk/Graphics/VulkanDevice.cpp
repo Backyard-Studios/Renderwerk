@@ -48,6 +48,10 @@ FResult FVulkanDevice::Initialize()
 
 	TVector<FVulkanRequireableComponent> Extensions = {
 		{VK_KHR_SWAPCHAIN_EXTENSION_NAME, true},
+		{VK_EXT_MEMORY_BUDGET_EXTENSION_NAME, true},
+		{VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME, true},
+		{VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME, true},
+		{VK_KHR_SYNCHRONIZATION_2_EXTENSION_NAME, true},
 	};
 	TVector<const char*> ValidatedExtensions;
 	ValidateExtensions(Extensions, &ValidatedExtensions);

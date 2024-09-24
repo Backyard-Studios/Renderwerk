@@ -6,6 +6,8 @@
 #include "Renderwerk/Graphics/VulkanDevice.h"
 #include "Renderwerk/Graphics/VulkanSwapchain.h"
 
+#include "vk_mem_alloc.h"
+
 enum class ENGINE_API EBufferingMode : uint8
 {
 	DoubleBuffering = 2,
@@ -60,6 +62,8 @@ private:
 
 	TSharedPointer<FVulkanAdapter> Adapter;
 	TSharedPointer<FVulkanDevice> Device;
+	VmaAllocator ResourceAllocator = VK_NULL_HANDLE;
+
 	TSharedPointer<FVulkanSwapchain> Swapchain;
 
 	uint8 FrameIndex = 0;

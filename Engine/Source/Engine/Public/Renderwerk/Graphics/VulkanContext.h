@@ -1,13 +1,11 @@
 ﻿#pragma once
 
 #include "Renderwerk/Core/CoreDefinitions.h"
-
+#include "Renderwerk/Graphics/VulkanAdapter.h"
 #include "Renderwerk/Graphics/VulkanTypes.h"
+#include "Renderwerk/Platform/Window.h"
 
 #include "volk.h"
-#include "VulkanAdapter.h"
-
-#include "Renderwerk/Platform/Window.h"
 
 struct ENGINE_API FVulkanContextDesc
 {
