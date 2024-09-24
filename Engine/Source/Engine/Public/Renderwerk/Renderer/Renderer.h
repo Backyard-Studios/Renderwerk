@@ -8,6 +8,8 @@
 
 #include "vk_mem_alloc.h"
 
+#include "Renderwerk/Graphics/VulkanResourceAllocator.h"
+
 enum class ENGINE_API EBufferingMode : uint8
 {
 	DoubleBuffering = 2,
@@ -50,6 +52,12 @@ public:
 	[[nodiscard]] FResult BeginFrame();
 	[[nodiscard]] FResult EndFrame();
 
+public:
+	[[nodiscard]] TSharedPointer<FVulkanContext> GetVulkanContext() const { return VulkanContext; }
+	[[nodiscard]] VkSurfaceKHR GetSurface() const { return Surface; }
+	[[nodiscard]] TSharedPointer<FVulkanAdapter> GetAdapter() const { return Adapter; }
+	[[nodiscard]] TSharedPointer<FVulkanDevice> GetDevice() const { return Device; }
+
 private:
 	[[nodiscard]] static FResult SubmitQueue(VkQueue Queue, const FRenderFrameData& RenderFrame);
 
@@ -62,7 +70,8 @@ private:
 
 	TSharedPointer<FVulkanAdapter> Adapter;
 	TSharedPointer<FVulkanDevice> Device;
-	VmaAllocator ResourceAllocator = VK_NULL_HANDLE;
+
+	TSharedPointer<FVulkanResourceAllocator> ResourceAllocator;
 
 	TSharedPointer<FVulkanSwapchain> Swapchain;
 
