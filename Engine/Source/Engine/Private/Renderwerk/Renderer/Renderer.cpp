@@ -61,9 +61,21 @@ FResult FRenderer::Initialize()
 	CHECK_RESULT(Swapchain->Initialize());
 
 	RenderFrames.resize(static_cast<uint8>(Description.BufferingMode));
-	for (FRenderFrameData RenderFrame : RenderFrames)
+	for (FRenderFrameData& RenderFrame : RenderFrames)
 	{
 		RenderFrame.ImageIndex = UINT32_MAX;
+		CHECK_RESULT(Device->CreateVulkanSemaphore(0, &RenderFrame.ImageAvailableSemaphore))
+		CHECK_RESULT(Device->CreateVulkanSemaphore(0, &RenderFrame.RenderFinishedSemaphore))
+		CHECK_RESULT(Device->CreateFence(VK_FENCE_CREATE_SIGNALED_BIT, &RenderFrame.InFlightFence))
+
+		FVulkanCommandPoolDesc CommandPoolDesc = {};
+		CommandPoolDesc.Context = VulkanContext;
+		CommandPoolDesc.Device = Device;
+		CommandPoolDesc.QueueIndex = Device->GetQueueData().GraphicsIndex;
+		RenderFrame.CommandPool = MakeShared<FVulkanCommandPool>(CommandPoolDesc);
+		CHECK_RESULT(RenderFrame.CommandPool->Initialize())
+
+		CHECK_RESULT(RenderFrame.CommandPool->AllocateCommandBuffer(&RenderFrame.MainFrameCommandBuffer));
 	}
 
 	return RESULT_SUCCESS;
@@ -78,6 +90,18 @@ void FRenderer::Destroy()
 			RW_LOG_ERROR("Failed to wait for Vulkan device to become idle");
 	}
 
+	for (FRenderFrameData& RenderFrame : RenderFrames)
+	{
+		if (RenderFrame.CommandPool && RenderFrame.MainFrameCommandBuffer)
+			RenderFrame.CommandPool->FreeCommandBuffer(RenderFrame.MainFrameCommandBuffer);
+		RenderFrame.MainFrameCommandBuffer.Reset();
+		if (RenderFrame.CommandPool)
+			RenderFrame.CommandPool->Destroy();
+		RenderFrame.CommandPool.Reset();
+		vkDestroyFence(Device->GetHandle(), RenderFrame.InFlightFence, VulkanContext->GetAllocator());
+		vkDestroySemaphore(Device->GetHandle(), RenderFrame.RenderFinishedSemaphore, VulkanContext->GetAllocator());
+		vkDestroySemaphore(Device->GetHandle(), RenderFrame.ImageAvailableSemaphore, VulkanContext->GetAllocator());
+	}
 	RenderFrames.clear();
 	if (Swapchain)
 		Swapchain->Destroy();
@@ -92,11 +116,32 @@ void FRenderer::Destroy()
 	VulkanContext.Reset();
 }
 
+FResult FRenderer::Resize()
+{
+	RW_PROFILING_MARK_FUNCTION();
+
+	CHECK_RESULT(Device->WaitForIdle());
+	CHECK_RESULT(Swapchain->Resize());
+	return RESULT_SUCCESS;
+}
+
 FResult FRenderer::BeginFrame()
 {
 	RW_PROFILING_MARK_FUNCTION();
 
 	FRenderFrameData& FrameData = RenderFrames.at(FrameIndex);
+	TSharedPointer<FVulkanCommandBuffer> CommandBuffer = FrameData.MainFrameCommandBuffer;
+
+	CHECK_RESULT(Device->WaitForFence(FrameData.InFlightFence));
+
+	CHECK_RESULT(Swapchain->AcquireNextImageIndex(FrameData.ImageAvailableSemaphore, &FrameData.ImageIndex));
+
+	CHECK_RESULT(CommandBuffer->Reset())
+	CHECK_RESULT(CommandBuffer->Begin())
+
+	CommandBuffer->TransitionSwapchainImage(Swapchain->GetImage(FrameData.ImageIndex), VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_GENERAL);
+
+	CommandBuffer->ClearImage(Swapchain->GetImage(FrameData.ImageIndex));
 
 	return RESULT_SUCCESS;
 }
@@ -106,7 +151,50 @@ FResult FRenderer::EndFrame()
 	RW_PROFILING_MARK_FUNCTION();
 
 	FRenderFrameData& FrameData = RenderFrames.at(FrameIndex);
+	TSharedPointer<FVulkanCommandBuffer> CommandBuffer = FrameData.MainFrameCommandBuffer;
+
+	CommandBuffer->TransitionSwapchainImage(Swapchain->GetImage(FrameData.ImageIndex), VK_IMAGE_LAYOUT_GENERAL, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
+
+	CHECK_RESULT(CommandBuffer->End())
+
+	CHECK_RESULT(SubmitQueue(Device->GetGraphicsQueue(), FrameData))
+
+	CHECK_RESULT(Swapchain->Present(FrameData))
 
 	FrameIndex = (FrameIndex + 1) % static_cast<uint8>(Description.BufferingMode);
+	return RESULT_SUCCESS;
+}
+
+FResult FRenderer::SubmitQueue(const VkQueue Queue, const FRenderFrameData& RenderFrame)
+{
+	RW_PROFILING_MARK_FUNCTION();
+
+	VkCommandBufferSubmitInfo CommandBufferSubmitInfo = {};
+	CommandBufferSubmitInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_SUBMIT_INFO;
+	CommandBufferSubmitInfo.commandBuffer = RenderFrame.MainFrameCommandBuffer->GetHandle();
+
+	VkSemaphoreSubmitInfo ImageSemaphoreSubmitInfo = {};
+	ImageSemaphoreSubmitInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_SUBMIT_INFO;
+	ImageSemaphoreSubmitInfo.semaphore = RenderFrame.ImageAvailableSemaphore;
+	ImageSemaphoreSubmitInfo.stageMask = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT_KHR;
+	ImageSemaphoreSubmitInfo.value = 1;
+
+	VkSemaphoreSubmitInfo RenderSemaphoreSubmitInfo = {};
+	RenderSemaphoreSubmitInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_SUBMIT_INFO;
+	RenderSemaphoreSubmitInfo.semaphore = RenderFrame.RenderFinishedSemaphore;
+	RenderSemaphoreSubmitInfo.stageMask = VK_PIPELINE_STAGE_2_ALL_GRAPHICS_BIT;
+	RenderSemaphoreSubmitInfo.value = 1;
+
+	VkSubmitInfo2 SubmitInfo = {};
+	SubmitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO_2;
+	SubmitInfo.commandBufferInfoCount = 1;
+	SubmitInfo.pCommandBufferInfos = &CommandBufferSubmitInfo;
+	SubmitInfo.waitSemaphoreInfoCount = 1;
+	SubmitInfo.pWaitSemaphoreInfos = &ImageSemaphoreSubmitInfo;
+	SubmitInfo.signalSemaphoreInfoCount = 1;
+	SubmitInfo.pSignalSemaphoreInfos = &RenderSemaphoreSubmitInfo;
+
+	CHECK_VKRESULT(vkQueueSubmit2(Queue, 1, &SubmitInfo, RenderFrame.InFlightFence), "Failed to submit command buffer")
+
 	return RESULT_SUCCESS;
 }

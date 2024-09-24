@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "Renderwerk/Core/CoreDefinitions.h"
+#include "Renderwerk/Graphics/VulkanCommandBuffer.h"
 #include "Renderwerk/Graphics/VulkanContext.h"
 #include "Renderwerk/Graphics/VulkanDevice.h"
 #include "Renderwerk/Graphics/VulkanSwapchain.h"
@@ -23,6 +24,11 @@ struct ENGINE_API FRendererDesc
 struct ENGINE_API FRenderFrameData
 {
 	uint32 ImageIndex; // The acquired swapchain image index.
+	VkSemaphore ImageAvailableSemaphore;
+	VkSemaphore RenderFinishedSemaphore;
+	VkFence InFlightFence;
+	TSharedPointer<FVulkanCommandPool> CommandPool;
+	TSharedPointer<FVulkanCommandBuffer> MainFrameCommandBuffer;
 };
 
 class ENGINE_API FRenderer
@@ -37,8 +43,13 @@ public:
 	[[nodiscard]] FResult Initialize();
 	void Destroy();
 
+	[[nodiscard]] FResult Resize();
+
 	[[nodiscard]] FResult BeginFrame();
 	[[nodiscard]] FResult EndFrame();
+
+private:
+	[[nodiscard]] static FResult SubmitQueue(VkQueue Queue, const FRenderFrameData& RenderFrame);
 
 private:
 	FRendererDesc Description;

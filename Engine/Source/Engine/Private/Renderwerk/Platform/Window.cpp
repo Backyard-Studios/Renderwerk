@@ -112,6 +112,11 @@ void FWindow::SetTitle(const std::string& Title)
 	SetWindowText(WindowHandle, ToWide(Title.c_str()).c_str());
 }
 
+void FWindow::ResetResizeFlag()
+{
+	bDidResize = false;
+}
+
 LRESULT FWindow::WindowProcess(const HWND InWindowHandle, const UINT Message, const WPARAM WParam, const LPARAM LParam)
 {
 	switch (Message)
@@ -152,6 +157,10 @@ void FWindow::OnSizeMessage(const LPARAM LParam)
 	GetWindowRect(WindowHandle, &WindowRect);
 	State.WindowWidth = WindowRect.right - WindowRect.left;
 	State.WindowHeight = WindowRect.bottom - WindowRect.top;
+
+	State.bIsVisible = State.ClientWidth > 0 && State.ClientHeight > 0;
+
+	bDidResize = true;
 }
 
 void FWindow::OnMoveMessage(const LPARAM LParam)

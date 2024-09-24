@@ -3,6 +3,7 @@
 #include "Renderwerk/Graphics/VulkanSwapchain.h"
 
 #include "Renderwerk/Graphics/VulkanUtils.h"
+#include "Renderwerk/Renderer/Renderer.h"
 
 FVulkanSwapchain::FVulkanSwapchain(const FVulkanSwapchainDesc& InDescription)
 	: Description(InDescription)
@@ -43,11 +44,36 @@ FResult FVulkanSwapchain::Resize()
 
 FResult FVulkanSwapchain::AcquireNextImageIndex(const VkSemaphore Semaphore, uint32* OutImageIndex)
 {
+	RW_PROFILING_MARK_FUNCTION();
+
 	VkResult Result = vkAcquireNextImageKHR(Description.Device->GetHandle(), Swapchain, 1000000000, Semaphore, VK_NULL_HANDLE, OutImageIndex);
 	if (Result == VK_ERROR_OUT_OF_DATE_KHR || Result == VK_SUBOPTIMAL_KHR)
 		return RESULT_VULKAN_SWAPCHAIN_OUT_OF_DATE;
 	CHECK_VKRESULT(Result, "Failed to acquire next image")
 	return RESULT_SUCCESS;
+}
+
+FResult FVulkanSwapchain::Present(const FRenderFrameData& RenderFrame)
+{
+	RW_PROFILING_MARK_FUNCTION();
+
+	VkPresentInfoKHR PresentInfo = {};
+	PresentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+	PresentInfo.pNext = nullptr;
+	PresentInfo.waitSemaphoreCount = 1;
+	PresentInfo.pWaitSemaphores = &RenderFrame.RenderFinishedSemaphore;
+	PresentInfo.swapchainCount = 1;
+	PresentInfo.pSwapchains = &Swapchain;
+	PresentInfo.pImageIndices = &RenderFrame.ImageIndex;
+
+	CHECK_VKRESULT(vkQueuePresentKHR(Description.Device->GetPresentQueue(), &PresentInfo), "Failed to present image");
+
+	return RESULT_SUCCESS;
+}
+
+VkImage FVulkanSwapchain::GetImage(const uint32 Index) const
+{
+	return Images.at(Index);
 }
 
 VkImageView FVulkanSwapchain::GetImageView(const uint32 Index) const

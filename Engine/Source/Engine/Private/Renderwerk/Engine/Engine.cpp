@@ -81,17 +81,30 @@ FResult FEngine::RunLoop()
 	{
 		WindowManager->Update();
 
-		if (MainWindow->GetWindowState().bIsClosed)
+		if (MainWindow->GetWindowState().bIsClosed) [[unlikely]]
 			RequestShutdown();
 
 		WindowManager->ClearRemoveQueue();
 
+		if (MainWindow.IsValid() && MainWindow->GetWindowState().bIsVisible)
+		[[likely]]
 		{
-			RW_PROFILING_MARK_SCOPE("RendererFrame");
-			CHECK_RESULT(Renderer->BeginFrame());
+			if (!MainWindow->DidResize())
 			{
+				RW_PROFILING_MARK_SCOPE("RendererFrame");
+
+				CHECK_RESULT(Renderer->BeginFrame())
+				{
+				}
+				CHECK_RESULT(Renderer->EndFrame())
 			}
-			CHECK_RESULT(Renderer->EndFrame());
+			else
+			{
+				RW_PROFILING_MARK_SCOPE("Resize");
+
+				CHECK_RESULT(Renderer->Resize())
+				MainWindow->ResetResizeFlag();
+			}
 		}
 
 		RW_PROFILING_MARK_FRAME();

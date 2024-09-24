@@ -8,6 +8,8 @@
 
 #include "volk.h"
 
+struct FRenderFrameData;
+
 struct ENGINE_API FVulkanSwapchainDesc
 {
 	TSharedPointer<FVulkanContext> Context;
@@ -35,7 +37,9 @@ public:
 	[[nodiscard]] FResult Resize();
 
 	[[nodiscard]] FResult AcquireNextImageIndex(VkSemaphore Semaphore, uint32* OutImageIndex);
+	[[nodiscard]] FResult Present(const FRenderFrameData& RenderFrame);
 
+	[[nodiscard]] VkImage GetImage(uint32 Index) const;
 	[[nodiscard]] VkImageView GetImageView(uint32 Index) const;
 
 public:

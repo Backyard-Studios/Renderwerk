@@ -88,6 +88,11 @@ FResult FVulkanDevice::Initialize()
 
 	volkLoadDevice(Device);
 
+	vkGetDeviceQueue(Device, QueueData.GraphicsIndex, 0, &GraphicsQueue);
+	vkGetDeviceQueue(Device, QueueData.PresentIndex, QueueData.GraphicsIndex == QueueData.PresentIndex ? 1 : 0, &PresentQueue);
+	vkGetDeviceQueue(Device, QueueData.TransferIndex, 0, &TransferQueue);
+	vkGetDeviceQueue(Device, QueueData.ComputeIndex, 0, &ComputeQueue);
+
 	return RESULT_SUCCESS;
 }
 
@@ -108,6 +113,40 @@ void FVulkanDevice::Destroy()
 FResult FVulkanDevice::WaitForIdle() const
 {
 	CHECK_VKRESULT(vkDeviceWaitIdle(Device), "Failed to wait for Vulkan device to become idle");
+	return RESULT_SUCCESS;
+}
+
+FResult FVulkanDevice::CreateVulkanSemaphore(const VkSemaphoreCreateFlags& Flags, VkSemaphore* OutSemaphore)
+{
+	VkSemaphoreCreateInfo SemaphoreCreateInfo;
+	SemaphoreCreateInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+	SemaphoreCreateInfo.pNext = nullptr;
+	SemaphoreCreateInfo.flags = Flags;
+
+	CHECK_VKRESULT(vkCreateSemaphore(Device, &SemaphoreCreateInfo, Description.Context->GetAllocator(), OutSemaphore), "Failed to create Vulkan semaphore")
+
+	return RESULT_SUCCESS;
+}
+
+FResult FVulkanDevice::CreateFence(const VkFenceCreateFlags& Flags, VkFence* OutFence)
+{
+	VkFenceCreateInfo FenceCreateInfo;
+	FenceCreateInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+	FenceCreateInfo.pNext = nullptr;
+	FenceCreateInfo.flags = Flags;
+
+	CHECK_VKRESULT(vkCreateFence(Device, &FenceCreateInfo, Description.Context->GetAllocator(), OutFence), "Failed to create Vulkan fence")
+
+	return RESULT_SUCCESS;
+}
+
+FResult FVulkanDevice::WaitForFence(const VkFence& Fence, const bool8 bShouldReset, const uint64 Timeout) const
+{
+	RW_PROFILING_MARK_FUNCTION();
+
+	CHECK_VKRESULT(vkWaitForFences(Device, 1, &Fence, VK_TRUE, Timeout), "Failed to wait for in-flight fence")
+	if (bShouldReset)
+		CHECK_VKRESULT(vkResetFences(Device, 1, &Fence), "Failed to reset in-flight fence")
 	return RESULT_SUCCESS;
 }
 
