@@ -2,6 +2,7 @@
 
 #include "Renderwerk/Renderer/Renderer.h"
 
+#include "Renderwerk/Engine/Engine.h"
 #include "Renderwerk/Graphics/VulkanUtils.h"
 
 std::string ToString(const EBufferingMode& BufferingMode)
@@ -213,4 +214,9 @@ FResult FRenderer::SubmitQueue(const VkQueue Queue, const FRenderFrameData& Rend
 	CHECK_VKRESULT(vkQueueSubmit2(Queue, 1, &SubmitInfo, RenderFrame.InFlightFence), "Failed to submit command buffer")
 
 	return RESULT_SUCCESS;
+}
+
+TSharedPointer<FRenderer> GetRenderer()
+{
+	return GetEngine()->GetRenderer();
 }

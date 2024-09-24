@@ -28,6 +28,8 @@ public:
 	[[nodiscard]] TSharedPointer<FWindowManager> GetWindowManager() const { return WindowManager; }
 	[[nodiscard]] TSharedPointer<FWindow> GetMainWindow() const { return MainWindow; }
 
+	[[nodiscard]] TSharedPointer<FRenderer> GetRenderer() const { return Renderer; }
+
 	[[nodiscard]] bool IsShutdownRequested() const { return bIsShutdownRequested; }
 
 private:

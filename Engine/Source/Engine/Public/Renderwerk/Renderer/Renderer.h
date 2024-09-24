@@ -69,3 +69,8 @@ private:
 	uint8 FrameIndex = 0;
 	TVector<FRenderFrameData> RenderFrames;
 };
+
+/**
+ * @brief This is a convenience function to get the renderer instance from the engine.
+ */
+[[nodiscard]] ENGINE_API TSharedPointer<FRenderer> GetRenderer();
