@@ -2,7 +2,10 @@
 
 #include "Renderwerk/Engine/Engine.h"
 
-#include <cassert>
+// Convenience macros for adding objects to the deletion queue
+#define DQ_ADD(Object) DeletionQueue.Add([this]() { Object.Reset(); })
+#define DQ_ADD_CUSTOM(Object, CustomDeletion) DeletionQueue.Add([this]() { if(Object) CustomDeletion; Object.Reset(); })
+#define DQ_ADD_CUSTOM_PREDICATE(Object, Predicate, CustomDeletion) DeletionQueue.Add([this]() { if(Object && Predicate) CustomDeletion; Object.Reset(); })
 
 TSharedPointer<FEngine> GEngine = nullptr;
 
@@ -30,33 +33,21 @@ void FEngine::RequestShutdown()
 void FEngine::Initialize()
 {
 	WindowManager = MakeShared<FWindowManager>();
-	DeletionQueue.Add([this]()
-	{
-		if (WindowManager)
-			WindowManager->ClearRemoveQueue();
-		WindowManager.Reset();
-	});
+	DQ_ADD_CUSTOM(WindowManager, WindowManager->ClearRemoveQueue());
 
-	DeletionQueue.Add([this]()
-	{
-		if (Application)
-			Application->Shutdown();
-		Application.Reset();
-	});
+	DQ_ADD_CUSTOM(Application, Application->Shutdown());
 	Application->Initialize();
 	RW_LOG_INFO("Application \"{}\" v{} initialized", Application->GetMetadata().Name, FormatVersion(Application->GetMetadata().Version));
 
 	FWindowSettings WindowSettings = {};
 	MainWindow = WindowManager->Create(WindowSettings);
-	DeletionQueue.Add([this]()
-	{
-		if (MainWindow && WindowManager)
-			WindowManager->Remove(MainWindow);
-		MainWindow.Reset();
-	});
+	DQ_ADD_CUSTOM_PREDICATE(MainWindow, WindowManager, WindowManager->Remove(MainWindow));
 	MainWindow->AppendTitle(" [App: " + Application->GetMetadata().Name + ", AppVersion: v" + FormatVersion(Application->GetMetadata().Version) + "]");
-
 	MainWindow->Show();
+
+	FRendererSettings RendererSettings = {};
+	Renderer = MakeShared<FRenderer>(RendererSettings);
+	DQ_ADD(Renderer);
 
 	RW_LOG_INFO("Engine initialized");
 }
