@@ -3,6 +3,7 @@ import subprocess
 
 import Utils
 import Premake
+import Dependencies
 import ProjectConfig
 
 if Utils.GetArchitecture() != '64bit':
@@ -15,6 +16,9 @@ subprocess.call(["git", "submodule", "update", "--init", "--recursive"])
 
 if Premake.IsInstalled() == False:
 	Premake.Install()
+
+if Dependencies.IsAgilitySDKInstalled() == False:
+	Dependencies.InstallAgilitySDK()
 
 ProjectConfig.LoadConfig()
 Premake.PreprocessProperties()

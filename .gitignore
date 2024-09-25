@@ -26,3 +26,6 @@ Scripts/Config/properties_preprocessed.lua
 
 # Crash reports
 *.dmp
+
+# Dependencies that are downloaded by the setup script
+Engine/ThirdParty/AgilitySDK/
