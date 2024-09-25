@@ -1,9 +1,6 @@
 ﻿#pragma once
 
 #include "Renderwerk/Core/CoreDefinitions.h"
-#include "Renderwerk/Memory/SharedPointer.h"
-
-#include "Renderwerk/Core/Result.h"
 
 struct FAssertionData;
 
@@ -18,11 +15,11 @@ struct FAssertionData;
 class ENGINE_API FPlatform
 {
 private:
-	[[nodiscard]] static FResult Initialize();
+	static void Initialize();
 	static void Shutdown();
 
 public:
-	static void Fatal(EResultCode Code);
+	static void Fatal(const std::string& Reason);
 	static void Assertion(FAssertionData Data);
 
 	[[nodiscard]] static std::string GetResultHandleDescription(HRESULT Result);
@@ -37,7 +34,7 @@ protected:
 	INLINE static int32 ExitCode = 0;
 	INLINE static WNDCLASSEX WindowClass = {};
 
-	friend int32 Launch();
+	friend void Launch();
 	friend void Shutdown();
 };
 

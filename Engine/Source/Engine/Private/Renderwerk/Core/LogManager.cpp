@@ -7,7 +7,7 @@
 
 std::shared_ptr<spdlog::async_logger> FLogManager::MainLogger;
 
-FResult FLogManager::Initialize()
+void FLogManager::Initialize()
 {
 	spdlog::init_thread_pool(8192, 1);
 	spdlog::sinks_init_list Sinks = {
@@ -27,8 +27,6 @@ FResult FLogManager::Initialize()
 #else
 	spdlog::set_level(spdlog::level::warn);
 #endif
-
-	return RESULT_SUCCESS;
 }
 
 void FLogManager::Shutdown()

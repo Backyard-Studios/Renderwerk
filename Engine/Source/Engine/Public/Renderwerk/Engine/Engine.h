@@ -1,7 +1,6 @@
 ﻿#pragma once
 
 #include "Renderwerk/Core/CoreDefinitions.h"
-#include "Renderwerk/Core/Result.h"
 #include "Renderwerk/Memory/DeletionQueue.h"
 
 #include "Renderwerk/Memory/SharedPointer.h"
@@ -14,13 +13,13 @@ public:
 	~FEngine();
 
 public:
-	FResult Launch();
-
 	void RequestShutdown();
 
 private:
-	FResult Initialize();
-	FResult RunLoop();
+	void Launch();
+
+	void Initialize();
+	void RunLoop();
 	void Shutdown();
 
 public:
@@ -30,15 +29,13 @@ public:
 	[[nodiscard]] bool IsShutdownRequested() const { return bIsShutdownRequested; }
 
 private:
-	bool bIsAlreadyLaunched = false;
-	bool bIsAlreadyShutdown = false;
-
 	bool bIsShutdownRequested = false;
 
 	FDeletionQueue DeletionQueue;
 	TSharedPointer<FWindowManager> WindowManager;
 	TSharedPointer<FWindow> MainWindow;
 
+	friend void Launch();
 	friend void Shutdown();
 };
 

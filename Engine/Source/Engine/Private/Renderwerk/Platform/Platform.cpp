@@ -30,7 +30,7 @@ LRESULT CALLBACK WindowProcess(const HWND WindowHandle, const UINT Message, cons
 	return DefWindowProc(WindowHandle, Message, WParam, LParam);
 }
 
-FResult FPlatform::Initialize()
+void FPlatform::Initialize()
 {
 	SetUnhandledExceptionFilter(ExceptionHandler);
 
@@ -47,7 +47,6 @@ FResult FPlatform::Initialize()
 	RegisterClassEx(&WindowClass);
 
 	RW_LOG_INFO("Win32 platform initialized");
-	return RESULT_SUCCESS;
 }
 
 void FPlatform::Shutdown()
@@ -55,9 +54,9 @@ void FPlatform::Shutdown()
 	UnregisterClass(WindowClass.lpszClassName, WindowClass.hInstance);
 }
 
-void FPlatform::Fatal(const EResultCode Code)
+void FPlatform::Fatal(const std::string& Reason)
 {
-	ULONG_PTR Parameters[] = {Code};
+	ULONG_PTR Parameters[] = {reinterpret_cast<ULONG_PTR>(&Reason)};
 	RaiseException(E_FATAL, EXCEPTION_NONCONTINUABLE, _countof(Parameters), Parameters);
 }
 
@@ -125,23 +124,17 @@ LONG ExceptionHandler(EXCEPTION_POINTERS* ExceptionInfo)
 		FAssertionData* Data = reinterpret_cast<FAssertionData*>(ExceptionInfo->ExceptionRecord->ExceptionInformation[0]);
 		MessageBoxText += "An assertion failed. A crash dump has been saved to \"CrashDump.dmp\".";
 		MessageBoxText += "\n\n" + Data->Message;
-		MessageBoxText += "\n\nCode: " + std::to_string(Data->Code);
-		MessageBoxText += "\nDescription: " + ToString(Data->Code);
 		MessageBoxText += "\nCondition: " + Data->Condition;
 		RW_LOG_CRITICAL("An assertion failed. A crash dump has been saved to \"CrashDump.dmp\".");
-		RW_LOG_CRITICAL("Code: {0}", static_cast<uint32>(Data->Code));
-		RW_LOG_CRITICAL("Description: {0}", ToString(Data->Code));
 		RW_LOG_CRITICAL("Condition: {0}", Data->Condition);
 	}
 	else if (ExceptionInfo->ExceptionRecord->ExceptionCode == E_FATAL)
 	{
-		EResultCode Code = static_cast<EResultCode>(ExceptionInfo->ExceptionRecord->ExceptionInformation[0]);
+		std::string* Reason = reinterpret_cast<std::string*>(ExceptionInfo->ExceptionRecord->ExceptionInformation[0]);
 		MessageBoxText += "An unhandled exception occurred. A crash dump has been saved to \"CrashDump.dmp\".";
-		MessageBoxText += "\n\nCode: " + std::to_string(Code);
-		MessageBoxText += "\nDescription: " + ToString(Code);
+		MessageBoxText += "\n\n" + *Reason;
 		RW_LOG_CRITICAL("An unhandled exception occurred. A crash dump has been saved to \"CrashDump.dmp\".");
-		RW_LOG_CRITICAL("Code: {0}", static_cast<uint32>(Code));
-		RW_LOG_CRITICAL("Description: {0}", ToString(Code));
+		RW_LOG_CRITICAL("{0}", *Reason);
 	}
 	else
 	{

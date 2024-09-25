@@ -1,29 +1,18 @@
 ﻿#include "pch.h"
 
-#include "Renderwerk/Core/Result.h"
-
 #include "Renderwerk/Platform/Launch.h"
 
 #include "Renderwerk/Core/LogManager.h"
 #include "Renderwerk/Engine/Engine.h"
 #include "Renderwerk/Platform/Platform.h"
 
-int32 Launch()
+void Launch()
 {
 	RW_LOG_TRACE("Initializing platform...");
-	FResult Result = FPlatform::Initialize();
-	if (Result.IsError())
-	{
-		RW_LOG_ERROR("Failed to initialize platform: {}", Result.GetReason());
-		return Result.GetCode();
-	}
-
+	FPlatform::Initialize();
 	RW_LOG_TRACE("Launching engine...");
 	GEngine = MakeShared<FEngine>();
-	Result = GEngine->Launch();
-	if (Result.IsError())
-		return Result.GetCode();
-	return 0;
+	GEngine->Launch();
 }
 
 void Shutdown()
@@ -42,29 +31,24 @@ void Shutdown()
 
 int32 GuardedMain()
 {
-	int32 ExitCode = 0;
-	// #if RW_PLATFORM_SUPPORTS_SEH
-	// 	__try
-	// 	{
-	// #endif
-	ExitCode = Launch();
-	// #if RW_PLATFORM_SUPPORTS_SEH
-	// 	}
-	// 	__except (ExceptionHandler(GetExceptionInformation()))
-	// 	{
-	// 	}
-	// #endif
-	if (FPlatform::GetExitCode() == 0)
-		FPlatform::SetExitCode(ExitCode);
+#if RW_PLATFORM_SUPPORTS_SEH
+	__try
+	{
+#endif
+		Launch();
+#if RW_PLATFORM_SUPPORTS_SEH
+	}
+	__except (ExceptionHandler(GetExceptionInformation()))
+	{
+	}
+#endif
 	Shutdown();
 	return FPlatform::GetExitCode();
 }
 
 int32 LaunchRenderwerk()
 {
-	FResult Result = FLogManager::Initialize();
-	if (Result.IsError())
-		return Result.GetCode();
+	FLogManager::Initialize();
 #if RW_ENABLE_MEMORY_TRACKING
 	RW_LOG_DEBUG("Memory tracking enabled");
 #endif

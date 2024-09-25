@@ -26,14 +26,10 @@ public:
 	using FThreadFunction = TFunction<void()>;
 
 public:
-	FThread();
+	FThread(FThreadFunction&& InThreadFunction, const EThreadPriority& InPriority = EThreadPriority::Normal);
 	~FThread();
 
 	DEFINE_DEFAULT_COPY_AND_MOVE(FThread)
-
-public:
-	[[nodiscard]] FResult Initialize(const FThreadFunction& InThreadFunction, const EThreadPriority& InPriority = EThreadPriority::Normal);
-	void Destroy();
 
 public:
 	void Start();

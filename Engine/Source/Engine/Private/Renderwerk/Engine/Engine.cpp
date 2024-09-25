@@ -10,28 +10,13 @@ FEngine::FEngine() = default;
 
 FEngine::~FEngine() = default;
 
-FResult FEngine::Launch()
+void FEngine::Launch()
 {
-	if (bIsAlreadyLaunched)
-		return RESULT_FAILED;
-	bIsAlreadyLaunched = true;
-
 	RW_PROFILING_MARK_THREAD("MainThread");
 
-	FResult Result = Initialize();
-	if (Result.IsError())
-	{
-		RW_LOG_ERROR("Failed to initialize engine: {}", Result.GetReason());
-		return Result;
-	}
-	Result = RunLoop();
-	if (Result.IsError())
-	{
-		RW_LOG_ERROR("Failure during loop: {}", Result.GetReason());
-		return Result;
-	}
+	Initialize();
+	RunLoop();
 	Shutdown();
-	return RESULT_SUCCESS;
 }
 
 void FEngine::RequestShutdown()
@@ -39,7 +24,7 @@ void FEngine::RequestShutdown()
 	bIsShutdownRequested = true;
 }
 
-FResult FEngine::Initialize()
+void FEngine::Initialize()
 {
 	WindowManager = MakeShared<FWindowManager>();
 	DeletionQueue.Add([this]()
@@ -61,10 +46,9 @@ FResult FEngine::Initialize()
 	MainWindow->Show();
 
 	RW_LOG_INFO("Engine initialized");
-	return RESULT_SUCCESS;
 }
 
-FResult FEngine::RunLoop()
+void FEngine::RunLoop()
 {
 	while (!bIsShutdownRequested)
 	{
@@ -77,14 +61,10 @@ FResult FEngine::RunLoop()
 
 		RW_PROFILING_MARK_FRAME();
 	}
-	return RESULT_SUCCESS;
 }
 
 void FEngine::Shutdown()
 {
-	if (bIsAlreadyShutdown)
-		return;
-	bIsAlreadyShutdown = true;
 	DeletionQueue.Flush();
 }
 

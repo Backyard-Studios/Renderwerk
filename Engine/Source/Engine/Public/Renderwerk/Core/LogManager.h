@@ -1,7 +1,6 @@
 ﻿#pragma once
 
 #include "Renderwerk/Core/CoreDefinitions.h"
-#include "Renderwerk/Core/Result.h"
 
 #if RW_CONFIG_DEBUG
 #	define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_TRACE
@@ -19,7 +18,7 @@
 class ENGINE_API FLogManager
 {
 private:
-	static FResult Initialize();
+	static void Initialize();
 	static void Shutdown();
 
 public:

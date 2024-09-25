@@ -2,15 +2,9 @@
 
 #include "Renderwerk/Platform/Threading/Thread.h"
 
-FThread::FThread() = default;
-
-FThread::~FThread() = default;
-
-FResult FThread::Initialize(const FThreadFunction& InThreadFunction, const EThreadPriority& InPriority)
+FThread::FThread(FThreadFunction&& InThreadFunction, const EThreadPriority& InPriority)
+	: ThreadFunction(std::move(InThreadFunction)), Priority(InPriority)
 {
-	ThreadFunction = InThreadFunction;
-	Priority = InPriority;
-
 	LPTHREAD_START_ROUTINE Win32ThreadFunction = [](const LPVOID Param) -> DWORD
 	{
 		FThread* Thread = static_cast<FThread*>(Param);
@@ -19,29 +13,27 @@ FResult FThread::Initialize(const FThreadFunction& InThreadFunction, const EThre
 	};
 	ThreadHandle = CreateThread(nullptr, 0, Win32ThreadFunction, this, CREATE_SUSPENDED, reinterpret_cast<LPDWORD>(&ThreadId));
 	SetThreadPriority(ThreadHandle, ConvertThreadPriority(Priority));
-	return RESULT_SUCCESS;
 }
 
-void FThread::Destroy()
+FThread::~FThread()
 {
 	if (State == EThreadState::Running)
 		ForceKill();
 	if (ThreadHandle)
 		CloseHandle(ThreadHandle);
-	ThreadHandle = nullptr;
 }
 
 void FThread::Start()
 {
 	DWORD Result = ResumeThread(ThreadHandle);
-	RW_ASSERT(Result != -1, RESULT_FAILED, "Failed to resume thread");
+	RW_DEBUG_ASSERT(Result != -1, "Failed to resume thread")
 	State = EThreadState::Running;
 }
 
 void FThread::Join()
 {
 	DWORD Result = WaitForSingleObject(ThreadHandle, INFINITE);
-	RW_ASSERT(Result == WAIT_OBJECT_0, RESULT_FAILED, "Failed to wait for thread");
+	RW_DEBUG_ASSERT(Result == WAIT_OBJECT_0, "Failed to wait for thread")
 	State = EThreadState::Finished;
 }
 
@@ -51,7 +43,7 @@ void FThread::ForceKill(const bool bWaitForCompletion)
 		Join();
 
 	bool Result = TerminateThread(ThreadHandle, 0);
-	RW_ASSERT(Result, RESULT_FAILED, "Failed to terminate thread");
+	RW_DEBUG_ASSERT(Result, "Failed to terminate thread")
 	State = EThreadState::Finished;
 }
 
