@@ -3,8 +3,11 @@
 #include "Renderwerk/Core/CoreDefinitions.h"
 #include "Renderwerk/Core/CoreTypes.h"
 
+#include "Renderwerk/Platform/Platform.h"
+
 #include <type_traits>
 #include <xutility>
+
 
 enum : uint8
 {
@@ -42,6 +45,9 @@ class ENGINE_API FMemory
 public:
 	static void* Allocate(const size64 Size, const uint8 Alignment = MEMORY_DEFAULT_ALIGNMENT)
 	{
+		RW_ASSERT_CRITICAL(Size > 0, "Size must be greater than 0.")
+		RW_ASSERT_CRITICAL(Alignment % 2 == 0, "Alignment must be a power of 2.")
+
 		void* Pointer = _aligned_malloc(Size, Alignment);
 #if RW_ENABLE_MEMORY_TRACKING
 		GetMemoryTracking().OnAllocate(Pointer, Size, Alignment);
@@ -51,6 +57,9 @@ public:
 
 	static void Free(void* Pointer, const uint8 Alignment = MEMORY_DEFAULT_ALIGNMENT)
 	{
+		RW_ASSERT_CRITICAL(Pointer, "Pointer must be valid.")
+		RW_ASSERT_CRITICAL(Alignment % 2 == 0, "Alignment must be a power of 2.")
+
 #if RW_ENABLE_MEMORY_TRACKING
 		GetMemoryTracking().OnFree(Pointer, Alignment);
 #endif
@@ -59,21 +68,35 @@ public:
 
 	static void Zero(void* Pointer, const size64 Size)
 	{
+		RW_ASSERT_CRITICAL(Pointer, "Pointer must be valid.")
+		RW_ASSERT_CRITICAL(Size > 0, "Size must be greater than 0.")
+
 		ZeroMemory(Pointer, Size);
 	}
 
 	static void Copy(void* Destination, const void* Source, const size64 Size)
 	{
+		RW_ASSERT_CRITICAL(Destination, "Destination must be valid.")
+		RW_ASSERT_CRITICAL(Source, "Source must be valid.")
+		RW_ASSERT_CRITICAL(Size > 0, "Size must be greater than 0.")
+
 		CopyMemory(Destination, Source, Size);
 	}
 
 	static void Fill(void* Destination, const uint8 Value, const size64 Size)
 	{
+		RW_ASSERT_CRITICAL(Destination, "Destination must be valid.")
+		RW_ASSERT_CRITICAL(Size > 0, "Size must be greater than 0.")
+
 		FillMemory(Destination, Size, Value);
 	}
 
 	static void Move(void* Destination, const void* Source, const size64 Size)
 	{
+		RW_ASSERT_CRITICAL(Destination, "Destination must be valid.")
+		RW_ASSERT_CRITICAL(Source, "Source must be valid.")
+		RW_ASSERT_CRITICAL(Size > 0, "Size must be greater than 0.")
+
 		MoveMemory(Destination, Source, Size);
 	}
 
