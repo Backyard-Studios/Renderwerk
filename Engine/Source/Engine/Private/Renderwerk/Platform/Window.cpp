@@ -112,6 +112,11 @@ void FWindow::SetTitle(const std::string& Title)
 	SetWindowText(WindowHandle, ToWide(Title.c_str()).c_str());
 }
 
+void FWindow::AppendTitle(const std::string& Title)
+{
+	SetTitle(State.Title + Title);
+}
+
 LRESULT FWindow::WindowProcess(const HWND InWindowHandle, const UINT Message, const WPARAM WParam, const LPARAM LParam)
 {
 	switch (Message)

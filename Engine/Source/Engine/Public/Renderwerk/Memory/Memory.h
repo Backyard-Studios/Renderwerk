@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include "Renderwerk/Core/Assertion.h"
 #include "Renderwerk/Core/CoreDefinitions.h"
 #include "Renderwerk/Core/CoreTypes.h"
 
@@ -7,7 +8,6 @@
 
 #include <type_traits>
 #include <xutility>
-
 
 enum : uint8
 {

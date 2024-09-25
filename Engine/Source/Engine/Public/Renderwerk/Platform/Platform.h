@@ -14,7 +14,7 @@ struct FAssertionData;
  */
 class ENGINE_API FPlatform
 {
-private:
+public:
 	static void Initialize();
 	static void Shutdown();
 
@@ -33,9 +33,6 @@ public:
 protected:
 	INLINE static int32 ExitCode = 0;
 	INLINE static WNDCLASSEX WindowClass = {};
-
-	friend void Launch();
-	friend void Shutdown();
 };
 
 /**

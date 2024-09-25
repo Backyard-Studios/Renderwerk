@@ -9,7 +9,7 @@
 class ENGINE_API FEngine
 {
 public:
-	FEngine();
+	FEngine(const TSharedPointer<IApplication>& Application);
 	~FEngine();
 
 public:
@@ -29,13 +29,15 @@ public:
 	[[nodiscard]] bool IsShutdownRequested() const { return bIsShutdownRequested; }
 
 private:
+	TSharedPointer<IApplication> Application;
+
 	bool bIsShutdownRequested = false;
 
 	FDeletionQueue DeletionQueue;
 	TSharedPointer<FWindowManager> WindowManager;
 	TSharedPointer<FWindow> MainWindow;
 
-	friend void Launch();
+	friend void Launch(const TSharedPointer<IApplication>& Application);
 	friend void Shutdown();
 };
 

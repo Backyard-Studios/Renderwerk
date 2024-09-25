@@ -6,7 +6,10 @@
 
 TSharedPointer<FEngine> GEngine = nullptr;
 
-FEngine::FEngine() = default;
+FEngine::FEngine(const TSharedPointer<IApplication>& Application)
+	: Application(Application)
+{
+}
 
 FEngine::~FEngine() = default;
 
@@ -34,6 +37,15 @@ void FEngine::Initialize()
 		WindowManager.Reset();
 	});
 
+	DeletionQueue.Add([this]()
+	{
+		if (Application)
+			Application->Shutdown();
+		Application.Reset();
+	});
+	Application->Initialize();
+	RW_LOG_INFO("Application \"{}\" v{} initialized", Application->GetMetadata().Name, FormatVersion(Application->GetMetadata().Version));
+
 	FWindowSettings WindowSettings = {};
 	MainWindow = WindowManager->Create(WindowSettings);
 	DeletionQueue.Add([this]()
@@ -42,6 +54,7 @@ void FEngine::Initialize()
 			WindowManager->Remove(MainWindow);
 		MainWindow.Reset();
 	});
+	MainWindow->AppendTitle(" [App: " + Application->GetMetadata().Name + ", AppVersion: v" + FormatVersion(Application->GetMetadata().Version) + "]");
 
 	MainWindow->Show();
 

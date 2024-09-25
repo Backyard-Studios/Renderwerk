@@ -56,6 +56,7 @@ public:
 	void SetPosition(int32 PositionX, int32 PositionY) const;
 	void SetSize(int32 Width, int32 Height) const;
 	void SetTitle(const std::string& Title);
+	void AppendTitle(const std::string& Title);
 
 public:
 	[[nodiscard]] HWND GetHandle() const { return WindowHandle; }

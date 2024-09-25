@@ -2,6 +2,9 @@
 
 #include "Renderwerk/Core/CoreDefinitions.h"
 
+#include "Renderwerk/Application/Application.h"
+#include "Renderwerk/Memory/UniquePointer.h"
+
 #if RW_CONFIG_DEBUG
 #	define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_TRACE
 # elif RW_CONFIG_DEVELOPMENT
@@ -17,7 +20,7 @@
 
 class ENGINE_API FLogManager
 {
-private:
+public:
 	static void Initialize();
 	static void Shutdown();
 
@@ -26,8 +29,6 @@ public:
 
 private:
 	static std::shared_ptr<spdlog::async_logger> MainLogger;
-
-	friend ENGINE_API int32 LaunchRenderwerk();
 };
 
 #define RW_LOG_TRACE(Message, ...) SPDLOG_LOGGER_TRACE(FLogManager::GetMainLogger(), Message, __VA_ARGS__)

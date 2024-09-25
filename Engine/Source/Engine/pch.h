@@ -21,6 +21,7 @@
 #include "Renderwerk/Core/CoreTypes.h"
 #include "Renderwerk/Core/LogManager.h"
 #include "Renderwerk/Core/StringUtils.h"
+#include "Renderwerk/Core/Version.h"
 
 #include "Renderwerk/Debug/Profiling.h"
 

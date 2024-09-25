@@ -6,12 +6,12 @@
 #include "Renderwerk/Engine/Engine.h"
 #include "Renderwerk/Platform/Platform.h"
 
-void Launch()
+void Launch(const TSharedPointer<IApplication>& Application)
 {
 	RW_LOG_TRACE("Initializing platform...");
 	FPlatform::Initialize();
 	RW_LOG_TRACE("Launching engine...");
-	GEngine = MakeShared<FEngine>();
+	GEngine = MakeShared<FEngine>(Application);
 	GEngine->Launch();
 }
 
@@ -29,13 +29,13 @@ void Shutdown()
 	RW_LOG_INFO("Successfully shut down");
 }
 
-int32 GuardedMain()
+int32 GuardedMain(const TSharedPointer<IApplication>& Application)
 {
 #if RW_PLATFORM_SUPPORTS_SEH
 	__try
 	{
 #endif
-		Launch();
+		Launch(Application);
 #if RW_PLATFORM_SUPPORTS_SEH
 	}
 	__except (ExceptionHandler(GetExceptionInformation()))
@@ -46,7 +46,7 @@ int32 GuardedMain()
 	return FPlatform::GetExitCode();
 }
 
-int32 LaunchRenderwerk()
+int32 LaunchRenderwerk(const TSharedPointer<IApplication>& Application)
 {
 	FLogManager::Initialize();
 	RW_LOG_INFO("{} {} [{}]", RW_ENGINE_NAME, RW_ENGINE_FULL_VERSION, RW_PLATFORM);
@@ -66,7 +66,7 @@ int32 LaunchRenderwerk()
 		TracyFree(Pointer);
 	});
 #endif
-	int32 ExitCode = GuardedMain();
+	int32 ExitCode = GuardedMain(Application);
 	FLogManager::Shutdown();
 	return ExitCode;
 }
