@@ -4,7 +4,7 @@ pushd %~dp0
 python --version > NUL
 if errorlevel 1 goto errorNoPython
 
-python .\Scripts\Launch.py setup
+python .\Scripts\Launch.py clean
 
 goto:eof
 
