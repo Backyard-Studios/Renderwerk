@@ -15,6 +15,9 @@
 ENGINE_API int32 LaunchRenderwerk(const TSharedPointer<IApplication>& Application);
 
 #define LAUNCH_RENDERWERK(Application, ...) \
+	extern "C" { _declspec(dllexport) extern const UINT D3D12SDKVersion = 614;} \
+	extern "C" { _declspec(dllexport) extern const char* D3D12SDKPath = ".\\D3D12\\"; } \
+	 \
 	PLATFORM_LAUNCH_HEADER \
 	{ \
 		return LaunchRenderwerk(MakeShared<Application>(__VA_ARGS__)); \

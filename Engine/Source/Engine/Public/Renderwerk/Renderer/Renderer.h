@@ -19,4 +19,5 @@ private:
 	FRendererSettings Settings;
 
 	TSharedPointer<FGraphicsContext> GraphicsContext;
+	TSharedPointer<FGraphicsAdapter> Adapter;
 };

@@ -39,3 +39,21 @@ FGraphicsContext::~FGraphicsContext()
 	D3D12Debug.Reset();
 #endif
 }
+
+TSharedPointer<FGraphicsAdapter> FGraphicsContext::GetSuitableAdapter() const
+{
+	ComPtr<IDXGIAdapter4> Adapter;
+	for (uint32 AdapterIndex = 0; Factory->EnumAdapterByGpuPreference(AdapterIndex, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, IID_PPV_ARGS(&Adapter)) != DXGI_ERROR_NOT_FOUND;
+	     ++AdapterIndex)
+	{
+		TSharedPointer<FGraphicsAdapter> GraphicsAdapter = MakeShared<FGraphicsAdapter>(Adapter);
+		if (GraphicsAdapter->IsSoftwareBased())
+		{
+			GraphicsAdapter.Reset();
+			Adapter.Reset();
+			continue;
+		}
+		return GraphicsAdapter;
+	}
+	return nullptr;
+}
