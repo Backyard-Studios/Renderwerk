@@ -15,6 +15,9 @@
 
 project_name = '$(PROJECT_NAME)'
 project_version = '$(PROJECT_VERSION)'
+project_version_major = '$(PROJECT_VERSION_MAJOR)'
+project_version_minor = '$(PROJECT_VERSION_MINOR)'
+project_version_patch = '$(PROJECT_VERSION_PATCH)'
 project_version_suffix = '$(PROJECT_VERSION_SUFFIX)'
 project_version_string = '$(PROJECT_VERSION_STRING)'
 project_author = '$(PROJECT_AUTHOR)'

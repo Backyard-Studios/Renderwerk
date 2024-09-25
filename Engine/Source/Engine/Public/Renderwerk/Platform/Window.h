@@ -12,7 +12,7 @@ struct ENGINE_API FWindowSettings
 	uint32 Height = 720;
 	int32 PositionX = 200;
 	int32 PositionY = 200;
-	std::string Title = "Renderwerk";
+	std::string Title = RW_ENGINE_NAME " " RW_ENGINE_FULL_VERSION;
 	bool bIsVisibleAfterCreation = false;
 	TSharedPointer<FWindow> ParentWindow = nullptr;
 };

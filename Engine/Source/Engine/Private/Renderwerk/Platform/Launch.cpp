@@ -49,6 +49,7 @@ int32 GuardedMain()
 int32 LaunchRenderwerk()
 {
 	FLogManager::Initialize();
+	RW_LOG_INFO("{} {} [{}]", RW_ENGINE_NAME, RW_ENGINE_FULL_VERSION, RW_PLATFORM);
 #if RW_ENABLE_MEMORY_TRACKING
 	RW_LOG_DEBUG("Memory tracking enabled");
 #endif

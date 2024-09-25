@@ -4,7 +4,9 @@ PROJECT_CONFIG_FILE_NAME = '.projectconfig'
 
 project_name = 'Unnamed'
 project_name_shorthand = 'UN'
-project_version = '0.0.0'
+project_version_major = '0'
+project_version_minor = '0'
+project_version_patch = '0'
 project_version_suffix = 'dev'
 project_author = 'Unknown'
 
@@ -26,9 +28,15 @@ def LoadConfig():
 				elif key == 'NAME_SHORTHAND':
 					global project_name_shorthand
 					project_name_shorthand = value
-				elif key == 'VERSION':
-					global project_version
-					project_version = value
+				elif key == 'VERSION_MAJOR':
+					global project_version_major
+					project_version_major = value
+				elif key == 'VERSION_MINOR':
+					global project_version_minor
+					project_version_minor = value
+				elif key == 'VERSION_PATCH':
+					global project_version_patch
+					project_version_patch = value
 				elif key == 'VERSION_SUFFIX':
 					global project_version_suffix
 					project_version_suffix = value
@@ -45,8 +53,17 @@ def GetName():
 def GetNameShorthand():
 	return project_name_shorthand
 
+def GetVersionMajor():
+	return project_version_major
+
+def GetVersionMinor():
+	return project_version_minor
+
+def GetVersionPatch():
+	return project_version_patch
+
 def GetVersion():
-	return project_version
+	return f'{GetVersionMajor()}.{GetVersionMinor()}.{GetVersionPatch()}'
 
 def GetVersionSuffix():
 	return project_version_suffix

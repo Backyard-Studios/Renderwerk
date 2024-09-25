@@ -32,7 +32,10 @@ def PreprocessProperties():
 
 	properties_file_content = properties_file_content.replace('$(PROJECT_NAME)', ProjectConfig.GetName())
 	properties_file_content = properties_file_content.replace('$(PROJECT_NAME_SHORTHAND)', ProjectConfig.GetNameShorthand())
-	properties_file_content = properties_file_content.replace('$(PROJECT_VERSION)', ProjectConfig.GetVersionString())
+	properties_file_content = properties_file_content.replace('$(PROJECT_VERSION)', ProjectConfig.GetVersion())
+	properties_file_content = properties_file_content.replace('$(PROJECT_VERSION_MAJOR)', ProjectConfig.GetVersionMajor())
+	properties_file_content = properties_file_content.replace('$(PROJECT_VERSION_MINOR)', ProjectConfig.GetVersionMinor())
+	properties_file_content = properties_file_content.replace('$(PROJECT_VERSION_PATCH)', ProjectConfig.GetVersionPatch())
 	properties_file_content = properties_file_content.replace('$(PROJECT_VERSION_SUFFIX)', ProjectConfig.GetVersionSuffix())
 	properties_file_content = properties_file_content.replace('$(PROJECT_VERSION_STRING)', ProjectConfig.GetVersionString())
 	properties_file_content = properties_file_content.replace('$(PROJECT_AUTHOR)', ProjectConfig.GetAuthor())
