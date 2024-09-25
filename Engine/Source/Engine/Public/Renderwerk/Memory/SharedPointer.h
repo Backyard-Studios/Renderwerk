@@ -13,23 +13,27 @@ class TSharedPointer
 
 public:
 	TSharedPointer()
-		: Pointer(nullptr), ReferenceCount(FMemory::New<std::atomic<uint32>>(1))
+		: Pointer(nullptr), ReferenceCount(FMemory::New<std::atomic<uint32>>())
 	{
+		ReferenceCount->store(1);
 	}
 
 	TSharedPointer(const std::nullptr_t InNullptr)
-		: Pointer(InNullptr), ReferenceCount(FMemory::New<std::atomic<uint32>>(1))
+		: Pointer(InNullptr), ReferenceCount(FMemory::New<std::atomic<uint32>>())
 	{
+		ReferenceCount->store(1);
 	}
 
 	TSharedPointer(T* InPointer)
-		: Pointer(InPointer), ReferenceCount(FMemory::New<std::atomic<uint32>>(1))
+		: Pointer(InPointer), ReferenceCount(FMemory::New<std::atomic<uint32>>())
 	{
+		ReferenceCount->store(1);
 	}
 
 	TSharedPointer(T* InPointer, TDeleter InDeleter)
-		: Pointer(InPointer), Deleter(InDeleter), ReferenceCount(FMemory::New<std::atomic<uint32>>(1))
+		: Pointer(InPointer), Deleter(InDeleter), ReferenceCount(FMemory::New<std::atomic<uint32>>())
 	{
+		ReferenceCount->store(1);
 	}
 
 	TSharedPointer(const TSharedPointer& Other)
@@ -45,15 +49,15 @@ public:
 		Other.ReferenceCount = nullptr;
 	}
 
-	template <typename TOther>
-	TSharedPointer(TSharedPointer<TOther>& Other)
+	template <typename TOther, typename TOtherDeleter>
+	TSharedPointer(TSharedPointer<TOther, TOtherDeleter>& Other)
 		: Pointer(static_cast<T*>(Other.Pointer)), Deleter(Other.Deleter), ReferenceCount(Other.ReferenceCount)
 	{
 		IncrementReferenceCount();
 	}
 
-	template <typename TOther>
-	TSharedPointer(TSharedPointer<TOther>&& Other) noexcept
+	template <typename TOther, typename TOtherDeleter>
+	TSharedPointer(TSharedPointer<TOther, TOtherDeleter>&& Other) noexcept
 		: Pointer(static_cast<T*>(Other.Pointer)), Deleter(Other.Deleter), ReferenceCount(Other.ReferenceCount)
 	{
 		Other.Pointer = nullptr;
@@ -122,18 +126,19 @@ public:
 	[[nodiscard]] uint32 GetReferenceCount() const { return ReferenceCount->load(); }
 
 private:
-	void IncrementReferenceCount()
+	void IncrementReferenceCount() const
 	{
-		if (Pointer)
-			++ReferenceCount;
+		if (Pointer && ReferenceCount)
+			ReferenceCount->fetch_add(1);
 	}
 
 	void DecrementReferenceCount()
 	{
 		if (ReferenceCount == nullptr)
 			return;
-		--ReferenceCount;
-		if (GetReferenceCount() == 0)
+		ReferenceCount->fetch_sub(1);
+		uint32 Count = ReferenceCount->load();
+		if (Count == 0)
 		{
 			if (Pointer)
 				Deleter(Pointer);
