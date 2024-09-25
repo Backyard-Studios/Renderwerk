@@ -39,6 +39,14 @@ def RemoveFile(file_path):
 	if os.path.exists(file_path):
 		os.remove(file_path)
 
+def RemoveAllFilesInDirectory(directory_path, file_extension):
+	if os.path.exists(directory_path):
+		for (dirname, dirs, files) in os.walk(directory_path):
+			for file in files:
+					if file.endswith(file_extension):
+							source_file = os.path.join(dirname, file)
+							os.remove(source_file)
+
 def MoveFile(source_path, destination_path):
 	if os.path.exists(source_path):
 		shutil.move(source_path, destination_path)
