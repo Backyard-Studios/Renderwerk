@@ -2,39 +2,51 @@
 
 #include "Renderwerk/Platform/Threading/Thread.h"
 
-FThread::FThread(FThreadFunction&& InThreadFunction, const EThreadPriority& InPriority)
-	: ThreadFunction(std::move(InThreadFunction)), Priority(InPriority)
+FThread::FThread(FThreadFunction&& InThreadFunction, void* InUserData, const EThreadPriority& InPriority)
+	: FThread(std::move(InThreadFunction), InUserData, "UnnamedThread", InPriority)
 {
+}
+
+FThread::FThread(FThreadFunction&& InThreadFunction, const std::string& InTag, const EThreadPriority& InPriority)
+	: FThread(std::move(InThreadFunction), nullptr, InTag, InPriority)
+{
+}
+
+FThread::FThread(FThreadFunction&& InThreadFunction, void* InUserData, const std::string& InTag, const EThreadPriority& InPriority)
+	: ThreadFunction(std::move(InThreadFunction)), UserData(InUserData), Priority(InPriority)
+{
+	Context.Tag = InTag;
+	Context.State = EThreadState::Running;
+
 	LPTHREAD_START_ROUTINE Win32ThreadFunction = [](const LPVOID Param) -> DWORD
 	{
 		FThread* Thread = static_cast<FThread*>(Param);
-		Thread->ThreadFunction();
+
+		std::string ThreadName = Thread->Context.Tag;
+		if (ThreadName == "UnnamedThread")
+			ThreadName += std::to_string(Thread->GetThreadId());
+		RW_PROFILING_MARK_THREAD(ThreadName.c_str());
+
+		Thread->ThreadFunction(Thread->Context, Thread->UserData);
 		return 0;
 	};
-	ThreadHandle = CreateThread(nullptr, 0, Win32ThreadFunction, this, CREATE_SUSPENDED, reinterpret_cast<LPDWORD>(&ThreadId));
+	ThreadHandle = CreateThread(nullptr, 0, Win32ThreadFunction, this, 0, reinterpret_cast<LPDWORD>(&Context.ThreadId));
 	SetThreadPriority(ThreadHandle, ConvertThreadPriority(Priority));
 }
 
 FThread::~FThread()
 {
-	if (State == EThreadState::Running)
+	if (Context.State == EThreadState::Running)
 		ForceKill();
 	if (ThreadHandle)
 		CloseHandle(ThreadHandle);
-}
-
-void FThread::Start()
-{
-	DWORD Result = ResumeThread(ThreadHandle);
-	RW_DEBUG_ASSERT(Result != -1, "Failed to resume thread")
-	State = EThreadState::Running;
 }
 
 void FThread::Join()
 {
 	DWORD Result = WaitForSingleObject(ThreadHandle, INFINITE);
 	RW_DEBUG_ASSERT(Result == WAIT_OBJECT_0, "Failed to wait for thread")
-	State = EThreadState::Finished;
+	Context.State = EThreadState::Finished;
 }
 
 void FThread::ForceKill(const bool bWaitForCompletion)
@@ -44,7 +56,7 @@ void FThread::ForceKill(const bool bWaitForCompletion)
 
 	bool Result = TerminateThread(ThreadHandle, 0);
 	RW_DEBUG_ASSERT(Result, "Failed to terminate thread")
-	State = EThreadState::Finished;
+	Context.State = EThreadState::Finished;
 }
 
 int32 FThread::ConvertThreadPriority(const EThreadPriority& InPriority)
