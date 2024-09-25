@@ -141,6 +141,9 @@ public:
 private:
 	T* Pointer = nullptr;
 	TDeleter Deleter;
+
+	template <typename TOther, typename TOtherDeleter>
+	friend class TUniquePointer;
 };
 
 /**

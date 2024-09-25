@@ -149,6 +149,9 @@ private:
 	TDeleter Deleter;
 
 	std::atomic<uint32>* ReferenceCount;
+
+	template <typename TOther, typename TOtherDeleter>
+	friend class TSharedPointer;
 };
 
 template <typename T, typename... TArguments>

@@ -6,6 +6,7 @@
 #include <memory>
 #include <queue>
 #include <set>
+#include <unordered_map>
 #include <vector>
 
 #pragma region Primitive Types
@@ -45,6 +46,9 @@ using TVector = std::vector<T>;
 
 template <typename TKey, typename TValue>
 using TMap = std::map<TKey, TValue>;
+
+template <typename TKey, typename TValue>
+using TUnorderedMap = std::unordered_map<TKey, TValue>;
 
 template <typename T>
 using TSet = std::set<T>;
