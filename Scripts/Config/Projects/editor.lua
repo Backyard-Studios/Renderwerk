@@ -21,3 +21,5 @@ rw_project('Editor')
 	rw_link_project('Engine')
 	
 	rw_link_project('spdlog', rw_make_third_party_location(path.join('spdlog', 'include')))
+
+	rw_copy_d3d12_binaries()

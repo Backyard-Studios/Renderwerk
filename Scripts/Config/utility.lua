@@ -238,3 +238,29 @@ function rw_copy_output_to_directory(directory)
 		('{COPY} %{cfg.buildtarget.relpath} "' .. directory .. '"')
 	})
 end
+
+function rw_link_d3d12()
+  includedirs({
+		rw_make_third_party_location(path.join('AgilitySDK', 'include')),
+  })
+
+  links({
+    'd3d12.lib',
+    'dxgi.lib',
+    'dxguid.lib',
+  })
+
+  libdirs({
+		rw_make_third_party_location(path.join('AgilitySDK', 'bin', 'x64')),
+  })
+end
+
+function rw_copy_d3d12_binaries()
+	prebuildcommands ({
+		('{MKDIR} "' .. path.join(project_build_output_path, '%{prj.name}', 'D3D12') .. '"')
+	})
+
+  postbuildcommands ({
+		('{COPY} ' .. rw_make_third_party_location(path.join('AgilitySDK', 'bin', 'x64')) .. ' "' .. path.join(project_build_output_path, '%{prj.name}', 'D3D12') .. '"')
+	})
+end
