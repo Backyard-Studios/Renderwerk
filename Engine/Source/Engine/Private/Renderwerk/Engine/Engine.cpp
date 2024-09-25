@@ -3,9 +3,9 @@
 #include "Renderwerk/Engine/Engine.h"
 
 // Convenience macros for adding objects to the deletion queue
-#define DQ_ADD(Object) DeletionQueue.Add([this]() { Object.Reset(); })
-#define DQ_ADD_CUSTOM(Object, CustomDeletion) DeletionQueue.Add([this]() { if(Object) CustomDeletion; Object.Reset(); })
-#define DQ_ADD_CUSTOM_PREDICATE(Object, Predicate, CustomDeletion) DeletionQueue.Add([this]() { if(Object && Predicate) CustomDeletion; Object.Reset(); })
+#define DQ_ADD(Object) DeletionQueue.Add([=]() { Object.Reset(); RW_LOG_TRACE("Deleting {}", #Object); })
+#define DQ_ADD_CUSTOM(Object, CustomDeletion) DeletionQueue.Add([=]() { if(Object) CustomDeletion; Object.Reset(); RW_LOG_TRACE("Deleting {}", #Object); })
+#define DQ_ADD_CUSTOM_PREDICATE(Object, Predicate, CustomDeletion) DeletionQueue.Add([=]() { if(Object && Predicate) CustomDeletion; Object.Reset(); RW_LOG_TRACE("Deleting {}", #Object); })
 
 TSharedPointer<FEngine> GEngine = nullptr;
 

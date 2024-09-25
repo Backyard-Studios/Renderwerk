@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "Renderwerk/Core/CoreDefinitions.h"
+#include "Renderwerk/Graphics/GraphicsContext.h"
 
 struct ENGINE_API FRendererSettings
 {
@@ -16,4 +17,6 @@ public:
 
 private:
 	FRendererSettings Settings;
+
+	TSharedPointer<FGraphicsContext> GraphicsContext;
 };
