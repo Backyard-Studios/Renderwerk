@@ -35,8 +35,12 @@ public:
 public:
 	[[nodiscard]] CRITICAL_SECTION GetHandle() const { return CriticalSection; }
 
+	[[nodiscard]] bool8 IsLocked() const { return bIsLocked; }
+
 private:
 	CRITICAL_SECTION CriticalSection;
+
+	bool8 bIsLocked = false;
 };
 
 /**
@@ -50,6 +54,12 @@ public:
 
 	DELETE_COPY_AND_MOVE(FScopedLock)
 
+public:
+	void Lock();
+	void Unlock();
+
 private:
 	FMutex& Mutex;
+
+	bool bIsLocked = false;
 };

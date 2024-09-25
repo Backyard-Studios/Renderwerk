@@ -4,7 +4,9 @@
 
 FSignal::FSignal()
 {
+	ConditionVariable = {};
 	InitializeConditionVariable(&ConditionVariable);
+	Mutex = FMutex();
 }
 
 FSignal::~FSignal() = default;
@@ -19,20 +21,22 @@ bool8 FSignal::Wait(const std::function<bool8()>& Predicate, const uint64 Timeou
 	return Wait(Mutex, Predicate, Timeout);
 }
 
-bool8 FSignal::Wait(const FMutex& InMutex, const uint64 Timeout)
+bool8 FSignal::Wait(FMutex& InMutex, const uint64 Timeout)
 {
+	if (!InMutex.IsLocked())
+		InMutex.Lock();
 	CRITICAL_SECTION CriticalSection = InMutex.GetHandle();
 	BOOL Result = SleepConditionVariableCS(&ConditionVariable, &CriticalSection, static_cast<DWORD>(Timeout));
+	InMutex.Unlock();
 	return Result != 0;
 }
 
-bool8 FSignal::Wait(const FMutex& InMutex, const std::function<bool8()>& Predicate, const uint64 Timeout)
+bool8 FSignal::Wait(FMutex& InMutex, const std::function<bool8()>& Predicate, const uint64 Timeout)
 {
-	CRITICAL_SECTION CriticalSection = InMutex.GetHandle();
 	while (!Predicate())
 	{
-		BOOL Result = SleepConditionVariableCS(&ConditionVariable, &CriticalSection, static_cast<DWORD>(Timeout));
-		if (Result == 0)
+		bool8 Result = Wait(InMutex, Timeout);
+		if (!Result)
 			return false;
 	}
 	return true;

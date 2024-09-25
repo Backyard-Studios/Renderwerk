@@ -4,6 +4,7 @@
 
 FMutex::FMutex()
 {
+	CriticalSection = {};
 	InitializeCriticalSection(&CriticalSection);
 }
 
@@ -21,20 +22,40 @@ bool8 FMutex::TryLock()
 void FMutex::Lock()
 {
 	EnterCriticalSection(&CriticalSection);
+	bIsLocked = true;
 }
 
 void FMutex::Unlock()
 {
 	LeaveCriticalSection(&CriticalSection);
+	bIsLocked = false;
 }
 
 FScopedLock::FScopedLock(FMutex& InMutex)
 	: Mutex(InMutex)
 {
-	Mutex.Lock();
+	Lock();
 }
 
 FScopedLock::~FScopedLock()
 {
-	Mutex.Unlock();
+	Unlock();
+}
+
+void FScopedLock::Lock()
+{
+	if (!bIsLocked)
+	{
+		Mutex.Lock();
+		bIsLocked = true;
+	}
+}
+
+void FScopedLock::Unlock()
+{
+	if (bIsLocked)
+	{
+		Mutex.Unlock();
+		bIsLocked = false;
+	}
 }

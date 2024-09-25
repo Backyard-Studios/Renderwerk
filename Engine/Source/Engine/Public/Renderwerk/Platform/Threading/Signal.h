@@ -39,7 +39,7 @@ public:
 	 * @param Timeout The timeout in milliseconds.
 	 * @return True if the signal was notified, false if the timeout was reached.
 	 */
-	bool8 Wait(const FMutex& InMutex, uint64 Timeout = INFINITE);
+	bool8 Wait(FMutex& InMutex, uint64 Timeout = INFINITE);
 
 	/**
 	 * @brief Wait for the signal to be notified, and atomically release the given mutex. If the predicate returns false, the waiting is interrupted.
@@ -48,7 +48,7 @@ public:
 	 * @param Timeout The timeout in milliseconds.
 	 * @return True if the signal was notified, false if the timeout was reached.
 	 */
-	bool8 Wait(const FMutex& InMutex, const std::function<bool8()>& Predicate, uint64 Timeout = INFINITE);
+	bool8 Wait(FMutex& InMutex, const std::function<bool8()>& Predicate, uint64 Timeout = INFINITE);
 
 	/**
 	 * @brief Notify one thread waiting on the signal.
