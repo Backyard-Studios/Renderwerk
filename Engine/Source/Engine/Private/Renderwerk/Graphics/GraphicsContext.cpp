@@ -40,11 +40,16 @@ FGraphicsContext::~FGraphicsContext()
 #endif
 }
 
-TSharedPtr<FGraphicsAdapter> FGraphicsContext::GetSuitableAdapter(const TVector<TSharedPtr<FGraphicsAdapter>>& AvailableAdapters)
+TSharedPtr<FGraphicsAdapter> FGraphicsContext::GetSuitableAdapter(const TVector<TSharedPtr<FGraphicsAdapter>>& AvailableAdapters,
+                                                                  const FGraphicsAdapterRequirements& Requirements)
 {
 	for (const TSharedPtr<FGraphicsAdapter>& AvailableAdapter : AvailableAdapters)
 	{
-		if (AvailableAdapter->GetType() != EAdapterType::Discrete)
+		if (AvailableAdapter->GetType() != Requirements.Type)
+			continue;
+		if (AvailableAdapter->GetMaxSupportedFeatureLevel() < Requirements.MinFeatureLevel)
+			continue;
+		if (AvailableAdapter->GetMaxSupportedShaderModel() < Requirements.MinShaderModel)
 			continue;
 		return AvailableAdapter;
 	}

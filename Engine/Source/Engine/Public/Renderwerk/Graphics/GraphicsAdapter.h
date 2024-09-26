@@ -28,6 +28,13 @@ enum class ENGINE_API EAdapterType : uint8
 ENGINE_API std::string ToString(EAdapterVendor Vendor);
 ENGINE_API std::string ToString(EAdapterType Type);
 
+struct ENGINE_API FGraphicsAdapterRequirements
+{
+	EAdapterType Type = EAdapterType::Discrete;
+	D3D_FEATURE_LEVEL MinFeatureLevel = D3D_FEATURE_LEVEL_11_0;
+	D3D_SHADER_MODEL MinShaderModel = D3D_SHADER_MODEL_5_1;
+};
+
 class ENGINE_API FGraphicsAdapter
 {
 public:

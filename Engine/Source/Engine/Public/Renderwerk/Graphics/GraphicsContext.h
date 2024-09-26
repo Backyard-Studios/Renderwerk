@@ -16,7 +16,8 @@ public:
 	DELETE_COPY_AND_MOVE(FGraphicsContext)
 
 public:
-	static TSharedPtr<FGraphicsAdapter> GetSuitableAdapter(const TVector<TSharedPtr<FGraphicsAdapter>>& AvailableAdapters);
+	static TSharedPtr<FGraphicsAdapter> GetSuitableAdapter(const TVector<TSharedPtr<FGraphicsAdapter>>& AvailableAdapters,
+	                                                       const FGraphicsAdapterRequirements& Requirements);
 
 	uint32 GetAdapterCount() const;
 	TVector<TSharedPtr<FGraphicsAdapter>> GetAdapters() const;
