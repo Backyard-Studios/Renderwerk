@@ -40,6 +40,7 @@ FRenderer::FRenderer(const FRendererSettings& InSettings)
 
 FRenderer::~FRenderer()
 {
+	FlushFrames();
 	DeletionQueue.Flush();
 }
 
@@ -48,6 +49,11 @@ void FRenderer::BeginFrame()
 	RW_PROFILING_MARK_FUNCTION();
 
 	FRenderFrame& Frame = RenderFrames.at(FrameIndex);
+
+	// Wait if the frame is still in flight
+	Frame.Fence->WaitCPU();
+
+	Frame.ImageIndex = Swapchain->GetCurrentImageIndex();
 
 	TSharedPtr<FCommandList> CommandList = Frame.CommandList;
 	CommandList->Reset();
@@ -62,7 +68,19 @@ void FRenderer::EndFrame()
 	TSharedPtr<FCommandList> CommandList = Frame.CommandList;
 	CommandList->Close();
 
+	DirectCommandQueue->ExecuteCommandList(CommandList);
+	Swapchain->Present();
+	Frame.Fence->Signal(DirectCommandQueue);
+
 	FrameIndex = (FrameIndex + 1) % Settings.BufferCount;
+}
+
+void FRenderer::Resize()
+{
+	RW_PROFILING_MARK_FUNCTION();
+	FlushFrames();
+
+	Swapchain->Resize();
 }
 
 void FRenderer::SetupAdapter()
@@ -99,6 +117,8 @@ void FRenderer::SetupRenderFrames()
 	RenderFrames.resize(Settings.BufferCount);
 	for (FRenderFrame& Frame : RenderFrames)
 	{
+		Frame.Fence = Device->CreateFence();
+
 		FCommandListDesc CommandListDesc = {};
 		CommandListDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
 		Frame.CommandList = Device->CreateCommandList(CommandListDesc);
@@ -108,8 +128,21 @@ void FRenderer::SetupRenderFrames()
 	{
 		for (FRenderFrame& Frame : RenderFrames)
 		{
+			Frame.Fence.reset();
 			Frame.CommandList.reset();
 		}
 		RenderFrames.clear();
 	});
+}
+
+void FRenderer::Flush(const TSharedPtr<FCommandQueue>& InCommandQueue, const TSharedPtr<FFence>& InFence)
+{
+	InFence->Signal(InCommandQueue);
+	InFence->WaitCPU();
+}
+
+void FRenderer::FlushFrames()
+{
+	for (FRenderFrame& Frame : RenderFrames)
+		Flush(DirectCommandQueue, Frame.Fence);
 }

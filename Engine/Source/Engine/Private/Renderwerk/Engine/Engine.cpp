@@ -58,10 +58,18 @@ void FEngine::RunLoop()
 
 		WindowManager->ClearRemoveQueue();
 
-		Renderer->BeginFrame();
+		if (!MainWindow->DidResize())
 		{
+			Renderer->BeginFrame();
+			{
+			}
+			Renderer->EndFrame();
 		}
-		Renderer->EndFrame();
+		else
+		{
+			Renderer->Resize();
+			MainWindow->ResetResizeFlag();
+		}
 
 		RW_PROFILING_MARK_FRAME();
 	}

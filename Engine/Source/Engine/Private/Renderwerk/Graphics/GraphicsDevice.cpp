@@ -52,3 +52,8 @@ TSharedPtr<FDescriptorHeap> FGraphicsDevice::CreateDescriptorHeap(const FDescrip
 {
 	return MakeShared<FDescriptorHeap>(this, InDescription);
 }
+
+TSharedPtr<FFence> FGraphicsDevice::CreateFence()
+{
+	return MakeShared<FFence>(this);
+}

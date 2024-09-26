@@ -20,6 +20,9 @@ public:
 	void Reset() const;
 	void Close() const;
 
+public:
+	[[nodiscard]] ComPtr<ID3D12GraphicsCommandList10> GetHandle() const { return CommandList; }
+
 private:
 	FCommandListDesc Description;
 

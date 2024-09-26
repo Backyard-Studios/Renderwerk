@@ -20,3 +20,9 @@ FCommandQueue::~FCommandQueue()
 {
 	CommandQueue.Reset();
 }
+
+void FCommandQueue::ExecuteCommandList(const TSharedPtr<FCommandList>& CommandList) const
+{
+	ID3D12CommandList* CommandLists[] = {CommandList->GetHandle().Get()};
+	CommandQueue->ExecuteCommandLists(1, CommandLists);
+}

@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include "CommandList.h"
+
 #include "Renderwerk/Core/CoreDefinitions.h"
 #include "Renderwerk/Graphics/GraphicsCommon.h"
 
@@ -17,6 +19,9 @@ public:
 	~FCommandQueue() override;
 
 	DELETE_COPY_AND_MOVE(FCommandQueue)
+
+public:
+	void ExecuteCommandList(const TSharedPtr<FCommandList>& CommandList) const;
 
 public:
 	[[nodiscard]] ComPtr<ID3D12CommandQueue> GetHandle() const { return CommandQueue; }

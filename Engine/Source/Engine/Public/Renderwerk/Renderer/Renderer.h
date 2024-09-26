@@ -16,8 +16,9 @@ struct ENGINE_API FRendererSettings
 
 struct ENGINE_API FRenderFrame
 {
-	TSharedPtr<FCommandList> CommandList;
+	TSharedPtr<FFence> Fence;
 	uint32 ImageIndex = 0;
+	TSharedPtr<FCommandList> CommandList;
 };
 
 class ENGINE_API FRenderer
@@ -32,10 +33,17 @@ public:
 	void BeginFrame();
 	void EndFrame();
 
+	void Resize();
+
 private:
 	void SetupAdapter();
 	void SetupCommandQueues();
 	void SetupRenderFrames();
+
+	void FlushFrames();
+
+private:
+	static void Flush(const TSharedPtr<FCommandQueue>& InCommandQueue, const TSharedPtr<FFence>& InFence);
 
 private:
 	FRendererSettings Settings;
