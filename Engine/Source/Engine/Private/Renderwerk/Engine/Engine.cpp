@@ -7,9 +7,9 @@
 #define DQ_ADD_CUSTOM(Object, CustomDeletion) DeletionQueue.Add([=]() { if(Object) CustomDeletion; Object.Reset(); RW_LOG_TRACE("Deleting {}", #Object); })
 #define DQ_ADD_CUSTOM_PREDICATE(Object, Predicate, CustomDeletion) DeletionQueue.Add([=]() { if(Object && Predicate) CustomDeletion; Object.Reset(); RW_LOG_TRACE("Deleting {}", #Object); })
 
-TSharedPointer<FEngine> GEngine = nullptr;
+TSharedPtr<FEngine> GEngine = nullptr;
 
-FEngine::FEngine(const TSharedPointer<IApplication>& Application)
+FEngine::FEngine(const TSharedPtr<IApplication>& Application)
 	: Application(Application)
 {
 }
@@ -72,7 +72,7 @@ void FEngine::Shutdown()
 	DeletionQueue.Flush();
 }
 
-TSharedPointer<FEngine> GetEngine()
+TSharedPtr<FEngine> GetEngine()
 {
 	assert(GEngine);
 	return GEngine;

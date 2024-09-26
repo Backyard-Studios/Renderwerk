@@ -26,9 +26,7 @@
 #include "Renderwerk/Debug/Profiling.h"
 
 #include "Renderwerk/Memory/Memory.h"
-#include "Renderwerk/Memory/SharedPointer.h"
-#include "Renderwerk/Memory/UniquePointer.h"
-#include "Renderwerk/Memory/WeakPointer.h"
+#include "Renderwerk/Memory/SmartPointers.h"
 
 #include "Renderwerk/Platform/Guid.h"
 #include "Renderwerk/Platform/Platform.h"

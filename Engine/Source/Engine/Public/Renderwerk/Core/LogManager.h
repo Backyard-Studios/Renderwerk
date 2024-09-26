@@ -2,8 +2,7 @@
 
 #include "Renderwerk/Core/CoreDefinitions.h"
 
-#include "Renderwerk/Application/Application.h"
-#include "Renderwerk/Memory/UniquePointer.h"
+#include "Renderwerk/Memory/SmartPointers.h"
 
 #if RW_CONFIG_DEBUG
 #	define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_TRACE

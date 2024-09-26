@@ -6,7 +6,7 @@
 #include "Renderwerk/Engine/Engine.h"
 #include "Renderwerk/Platform/Platform.h"
 
-void Launch(const TSharedPointer<IApplication>& Application)
+void Launch(const TSharedPtr<IApplication>& Application)
 {
 	RW_LOG_TRACE("Initializing platform...");
 	FPlatform::Initialize();
@@ -23,13 +23,13 @@ void Shutdown()
 	if (GEngine)
 	{
 		GEngine->Shutdown();
-		GEngine.Reset();
+		GEngine.reset();
 	}
 	FPlatform::Shutdown();
 	RW_LOG_INFO("Successfully shut down");
 }
 
-int32 GuardedMain(const TSharedPointer<IApplication>& Application)
+int32 GuardedMain(const TSharedPtr<IApplication>& Application)
 {
 #if RW_PLATFORM_SUPPORTS_SEH
 	__try
@@ -46,7 +46,7 @@ int32 GuardedMain(const TSharedPointer<IApplication>& Application)
 	return FPlatform::GetExitCode();
 }
 
-int32 LaunchRenderwerk(const TSharedPointer<IApplication>& Application)
+int32 LaunchRenderwerk(const TSharedPtr<IApplication>& Application)
 {
 	FLogManager::Initialize();
 	RW_LOG_INFO("{} {} [{}]", RW_ENGINE_NAME, RW_ENGINE_FULL_VERSION, RW_PLATFORM);
