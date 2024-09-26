@@ -2,11 +2,6 @@
 
 #include "Renderwerk/Engine/Engine.h"
 
-// Convenience macros for adding objects to the deletion queue
-#define DQ_ADD(Object) DeletionQueue.Add([=]() { Object.reset(); RW_LOG_TRACE("Deleting {}", #Object); })
-#define DQ_ADD_CUSTOM(Object, CustomDeletion) DeletionQueue.Add([=]() { if(Object) CustomDeletion; Object.reset(); RW_LOG_TRACE("Deleting {}", #Object); })
-#define DQ_ADD_CUSTOM_PREDICATE(Object, Predicate, CustomDeletion) DeletionQueue.Add([=]() { if(Object && Predicate) CustomDeletion; Object.reset(); RW_LOG_TRACE("Deleting {}", #Object); })
-
 TSharedPtr<FEngine> GEngine = nullptr;
 
 FEngine::FEngine(const TSharedPtr<IApplication>& Application)
@@ -62,6 +57,11 @@ void FEngine::RunLoop()
 			RequestShutdown();
 
 		WindowManager->ClearRemoveQueue();
+
+		Renderer->BeginFrame();
+		{
+		}
+		Renderer->EndFrame();
 
 		RW_PROFILING_MARK_FRAME();
 	}
