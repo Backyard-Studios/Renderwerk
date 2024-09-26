@@ -2,6 +2,7 @@
 
 #include "Renderwerk/Core/CoreDefinitions.h"
 #include "Renderwerk/Core/CoreTypes.h"
+#include "Renderwerk/Memory/SmartPointers.h"
 
 #include "Renderwerk/Platform/Window.h"
 
@@ -18,14 +19,14 @@ public:
 	void ClearRemoveQueue();
 
 	[[nodiscard]] bool Exists(const FGuid& Id) const;
-	[[nodiscard]] bool Exists(const TSharedPointer<FWindow>& Id) const;
-	[[nodiscard]] TSharedPointer<FWindow> Create(const FWindowSettings& Settings);
-	[[nodiscard]] TSharedPointer<FWindow> Get(const FGuid& Id) const;
+	[[nodiscard]] bool Exists(const TSharedPtr<FWindow>& Id) const;
+	[[nodiscard]] TSharedPtr<FWindow> Create(const FWindowSettings& Settings);
+	[[nodiscard]] TSharedPtr<FWindow> Get(const FGuid& Id) const;
 
 	void Remove(const FGuid& Id);
-	void Remove(const TSharedPointer<FWindow>& Id);
+	void Remove(const TSharedPtr<FWindow>& Id);
 
 private:
-	TMap<FGuid, TSharedPointer<FWindow>> Windows;
+	TMap<FGuid, TSharedPtr<FWindow>> Windows;
 	TQueue<FGuid> RemoveQueue;
 };

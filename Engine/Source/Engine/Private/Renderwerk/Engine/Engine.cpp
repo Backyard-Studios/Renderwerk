@@ -4,9 +4,9 @@
 
 #include <cassert>
 
-TSharedPointer<FEngine> GEngine = nullptr;
+TSharedPtr<FEngine> GEngine = nullptr;
 
-FEngine::FEngine(const TSharedPointer<IApplication>& Application)
+FEngine::FEngine(const TSharedPtr<IApplication>& Application)
 	: Application(Application)
 {
 }
@@ -34,14 +34,14 @@ void FEngine::Initialize()
 	{
 		if (WindowManager)
 			WindowManager->ClearRemoveQueue();
-		WindowManager.Reset();
+		WindowManager.reset();
 	});
 
 	DeletionQueue.Add([this]()
 	{
 		if (Application)
 			Application->Shutdown();
-		Application.Reset();
+		Application.reset();
 	});
 	Application->Initialize();
 	RW_LOG_INFO("Application \"{}\" v{} initialized", Application->GetMetadata().Name, FormatVersion(Application->GetMetadata().Version));
@@ -52,7 +52,7 @@ void FEngine::Initialize()
 	{
 		if (MainWindow && WindowManager)
 			WindowManager->Remove(MainWindow);
-		MainWindow.Reset();
+		MainWindow.reset();
 	});
 	MainWindow->AppendTitle(" [App: " + Application->GetMetadata().Name + ", AppVersion: v" + FormatVersion(Application->GetMetadata().Version) + "]");
 
@@ -81,7 +81,7 @@ void FEngine::Shutdown()
 	DeletionQueue.Flush();
 }
 
-TSharedPointer<FEngine> GetEngine()
+TSharedPtr<FEngine> GetEngine()
 {
 	assert(GEngine);
 	return GEngine;

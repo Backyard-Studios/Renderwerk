@@ -2,7 +2,7 @@
 
 #include "Renderwerk/Core/CoreDefinitions.h"
 #include "Renderwerk/Core/CoreTypes.h"
-#include "Renderwerk/Memory/SharedPointer.h"
+#include "Renderwerk/Memory/SmartPointers.h"
 
 class FWindow;
 
@@ -14,7 +14,7 @@ struct ENGINE_API FWindowSettings
 	int32 PositionY = 200;
 	std::string Title = RW_ENGINE_NAME " " RW_ENGINE_FULL_VERSION;
 	bool bIsVisibleAfterCreation = false;
-	TSharedPointer<FWindow> ParentWindow = nullptr;
+	TSharedPtr<FWindow> ParentWindow = nullptr;
 };
 
 struct ENGINE_API FWindowState
@@ -31,7 +31,7 @@ struct ENGINE_API FWindowState
 	bool bIsClosed = false;
 	bool bIsDestroyed = false;
 	std::string Title = "";
-	TSharedPointer<FWindow> ParentWindow = nullptr;
+	TSharedPtr<FWindow> ParentWindow = nullptr;
 };
 
 class ENGINE_API FWindow

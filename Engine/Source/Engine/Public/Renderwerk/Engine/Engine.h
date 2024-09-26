@@ -1,15 +1,16 @@
 ﻿#pragma once
 
+#include "Renderwerk/Application/Application.h"
 #include "Renderwerk/Core/CoreDefinitions.h"
 #include "Renderwerk/Memory/DeletionQueue.h"
 
-#include "Renderwerk/Memory/SharedPointer.h"
+#include "Renderwerk/Memory/SmartPointers.h"
 #include "Renderwerk/Platform/WindowManager.h"
 
 class ENGINE_API FEngine
 {
 public:
-	FEngine(const TSharedPointer<IApplication>& Application);
+	FEngine(const TSharedPtr<IApplication>& Application);
 	~FEngine();
 
 public:
@@ -23,24 +24,24 @@ private:
 	void Shutdown();
 
 public:
-	[[nodiscard]] TSharedPointer<FWindowManager> GetWindowManager() const { return WindowManager; }
-	[[nodiscard]] TSharedPointer<FWindow> GetMainWindow() const { return MainWindow; }
+	[[nodiscard]] TSharedPtr<FWindowManager> GetWindowManager() const { return WindowManager; }
+	[[nodiscard]] TSharedPtr<FWindow> GetMainWindow() const { return MainWindow; }
 
 	[[nodiscard]] bool IsShutdownRequested() const { return bIsShutdownRequested; }
 
 private:
-	TSharedPointer<IApplication> Application;
+	TSharedPtr<IApplication> Application;
 
 	bool bIsShutdownRequested = false;
 
 	FDeletionQueue DeletionQueue;
-	TSharedPointer<FWindowManager> WindowManager;
-	TSharedPointer<FWindow> MainWindow;
+	TSharedPtr<FWindowManager> WindowManager;
+	TSharedPtr<FWindow> MainWindow;
 
-	friend void Launch(const TSharedPointer<IApplication>& Application);
+	friend void Launch(const TSharedPtr<IApplication>& Application);
 	friend void Shutdown();
 };
 
-ENGINE_API extern TSharedPointer<FEngine> GEngine;
+ENGINE_API extern TSharedPtr<FEngine> GEngine;
 
-ENGINE_API TSharedPointer<FEngine> GetEngine();
+ENGINE_API TSharedPtr<FEngine> GetEngine();

@@ -8,8 +8,8 @@ FWindowManager::FWindowManager()
 
 FWindowManager::~FWindowManager()
 {
-	for (TSharedPointer<FWindow>& Window : Windows | std::views::values)
-		Window.Reset();
+	for (TSharedPtr<FWindow>& Window : Windows | std::views::values)
+		Window.reset();
 	Windows.clear();
 }
 
@@ -33,7 +33,7 @@ void FWindowManager::Update()
 	{
 		RW_PROFILING_MARK_SCOPE("CollectDestroyedWindows");
 
-		for (const TSharedPointer<FWindow>& Window : Windows | std::views::values)
+		for (const TSharedPtr<FWindow>& Window : Windows | std::views::values)
 		{
 			if (Window->GetWindowState().bIsDestroyed)
 				Remove(Window);
@@ -59,20 +59,20 @@ bool FWindowManager::Exists(const FGuid& Id) const
 	return Windows.contains(Id);
 }
 
-bool FWindowManager::Exists(const TSharedPointer<FWindow>& Id) const
+bool FWindowManager::Exists(const TSharedPtr<FWindow>& Id) const
 {
 	return Exists(Id->GetGuid());
 }
 
-TSharedPointer<FWindow> FWindowManager::Create(const FWindowSettings& Settings)
+TSharedPtr<FWindow> FWindowManager::Create(const FWindowSettings& Settings)
 {
-	TSharedPointer<FWindow> Window = MakeShared<FWindow>(Settings);
+	TSharedPtr<FWindow> Window = MakeShared<FWindow>(Settings);
 	Windows.insert({Window->GetGuid(), Window});
 	RW_LOG_INFO("New Window created: {} [Title: {}, Size: {}x{}]", Window->GetGuid().ToString(), Settings.Title, Settings.Width, Settings.Height);
 	return Window;
 }
 
-TSharedPointer<FWindow> FWindowManager::Get(const FGuid& Id) const
+TSharedPtr<FWindow> FWindowManager::Get(const FGuid& Id) const
 {
 	return Windows.at(Id);
 }
@@ -85,7 +85,7 @@ void FWindowManager::Remove(const FGuid& Id)
 	RemoveQueue.push(Id);
 }
 
-void FWindowManager::Remove(const TSharedPointer<FWindow>& Id)
+void FWindowManager::Remove(const TSharedPtr<FWindow>& Id)
 {
 	Remove(Id->GetGuid());
 }

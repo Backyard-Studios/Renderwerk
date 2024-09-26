@@ -3,7 +3,7 @@
 #include "Renderwerk/Application/Application.h"
 #include "Renderwerk/Core/CoreDefinitions.h"
 #include "Renderwerk/Core/CoreTypes.h"
-#include "Renderwerk/Memory/SharedPointer.h"
+#include "Renderwerk/Memory/SmartPointers.h"
 
 #if RW_KIND_CONSOLE_APP
 #	define PLATFORM_LAUNCH_HEADER int main(int ArgumentCount, char* Arguments[])
@@ -12,7 +12,7 @@
 #endif
 
 
-ENGINE_API int32 LaunchRenderwerk(const TSharedPointer<IApplication>& Application);
+ENGINE_API int32 LaunchRenderwerk(const TSharedPtr<IApplication>& Application);
 
 #define LAUNCH_RENDERWERK(Application, ...) \
 	PLATFORM_LAUNCH_HEADER \
