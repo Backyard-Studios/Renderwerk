@@ -32,6 +32,7 @@ public:
 	[[nodiscard]] ComPtr<ID3D12Device14> GetHandle() const { return Device; }
 
 	[[nodiscard]] TSharedPtr<FGraphicsAdapter> GetAdapter() const { return Description.Adapter; }
+	[[nodiscard]] ComPtr<D3D12MA::Allocator> GetResourceAllocator() const { return ResourceAllocator; }
 
 private:
 	FGraphicsDeviceDesc Description;
@@ -43,4 +44,6 @@ private:
 	ComPtr<ID3D12InfoQueue1> InfoQueue;
 	DWORD InfoQueueCookie;
 #endif
+
+	ComPtr<D3D12MA::Allocator> ResourceAllocator;
 };

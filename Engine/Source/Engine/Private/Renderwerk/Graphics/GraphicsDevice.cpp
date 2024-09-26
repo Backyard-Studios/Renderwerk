@@ -21,10 +21,17 @@ FGraphicsDevice::FGraphicsDevice(const FGraphicsDeviceDesc& InDescription)
 	CHECK_RESULT(InfoQueue->RegisterMessageCallback(InfoQueueCallback, D3D12_MESSAGE_CALLBACK_FLAG_NONE, nullptr, &InfoQueueCookie),
 	             "Failed to register message callback")
 #endif
+
+	D3D12MA::ALLOCATOR_DESC AllocatorDesc = {};
+	AllocatorDesc.pDevice = Device.Get();
+	AllocatorDesc.pAdapter = Adapter->GetHandle().Get();
+
+	CHECK_RESULT(D3D12MA::CreateAllocator(&AllocatorDesc, &ResourceAllocator), "Failed to create D3D12 resource allocator")
 }
 
 FGraphicsDevice::~FGraphicsDevice()
 {
+	ResourceAllocator.Reset();
 #if RW_ENABLE_D3D12_DEBUG_LAYER
 	if (InfoQueue)
 	{
