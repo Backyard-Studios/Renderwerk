@@ -5,7 +5,7 @@
 #include "Renderwerk/Engine/Engine.h"
 
 FRenderer::FRenderer(const FRendererSettings& InSettings)
-	: Settings(InSettings), FrameBuffer(InSettings.BufferCount)
+	: Settings(InSettings)
 {
 	GraphicsContext = MakeShared<FGraphicsContext>();
 	DQ_ADD(GraphicsContext);
@@ -18,6 +18,7 @@ FRenderer::FRenderer(const FRendererSettings& InSettings)
 	DQ_ADD(Device);
 
 	SetupCommandQueues();
+	SetupRenderFrames();
 
 	GetEngine()->GetMainWindow()->AppendTitle(std::format(" | D3D12 <{}>", ToString(Adapter->GetMaxSupportedShaderModel())));
 }
@@ -31,16 +32,22 @@ void FRenderer::BeginFrame()
 {
 	RW_PROFILING_MARK_FUNCTION();
 
-	FRenderFrame* Frame = FrameBuffer.GetCurrentBuffer();
+	FRenderFrame& Frame = RenderFrames.at(FrameIndex);
+
+	TSharedPtr<FCommandList> CommandList = Frame.CommandList;
+	CommandList->Reset();
 }
 
 void FRenderer::EndFrame()
 {
 	RW_PROFILING_MARK_FUNCTION();
 
-	FRenderFrame* Frame = FrameBuffer.GetCurrentBuffer();
+	FRenderFrame& Frame = RenderFrames.at(FrameIndex);
 
-	FrameBuffer.AdvanceIndex();
+	TSharedPtr<FCommandList> CommandList = Frame.CommandList;
+	CommandList->Close();
+
+	FrameIndex = (FrameIndex + 1) % Settings.BufferCount;
 }
 
 void FRenderer::SetupAdapter()
@@ -70,4 +77,24 @@ void FRenderer::SetupCommandQueues()
 	ComputeCommandQueueDesc.Type = D3D12_COMMAND_LIST_TYPE_COMPUTE;
 	ComputeCommandQueue = Device->CreateCommandQueue(ComputeCommandQueueDesc);
 	DQ_ADD(ComputeCommandQueue);
+}
+
+void FRenderer::SetupRenderFrames()
+{
+	RenderFrames.resize(Settings.BufferCount);
+	for (FRenderFrame& Frame : RenderFrames)
+	{
+		FCommandListDesc CommandListDesc = {};
+		CommandListDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
+		Frame.CommandList = Device->CreateCommandList(CommandListDesc);
+		Frame.CommandList->Close();
+	}
+	DeletionQueue.Add([=]()
+	{
+		for (FRenderFrame& Frame : RenderFrames)
+		{
+			Frame.CommandList.reset();
+		}
+		RenderFrames.clear();
+	});
 }

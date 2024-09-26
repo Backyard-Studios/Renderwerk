@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include "CommandList.h"
 #include "CommandQueue.h"
 #include "GraphicsAdapter.h"
 
@@ -21,6 +22,7 @@ public:
 
 public:
 	[[nodiscard]] TSharedPtr<FCommandQueue> CreateCommandQueue(const FCommandQueueDesc& InDescription);
+	[[nodiscard]] TSharedPtr<FCommandList> CreateCommandList(const FCommandListDesc& InDescription);
 
 public:
 	[[nodiscard]] ComPtr<ID3D12Device14> GetHandle() const { return Device; }

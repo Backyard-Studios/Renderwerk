@@ -1,12 +1,12 @@
 ﻿#pragma once
 
 #include "Renderwerk/Core/CoreDefinitions.h"
+#include "Renderwerk/Graphics/CommandList.h"
 #include "Renderwerk/Memory/SmartPointers.h"
 
 #include "Renderwerk/Graphics/GraphicsContext.h"
 #include "Renderwerk/Graphics/GraphicsDevice.h"
 #include "Renderwerk/Memory/DeletionQueue.h"
-#include "Renderwerk/Memory/FrameBuffer.h"
 
 struct ENGINE_API FRendererSettings
 {
@@ -15,6 +15,8 @@ struct ENGINE_API FRendererSettings
 
 struct ENGINE_API FRenderFrame
 {
+	TSharedPtr<FCommandList> CommandList;
+	uint32 ImageIndex = 0;
 };
 
 class ENGINE_API FRenderer
@@ -32,6 +34,7 @@ public:
 private:
 	void SetupAdapter();
 	void SetupCommandQueues();
+	void SetupRenderFrames();
 
 private:
 	FRendererSettings Settings;
@@ -45,5 +48,6 @@ private:
 	TSharedPtr<FCommandQueue> DirectCommandQueue;
 	TSharedPtr<FCommandQueue> ComputeCommandQueue;
 
-	TFrameBuffer<FRenderFrame> FrameBuffer;
+	uint32 FrameIndex = 0;
+	TVector<FRenderFrame> RenderFrames;
 };

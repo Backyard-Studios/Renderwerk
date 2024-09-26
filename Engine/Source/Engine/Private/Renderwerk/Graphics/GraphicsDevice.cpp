@@ -2,9 +2,10 @@
 
 #include "Renderwerk/Graphics/GraphicsDevice.h"
 
-void InfoQueueCallback(D3D12_MESSAGE_CATEGORY Category, D3D12_MESSAGE_SEVERITY Severity, D3D12_MESSAGE_ID MessageId, LPCSTR Description, void* Context)
+void InfoQueueCallback(D3D12_MESSAGE_CATEGORY Category, D3D12_MESSAGE_SEVERITY Severity, D3D12_MESSAGE_ID MessageId, const LPCSTR Description, void* Context)
 {
-	RW_LOG_ERROR("D3D12 Message: {}", Description);
+	// RW_LOG_ERROR("D3D12 Message: {}", Description);
+	printf("D3D12 Message: %s\n", Description);
 }
 
 FGraphicsDevice::FGraphicsDevice(const FGraphicsDeviceDesc& InDescription)
@@ -40,4 +41,9 @@ FGraphicsDevice::~FGraphicsDevice()
 TSharedPtr<FCommandQueue> FGraphicsDevice::CreateCommandQueue(const FCommandQueueDesc& InDescription)
 {
 	return MakeShared<FCommandQueue>(this, InDescription);
+}
+
+TSharedPtr<FCommandList> FGraphicsDevice::CreateCommandList(const FCommandListDesc& InDescription)
+{
+	return MakeShared<FCommandList>(this, InDescription);
 }
