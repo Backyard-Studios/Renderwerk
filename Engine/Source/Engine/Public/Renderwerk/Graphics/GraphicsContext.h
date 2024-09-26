@@ -1,10 +1,11 @@
 ﻿#pragma once
 
-#include "GraphicsAdapter.h"
 
 #include "Renderwerk/Core/CoreDefinitions.h"
+#include "Renderwerk/Memory/SmartPointers.h"
 
 #include "Renderwerk/Graphics/D3D12Include.h"
+#include "Renderwerk/Graphics/GraphicsAdapter.h"
 
 class ENGINE_API FGraphicsContext
 {
@@ -15,7 +16,7 @@ public:
 	DELETE_COPY_AND_MOVE(FGraphicsContext)
 
 public:
-	TSharedPointer<FGraphicsAdapter> GetSuitableAdapter() const;
+	TSharedPtr<FGraphicsAdapter> GetSuitableAdapter() const;
 
 private:
 #if RW_ENABLE_D3D12_DEBUG_LAYER

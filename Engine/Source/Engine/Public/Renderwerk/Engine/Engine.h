@@ -12,7 +12,7 @@ class ENGINE_API FEngine
 {
 public:
 	FEngine(const TSharedPtr<IApplication>& Application);
-	~FEngine(); 
+	~FEngine();
 
 public:
 	void RequestShutdown();

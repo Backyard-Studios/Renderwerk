@@ -1,6 +1,8 @@
 ﻿#pragma once
 
 #include "Renderwerk/Core/CoreDefinitions.h"
+#include "Renderwerk/Memory/SmartPointers.h"
+
 #include "Renderwerk/Graphics/GraphicsContext.h"
 
 struct ENGINE_API FRendererSettings
@@ -18,6 +20,6 @@ public:
 private:
 	FRendererSettings Settings;
 
-	TSharedPointer<FGraphicsContext> GraphicsContext;
-	TSharedPointer<FGraphicsAdapter> Adapter;
+	TSharedPtr<FGraphicsContext> GraphicsContext;
+	TSharedPtr<FGraphicsAdapter> Adapter;
 };

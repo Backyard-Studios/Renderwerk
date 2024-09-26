@@ -18,6 +18,6 @@ FRenderer::FRenderer(const FRendererSettings& InSettings)
 
 FRenderer::~FRenderer()
 {
-	Adapter.Reset();
-	GraphicsContext.Reset();
+	Adapter.reset();
+	GraphicsContext.reset();
 }
