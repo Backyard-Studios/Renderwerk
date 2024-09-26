@@ -40,20 +40,39 @@ FGraphicsContext::~FGraphicsContext()
 #endif
 }
 
-TSharedPtr<FGraphicsAdapter> FGraphicsContext::GetSuitableAdapter() const
+TSharedPtr<FGraphicsAdapter> FGraphicsContext::GetSuitableAdapter(const TVector<TSharedPtr<FGraphicsAdapter>>& AvailableAdapters)
 {
-	ComPtr<IDXGIAdapter4> Adapter;
-	for (uint32 AdapterIndex = 0; Factory->EnumAdapterByGpuPreference(AdapterIndex, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, IID_PPV_ARGS(&Adapter)) != DXGI_ERROR_NOT_FOUND;
-	     ++AdapterIndex)
+	for (const TSharedPtr<FGraphicsAdapter>& AvailableAdapter : AvailableAdapters)
 	{
-		TSharedPtr<FGraphicsAdapter> GraphicsAdapter = MakeShared<FGraphicsAdapter>(Adapter);
-		if (GraphicsAdapter->IsSoftwareBased())
-		{
-			GraphicsAdapter.reset();
-			Adapter.Reset();
+		if (AvailableAdapter->GetType() != EAdapterType::Discrete)
 			continue;
-		}
-		return GraphicsAdapter;
+		return AvailableAdapter;
 	}
 	return nullptr;
+}
+
+uint32 FGraphicsContext::GetAdapterCount() const
+{
+	uint32 AdapterCount = 0;
+	ComPtr<IDXGIAdapter> TempAdapter;
+	for (uint32 AdapterIndex = 0; Factory->EnumAdapterByGpuPreference(AdapterIndex, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, IID_PPV_ARGS(&TempAdapter)) !=
+	     DXGI_ERROR_NOT_FOUND; ++AdapterIndex)
+	{
+		++AdapterCount;
+		TempAdapter.Reset();
+	}
+	return AdapterCount;
+}
+
+TVector<TSharedPtr<FGraphicsAdapter>> FGraphicsContext::GetAdapters() const
+{
+	TVector<TSharedPtr<FGraphicsAdapter>> Adapters;
+	uint32 AdapterCount = GetAdapterCount();
+	for (uint32 Index = 0; Index < AdapterCount; ++Index)
+	{
+		ComPtr<IDXGIAdapter4> TempAdapter;
+		CHECK_RESULT(Factory->EnumAdapterByGpuPreference(Index, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, IID_PPV_ARGS(&TempAdapter)), "Failed to get adapter")
+		Adapters.push_back(MakeShared<FGraphicsAdapter>(TempAdapter));
+	}
+	return Adapters;
 }

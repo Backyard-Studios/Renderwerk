@@ -16,7 +16,10 @@ public:
 	DELETE_COPY_AND_MOVE(FGraphicsContext)
 
 public:
-	TSharedPtr<FGraphicsAdapter> GetSuitableAdapter() const;
+	static TSharedPtr<FGraphicsAdapter> GetSuitableAdapter(const TVector<TSharedPtr<FGraphicsAdapter>>& AvailableAdapters);
+
+	uint32 GetAdapterCount() const;
+	TVector<TSharedPtr<FGraphicsAdapter>> GetAdapters() const;
 
 private:
 #if RW_ENABLE_D3D12_DEBUG_LAYER
