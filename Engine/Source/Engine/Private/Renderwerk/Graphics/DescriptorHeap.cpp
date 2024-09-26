@@ -42,15 +42,19 @@ FDescriptorHeap::FDescriptorHeap(FGraphicsDevice* InDevice, const FDescriptorHea
 
 	DescriptorSize = Device->GetHandle()->GetDescriptorHandleIncrementSize(Description.Type);
 	CPUStartHandle = Heap->GetCPUDescriptorHandleForHeapStart();
-	GPUStartHandle = Heap->GetGPUDescriptorHandleForHeapStart();
+
+	if (bIsShaderVisible)
+		GPUStartHandle = Heap->GetGPUDescriptorHandleForHeapStart();
 
 	for (uint32 Index = 0; Index < Description.Capacity; ++Index)
 	{
 		D3D12_CPU_DESCRIPTOR_HANDLE CPUHandle = CPUStartHandle;
 		CPUHandle.ptr += Index * DescriptorSize;
 
+
 		D3D12_GPU_DESCRIPTOR_HANDLE GPUHandle = GPUStartHandle;
-		GPUHandle.ptr += Index * DescriptorSize;
+		if (bIsShaderVisible)
+			GPUHandle.ptr += Index * DescriptorSize;
 
 		FreeHandles.push(FDescriptorHandle(this, CPUHandle, GPUHandle));
 	}

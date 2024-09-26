@@ -2,6 +2,7 @@
 
 #include "CommandList.h"
 #include "CommandQueue.h"
+#include "DescriptorHeap.h"
 #include "GraphicsAdapter.h"
 
 #include "Renderwerk/Core/CoreDefinitions.h"
@@ -23,6 +24,7 @@ public:
 public:
 	[[nodiscard]] TSharedPtr<FCommandQueue> CreateCommandQueue(const FCommandQueueDesc& InDescription);
 	[[nodiscard]] TSharedPtr<FCommandList> CreateCommandList(const FCommandListDesc& InDescription);
+	[[nodiscard]] TSharedPtr<FDescriptorHeap> CreateDescriptorHeap(const FDescriptorHeapDesc& InDescription);
 
 public:
 	[[nodiscard]] ComPtr<ID3D12Device14> GetHandle() const { return Device; }

@@ -47,3 +47,8 @@ TSharedPtr<FCommandList> FGraphicsDevice::CreateCommandList(const FCommandListDe
 {
 	return MakeShared<FCommandList>(this, InDescription);
 }
+
+TSharedPtr<FDescriptorHeap> FGraphicsDevice::CreateDescriptorHeap(const FDescriptorHeapDesc& InDescription)
+{
+	return MakeShared<FDescriptorHeap>(this, InDescription);
+}

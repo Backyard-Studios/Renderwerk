@@ -18,6 +18,21 @@ FRenderer::FRenderer(const FRendererSettings& InSettings)
 	DQ_ADD(Device);
 
 	SetupCommandQueues();
+
+	FDescriptorHeapDesc RenderTargetViewHeapDesc;
+	RenderTargetViewHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+	RenderTargetViewHeapDesc.Capacity = Settings.BufferCount;
+	RenderTargetViewHeap = Device->CreateDescriptorHeap(RenderTargetViewHeapDesc);
+	DQ_ADD(RenderTargetViewHeap);
+
+	FSwapchainDesc SwapchainDesc = {};
+	SwapchainDesc.Device = Device;
+	SwapchainDesc.CommandQueue = DirectCommandQueue;
+	SwapchainDesc.RenderTargetViewHeap = RenderTargetViewHeap;
+	SwapchainDesc.Window = GetEngine()->GetMainWindow(); // TODO: This is a temporary solution
+	Swapchain = GraphicsContext->CreateSwapchain(SwapchainDesc);
+	DQ_ADD(Swapchain);
+
 	SetupRenderFrames();
 
 	GetEngine()->GetMainWindow()->AppendTitle(std::format(" | D3D12 <{}>", ToString(Adapter->GetMaxSupportedShaderModel())));

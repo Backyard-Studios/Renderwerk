@@ -81,3 +81,8 @@ TVector<TSharedPtr<FGraphicsAdapter>> FGraphicsContext::GetAdapters() const
 	}
 	return Adapters;
 }
+
+TSharedPtr<FSwapchain> FGraphicsContext::CreateSwapchain(const FSwapchainDesc& Description)
+{
+	return MakeShared<FSwapchain>(this, Description);
+}

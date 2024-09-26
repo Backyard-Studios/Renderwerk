@@ -4,7 +4,30 @@
 
 #include "Renderwerk/Graphics/D3D12Include.h"
 
+class FGraphicsContext;
 class FGraphicsDevice;
+
+class ENGINE_API IGraphicsContextChild
+{
+public:
+	IGraphicsContextChild(FGraphicsContext* InContext)
+		: Context(InContext)
+	{
+	}
+
+	virtual ~IGraphicsContextChild()
+	{
+		Context = nullptr;
+	}
+
+	DEFINE_DEFAULT_COPY_AND_MOVE(IGraphicsContextChild)
+
+public:
+	[[nodiscard]] FGraphicsContext* GetDevice() const { return Context; }
+
+protected:
+	FGraphicsContext* Context;
+};
 
 class ENGINE_API IGraphicsDeviceChild
 {

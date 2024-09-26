@@ -1,6 +1,8 @@
 ﻿#pragma once
 
 
+#include "Swapchain.h"
+
 #include "Renderwerk/Core/CoreDefinitions.h"
 #include "Renderwerk/Memory/SmartPointers.h"
 
@@ -16,11 +18,17 @@ public:
 	DELETE_COPY_AND_MOVE(FGraphicsContext)
 
 public:
+	uint32 GetAdapterCount() const;
+	TVector<TSharedPtr<FGraphicsAdapter>> GetAdapters() const;
+
+	[[nodiscard]] TSharedPtr<FSwapchain> CreateSwapchain(const FSwapchainDesc& Description);
+
+public:
 	static TSharedPtr<FGraphicsAdapter> GetSuitableAdapter(const TVector<TSharedPtr<FGraphicsAdapter>>& AvailableAdapters,
 	                                                       const FGraphicsAdapterRequirements& Requirements);
 
-	uint32 GetAdapterCount() const;
-	TVector<TSharedPtr<FGraphicsAdapter>> GetAdapters() const;
+public:
+	[[nodiscard]] ComPtr<IDXGIFactory6> GetFactory() const { return Factory; }
 
 private:
 #if RW_ENABLE_D3D12_DEBUG_LAYER
