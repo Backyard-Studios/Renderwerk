@@ -29,3 +29,26 @@ void FCommandList::Close() const
 {
 	CHECK_RESULT(CommandList->Close(), "Failed to close command list")
 }
+
+void FCommandList::TransitionResource(const ComPtr<ID3D12Resource2>& Resource, const D3D12_RESOURCE_STATES StateBefore, const D3D12_RESOURCE_STATES StateAfter) const
+{
+	D3D12_RESOURCE_BARRIER ResourceBarrier = {};
+	ResourceBarrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	ResourceBarrier.Transition.pResource = Resource.Get();
+	ResourceBarrier.Transition.StateBefore = StateBefore;
+	ResourceBarrier.Transition.StateAfter = StateAfter;
+	ResourceBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+	CommandList->ResourceBarrier(1, &ResourceBarrier);
+}
+
+void FCommandList::SetRenderTargetView(const FDescriptorHandle& RenderTargetViewHandle) const
+{
+	D3D12_CPU_DESCRIPTOR_HANDLE RenderTargetView = RenderTargetViewHandle.GetCPUHandle();
+	CommandList->OMSetRenderTargets(1, &RenderTargetView, FALSE, nullptr);
+}
+
+void FCommandList::ClearRenderTargetView(const FDescriptorHandle& RenderTargetViewHandle, const FClearColor& ClearColor) const
+{
+	float32 ClearColorArray[4] = {ClearColor.Red, ClearColor.Green, ClearColor.Blue, ClearColor.Alpha};
+	CommandList->ClearRenderTargetView(RenderTargetViewHandle.GetCPUHandle(), ClearColorArray, 0, nullptr);
+}

@@ -57,6 +57,12 @@ void FRenderer::BeginFrame()
 
 	TSharedPtr<FCommandList> CommandList = Frame.CommandList;
 	CommandList->Reset();
+	{
+		CommandList->TransitionResource(Swapchain->GetCurrentImage(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
+
+		CommandList->SetRenderTargetView(Swapchain->GetCurrentRenderTargetViewHandle());
+		CommandList->ClearRenderTargetView(Swapchain->GetCurrentRenderTargetViewHandle(), {0.1f, 0.1f, 0.1f, 1.0f});
+	}
 }
 
 void FRenderer::EndFrame()
@@ -66,6 +72,9 @@ void FRenderer::EndFrame()
 	FRenderFrame& Frame = RenderFrames.at(FrameIndex);
 
 	TSharedPtr<FCommandList> CommandList = Frame.CommandList;
+	{
+		CommandList->TransitionResource(Swapchain->GetCurrentImage(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
+	}
 	CommandList->Close();
 
 	DirectCommandQueue->ExecuteCommandList(CommandList);
