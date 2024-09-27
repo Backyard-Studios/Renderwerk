@@ -27,6 +27,7 @@ public:
 	[[nodiscard]] TSharedPtr<FCommandList> CreateCommandList(const FCommandListDesc& InDescription);
 	[[nodiscard]] TSharedPtr<FDescriptorHeap> CreateDescriptorHeap(const FDescriptorHeapDesc& InDescription);
 	[[nodiscard]] TSharedPtr<FFence> CreateFence();
+	[[nodiscard]] ComPtr<ID3D12PipelineState> CreatePipelineState(const D3D12_GRAPHICS_PIPELINE_STATE_DESC& Description) const;
 
 public:
 	[[nodiscard]] ComPtr<ID3D12Device14> GetHandle() const { return Device; }

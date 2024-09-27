@@ -64,3 +64,11 @@ TSharedPtr<FFence> FGraphicsDevice::CreateFence()
 {
 	return MakeShared<FFence>(this);
 }
+
+ComPtr<ID3D12PipelineState> FGraphicsDevice::CreatePipelineState(const D3D12_GRAPHICS_PIPELINE_STATE_DESC& Description) const
+{
+	ComPtr<ID3D12PipelineState> PipelineState;
+	CHECK_RESULT(Device->CreateGraphicsPipelineState(&Description, IID_PPV_ARGS(&PipelineState)),
+	             "Failed to create D3D12 pipeline state")
+	return PipelineState;
+}
