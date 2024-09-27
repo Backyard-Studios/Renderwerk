@@ -35,6 +35,9 @@ FRenderer::FRenderer(const FRendererSettings& InSettings)
 
 	SetupRenderFrames();
 
+	ShaderCompiler = MakeShared<FShaderCompiler>();
+	DQ_ADD(ShaderCompiler);
+
 	GetEngine()->GetMainWindow()->AppendTitle(std::format(" | D3D12 <{}>", ToString(Adapter->GetMaxSupportedShaderModel())));
 }
 

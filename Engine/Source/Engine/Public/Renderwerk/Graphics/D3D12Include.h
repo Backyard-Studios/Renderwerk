@@ -11,6 +11,8 @@
 
 #include "D3D12MemAlloc.h"
 
+#include "dxcapi.h"
+
 using Microsoft::WRL::ComPtr;
 
 #define CHECK_RESULT(Result, ...) RW_DEBUG_ASSERT(SUCCEEDED(Result), __VA_ARGS__)

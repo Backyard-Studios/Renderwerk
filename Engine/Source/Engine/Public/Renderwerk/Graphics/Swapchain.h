@@ -42,6 +42,8 @@ public:
 public:
 	[[nodiscard]] ComPtr<IDXGISwapChain4> GetHandle() const { return Swapchain; }
 
+	[[nodiscard]] DXGI_FORMAT GetFormat() const { return Description.Format; }
+
 private:
 	void AcquireImages();
 	void ReleaseImages();

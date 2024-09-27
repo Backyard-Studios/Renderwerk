@@ -110,3 +110,5 @@
 	Class(Class&&) = default; \
 	Class& operator=(const Class&) = default; \
 	Class& operator=(Class&&) = default;
+
+#define DEFINE_ENUM_STRING_CASE(EnumClass, EnumValue) case EnumClass::EnumValue: return #EnumValue

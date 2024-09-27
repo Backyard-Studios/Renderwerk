@@ -6,6 +6,7 @@
 
 #include "Renderwerk/Graphics/GraphicsContext.h"
 #include "Renderwerk/Graphics/GraphicsDevice.h"
+#include "Renderwerk/Graphics/ShaderCompiler.h"
 #include "Renderwerk/Graphics/Swapchain.h"
 #include "Renderwerk/Memory/DeletionQueue.h"
 
@@ -63,4 +64,6 @@ private:
 
 	uint32 FrameIndex = 0;
 	TVector<FRenderFrame> RenderFrames;
+
+	TSharedPtr<FShaderCompiler> ShaderCompiler;
 };
