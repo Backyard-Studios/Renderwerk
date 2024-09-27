@@ -243,7 +243,6 @@ function rw_link_d3d12()
   includedirs({
 		rw_make_third_party_location(path.join('AgilitySDK', 'include')),
 		rw_make_third_party_location(path.join('D3D12MemoryAllocator', 'include')),
-		rw_make_third_party_location(path.join('DirectXCompiler', 'inc')),
   })
 
   links({
@@ -251,7 +250,6 @@ function rw_link_d3d12()
     'dxgi.lib',
     'dxguid.lib',
 		'D3D12MemoryAllocator',
-		'dxcompiler.lib',
   })
 
   libdirs({
