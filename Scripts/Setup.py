@@ -18,8 +18,7 @@ def Execute():
 	if Premake.IsInstalled() == False:
 		Premake.Install()
 
-	if Dependencies.IsAgilitySDKInstalled() == False:
-		Dependencies.InstallAgilitySDK()
+	Dependencies.Install()
 
 	ProjectConfig.LoadConfig()
 	Premake.PreprocessProperties()
