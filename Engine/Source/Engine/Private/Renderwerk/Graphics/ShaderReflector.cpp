@@ -99,7 +99,7 @@ void FShaderReflector::ReflectRootParameters(const D3D12_SHADER_DESC& ShaderDesc
 		RootParameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 		RootParameter.Descriptor = {};
 		RootParameter.DescriptorTable = {};
-		RootParameter.DescriptorTable.NumDescriptorRanges = DescriptorRanges.size();
+		RootParameter.DescriptorTable.NumDescriptorRanges = static_cast<uint32>(DescriptorRanges.size());
 		RootParameter.DescriptorTable.pDescriptorRanges = DescriptorRanges.data();
 		RootParameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 		RootParameters.push_back(RootParameter);
