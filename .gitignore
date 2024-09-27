@@ -29,3 +29,4 @@ Scripts/Config/properties_preprocessed.lua
 
 # Dependencies that are downloaded by the setup script
 Engine/ThirdParty/AgilitySDK/
+Engine/ThirdParty/DirectXCompiler/
