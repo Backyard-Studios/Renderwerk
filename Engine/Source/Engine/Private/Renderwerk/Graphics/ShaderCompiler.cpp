@@ -9,6 +9,7 @@ std::string ToString(const EShaderStage Stage)
 	DEFINE_ENUM_STRING_CASE(EShaderStage, Vertex);
 	DEFINE_ENUM_STRING_CASE(EShaderStage, Pixel);
 	DEFINE_ENUM_STRING_CASE(EShaderStage, RootSignature);
+	case EShaderStage::None:
 	default:
 		return "Unknown";
 	}
@@ -64,6 +65,7 @@ FCompiledShader FShaderCompiler::CompileFromFile(std::string FilePath, const FSh
 		CHECK_RESULT(Result->GetOutput(DXC_OUT_REFLECTION, IID_PPV_ARGS(&ReflectionBlob), nullptr), "Failed to get reflection blob")
 
 	FCompiledShader CompiledShader;
+	CompiledShader.Stage = Description.Stage;
 	CompiledShader.ShaderBlob = ShaderBlob;
 	CompiledShader.ReflectionBlob = ReflectionBlob;
 	return CompiledShader;
@@ -156,6 +158,7 @@ const wchar_t* FShaderCompiler::GetEntrypointForStage(const EShaderStage Stage)
 	case EShaderStage::Vertex: return L"VSMain";
 	case EShaderStage::Pixel: return L"PSMain";
 	case EShaderStage::RootSignature: return L"ROOT_SIGNATURE";
+	case EShaderStage::None:
 	default:
 		RW_DEBUG_ASSERT(false, "Invalid shader stage")
 		return L"Unknown";
@@ -169,6 +172,7 @@ const wchar_t* FShaderCompiler::GetShaderModelTargetForStage(const EShaderStage 
 	case EShaderStage::Vertex: return L"vs_6_8";
 	case EShaderStage::Pixel: return L"ps_6_8";
 	case EShaderStage::RootSignature: return L"rootsig_1_1";
+	case EShaderStage::None:
 	default:
 		RW_DEBUG_ASSERT(false, "Invalid shader stage")
 		return L"Unknown";

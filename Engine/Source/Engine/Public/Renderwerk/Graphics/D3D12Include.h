@@ -11,6 +11,7 @@
 
 #include "D3D12MemAlloc.h"
 
+#include "d3d12shader.h"
 #include "dxcapi.h"
 
 using Microsoft::WRL::ComPtr;

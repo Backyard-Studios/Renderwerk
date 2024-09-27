@@ -6,6 +6,7 @@
 
 enum class ENGINE_API EShaderStage : uint8
 {
+	None,
 	Vertex,
 	Pixel,
 	RootSignature,
@@ -30,13 +31,14 @@ struct ENGINE_API FShaderMacro
 struct ENGINE_API FShaderCompilationDesc
 {
 	EShaderStage Stage;
-	EShaderConfiguration Configuration;
+	EShaderConfiguration Configuration = EShaderConfiguration::Release;
 	TVector<FShaderMacro> Macros;
 	bool bExtractReflection = false;
 };
 
 struct ENGINE_API FCompiledShader
 {
+	EShaderStage Stage = EShaderStage::None;
 	ComPtr<IDxcBlob> ShaderBlob = nullptr;
 	ComPtr<IDxcBlob> ReflectionBlob = nullptr;
 
