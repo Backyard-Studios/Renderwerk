@@ -128,7 +128,7 @@ ComPtr<IDxcResult> FShaderCompiler::Compile(const ComPtr<IDxcBlobEncoding>& Blob
 	ComPtr<IDxcIncludeHandler> IncludeHandler;
 	CHECK_RESULT(Library->CreateIncludeHandler(&IncludeHandler), "Failed to create include handler")
 
-	DxcBuffer Buffer;
+	DxcBuffer Buffer = {};
 	Buffer.Ptr = Blob->GetBufferPointer();
 	Buffer.Size = Blob->GetBufferSize();
 

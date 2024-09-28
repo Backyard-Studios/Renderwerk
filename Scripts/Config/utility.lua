@@ -266,7 +266,8 @@ function rw_copy_d3d12_binaries()
 	})
 
   postbuildcommands ({
-		('{COPY} ' .. rw_make_third_party_location(path.join('AgilitySDK', 'bin', 'x64')) .. ' "' .. path.join(project_build_output_path, '%{prj.name}', 'D3D12') .. '"')
+		('{COPY} ' .. rw_make_third_party_location(path.join('AgilitySDK', 'bin', 'x64')) .. ' "' .. path.join(project_build_output_path, '%{prj.name}', 'D3D12') .. '"'),
+		('{COPY} ' .. rw_make_third_party_location(path.join('DirectXCompiler', 'bin', 'x64')) .. ' "' .. path.join(project_build_output_path, '%{prj.name}') .. '"')
 	})
 end
 
