@@ -57,16 +57,15 @@ FRenderer::FRenderer(const FRendererSettings& InSettings)
 	FCompiledShader PixelShader = ShaderCompiler->CompileFromFile(FDirectories::GetShaderPath("Default.hlsl"), PixelShaderDesc);
 
 	FPipelineBuilder PipelineBuilder(RootSignature);
-	PipelineBuilder.SetVertexShader(VertexShader.GetBytecode());
-	PipelineBuilder.SetPixelShader(PixelShader.GetBytecode());
-	PipelineBuilder.AddInputElement({
-		.SemanticName = "POSITION", .SemanticIndex = 0, .Format = DXGI_FORMAT_R32G32B32_FLOAT, .InputSlot = 0, .AlignedByteOffset = 0,
-		.InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, .InstanceDataStepRate = 0
-	});
-	PipelineBuilder.AddInputElement({
-		.SemanticName = "COLOR", .SemanticIndex = 0, .Format = DXGI_FORMAT_R32G32B32A32_FLOAT, .InputSlot = 0, .AlignedByteOffset = 12,
-		.InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, .InstanceDataStepRate = 0
-	});
+	PipelineBuilder.SetVertexShader(VertexShader.GetBytecode())
+	               .SetPixelShader(PixelShader.GetBytecode())
+	               .AddInputElement({
+		               .SemanticName = "POSITION", .SemanticIndex = 0, .Format = DXGI_FORMAT_R32G32B32_FLOAT, .InputSlot = 0, .AlignedByteOffset = 0,
+		               .InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, .InstanceDataStepRate = 0
+	               }).AddInputElement({
+		               .SemanticName = "COLOR", .SemanticIndex = 0, .Format = DXGI_FORMAT_R32G32B32A32_FLOAT, .InputSlot = 0, .AlignedByteOffset = 12,
+		               .InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, .InstanceDataStepRate = 0
+	               });
 
 	PipelineState = PipelineBuilder.Build(Device);
 

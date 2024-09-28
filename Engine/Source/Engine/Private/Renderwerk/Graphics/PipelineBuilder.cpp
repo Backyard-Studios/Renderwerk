@@ -101,95 +101,95 @@ FPipelineBuilder::~FPipelineBuilder()
 {
 }
 
-FPipelineBuilder* FPipelineBuilder::SetVertexShader(const D3D12_SHADER_BYTECODE& Shader)
+FPipelineBuilder& FPipelineBuilder::SetVertexShader(const D3D12_SHADER_BYTECODE& Shader)
 {
 	Description.VS = Shader;
-	return this;
+	return *this;
 }
 
-FPipelineBuilder* FPipelineBuilder::SetPixelShader(const D3D12_SHADER_BYTECODE& Shader)
+FPipelineBuilder& FPipelineBuilder::SetPixelShader(const D3D12_SHADER_BYTECODE& Shader)
 {
 	Description.PS = Shader;
-	return this;
+	return *this;
 }
 
-FPipelineBuilder* FPipelineBuilder::SetDomainShader(const D3D12_SHADER_BYTECODE& Shader)
+FPipelineBuilder& FPipelineBuilder::SetDomainShader(const D3D12_SHADER_BYTECODE& Shader)
 {
 	Description.DS = Shader;
-	return this;
+	return *this;
 }
 
-FPipelineBuilder* FPipelineBuilder::SetHullShader(const D3D12_SHADER_BYTECODE& Shader)
+FPipelineBuilder& FPipelineBuilder::SetHullShader(const D3D12_SHADER_BYTECODE& Shader)
 {
 	Description.HS = Shader;
-	return this;
+	return *this;
 }
 
-FPipelineBuilder* FPipelineBuilder::SetGeometryShader(const D3D12_SHADER_BYTECODE& Shader)
+FPipelineBuilder& FPipelineBuilder::SetGeometryShader(const D3D12_SHADER_BYTECODE& Shader)
 {
 	Description.GS = Shader;
-	return this;
+	return *this;
 }
 
-FPipelineBuilder* FPipelineBuilder::SetFillMode(const D3D12_FILL_MODE FillMode)
+FPipelineBuilder& FPipelineBuilder::SetFillMode(const D3D12_FILL_MODE FillMode)
 {
 	Description.RasterizerState.FillMode = FillMode;
-	return this;
+	return *this;
 }
 
-FPipelineBuilder* FPipelineBuilder::SetCullMode(const D3D12_CULL_MODE CullMode)
+FPipelineBuilder& FPipelineBuilder::SetCullMode(const D3D12_CULL_MODE CullMode)
 {
 	Description.RasterizerState.CullMode = CullMode;
-	return this;
+	return *this;
 }
 
-FPipelineBuilder* FPipelineBuilder::DisableDepth()
+FPipelineBuilder& FPipelineBuilder::DisableDepth()
 {
 	Description.DepthStencilState.DepthEnable = false;
-	return this;
+	return *this;
 }
 
-FPipelineBuilder* FPipelineBuilder::DisableStencil()
+FPipelineBuilder& FPipelineBuilder::DisableStencil()
 {
 	Description.DepthStencilState.StencilEnable = false;
-	return this;
+	return *this;
 }
 
-FPipelineBuilder* FPipelineBuilder::AddInputElement(const D3D12_INPUT_ELEMENT_DESC& Element)
+FPipelineBuilder& FPipelineBuilder::AddInputElement(const D3D12_INPUT_ELEMENT_DESC& Element)
 {
 	InputElements.push_back(Element);
-	return this;
+	return *this;
 }
 
-FPipelineBuilder* FPipelineBuilder::SetRenderTargetFormat(const DXGI_FORMAT& Format)
+FPipelineBuilder& FPipelineBuilder::SetRenderTargetFormat(const DXGI_FORMAT& Format)
 {
 	for (uint32 Index = 0; Index < Description.NumRenderTargets; ++Index)
 		Description.RTVFormats[Index] = Format;
-	return this;
+	return *this;
 }
 
-FPipelineBuilder* FPipelineBuilder::SetDepthStencilFormat(const DXGI_FORMAT& Format)
+FPipelineBuilder& FPipelineBuilder::SetDepthStencilFormat(const DXGI_FORMAT& Format)
 {
 	Description.DSVFormat = Format;
-	return this;
+	return *this;
 }
 
-FPipelineBuilder* FPipelineBuilder::SetSample(const DXGI_SAMPLE_DESC& SampleDesc)
+FPipelineBuilder& FPipelineBuilder::SetSample(const DXGI_SAMPLE_DESC& SampleDesc)
 {
 	Description.SampleDesc = SampleDesc;
-	return this;
+	return *this;
 }
 
-FPipelineBuilder* FPipelineBuilder::SetFlags(const D3D12_PIPELINE_STATE_FLAGS& Flags)
+FPipelineBuilder& FPipelineBuilder::SetFlags(const D3D12_PIPELINE_STATE_FLAGS& Flags)
 {
 	Description.Flags = Flags;
-	return this;
+	return *this;
 }
 
-FPipelineBuilder* FPipelineBuilder::AddFlags(const D3D12_PIPELINE_STATE_FLAGS& Flags)
+FPipelineBuilder& FPipelineBuilder::AddFlags(const D3D12_PIPELINE_STATE_FLAGS& Flags)
 {
 	Description.Flags |= Flags;
-	return this;
+	return *this;
 }
 
 ComPtr<ID3D12PipelineState> FPipelineBuilder::Build(const TSharedPtr<FGraphicsDevice>& Device)
