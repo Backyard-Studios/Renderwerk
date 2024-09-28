@@ -36,5 +36,5 @@ struct ENGINE_API FAssertionData
  */
 #	define RW_DEBUG_ASSERT(Condition, ...) RW_ASSERT_CRITICAL(Condition, __VA_ARGS__)
 #else
-#	define RW_DEBUG_ASSERT(Condition, ...)
+#	define RW_DEBUG_ASSERT(Condition, ...) {}
 #endif

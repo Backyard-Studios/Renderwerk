@@ -34,7 +34,7 @@ FShaderCompiler::FShaderCompiler()
 
 	ComPtr<IDxcVersionInfo3> VersionInfo;
 	CHECK_RESULT(Compiler.As(&VersionInfo), "Failed to get DXC version info")
-	char* VersionString;
+	char* VersionString = nullptr;
 	CHECK_RESULT(VersionInfo->GetCustomVersionString(&VersionString), "Failed to get DXC version string")
 	RW_LOG_INFO("DXC Version: {}", VersionString);
 	CoTaskMemFree(VersionString);
@@ -44,7 +44,7 @@ FShaderCompiler::~FShaderCompiler()
 {
 }
 
-FCompiledShader FShaderCompiler::CompileFromFile(std::string FilePath, const FShaderCompilationDesc& Description) const
+FCompiledShader FShaderCompiler::CompileFromFile(const std::string& FilePath, const FShaderCompilationDesc& Description) const
 {
 	RW_LOG_INFO("Compiling {} shader \"{}\" with {} configuration", ToString(Description.Stage), FilePath, ToString(Description.Configuration));
 
@@ -128,7 +128,7 @@ ComPtr<IDxcResult> FShaderCompiler::Compile(const ComPtr<IDxcBlobEncoding>& Blob
 	ComPtr<IDxcIncludeHandler> IncludeHandler;
 	CHECK_RESULT(Library->CreateIncludeHandler(&IncludeHandler), "Failed to create include handler")
 
-	DxcBuffer Buffer = {};
+	DxcBuffer Buffer;
 	Buffer.Ptr = Blob->GetBufferPointer();
 	Buffer.Size = Blob->GetBufferSize();
 

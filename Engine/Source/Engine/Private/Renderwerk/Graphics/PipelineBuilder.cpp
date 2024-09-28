@@ -80,7 +80,7 @@ FPipelineBuilder::FPipelineBuilder(const ComPtr<ID3D12RootSignature>& RootSignat
 	Description.IBStripCutValue = D3D12_INDEX_BUFFER_STRIP_CUT_VALUE_DISABLED;
 	Description.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 	Description.NumRenderTargets = 1;
-	for (int Index = 0; Index < Description.NumRenderTargets; ++Index)
+	for (uint32 Index = 0; Index < Description.NumRenderTargets; ++Index)
 		Description.RTVFormats[Index] = DXGI_FORMAT_R8G8B8A8_UNORM;
 	Description.DSVFormat = DXGI_FORMAT_UNKNOWN;
 
@@ -163,7 +163,7 @@ FPipelineBuilder* FPipelineBuilder::AddInputElement(const D3D12_INPUT_ELEMENT_DE
 
 FPipelineBuilder* FPipelineBuilder::SetRenderTargetFormat(const DXGI_FORMAT& Format)
 {
-	for (int Index = 0; Index < Description.NumRenderTargets; ++Index)
+	for (uint32 Index = 0; Index < Description.NumRenderTargets; ++Index)
 		Description.RTVFormats[Index] = Format;
 	return this;
 }

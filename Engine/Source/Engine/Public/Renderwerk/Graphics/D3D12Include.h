@@ -16,7 +16,11 @@
 
 using Microsoft::WRL::ComPtr;
 
-#define CHECK_RESULT(Result, ...) RW_DEBUG_ASSERT(SUCCEEDED(Result), __VA_ARGS__)
+#if RW_CONFIG_DEBUG || RW_CONFIG_DEVELOPMENT
+#	define CHECK_RESULT(Result, ...) RW_DEBUG_ASSERT(SUCCEEDED(Result), __VA_ARGS__)
+#else
+#	define CHECK_RESULT(Result, ...) Result;
+#endif
 #define CHECK_RESULT_CRITICAL(Result, ...) RW_ASSERT_CRITICAL(SUCCEEDED(Result), "Direct3D 12 Error: %s", __VA_ARGS__)
 
 ENGINE_API INLINE std::string ToString(const D3D_FEATURE_LEVEL FeatureLevel)

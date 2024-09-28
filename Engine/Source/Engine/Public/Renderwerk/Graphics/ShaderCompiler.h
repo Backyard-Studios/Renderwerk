@@ -70,10 +70,10 @@ public:
 	DELETE_COPY_AND_MOVE(FShaderCompiler)
 
 public:
-	FCompiledShader CompileFromFile(std::string FilePath, const FShaderCompilationDesc& Description) const;
+	FCompiledShader CompileFromFile(const std::string& FilePath, const FShaderCompilationDesc& Description) const;
 	ComPtr<IDxcBlob> CompileRootSignature(const std::string& FilePath, const EShaderConfiguration& Configuration) const;
 
-private:
+public:
 	ComPtr<IDxcBlobEncoding> GetBufferFromFile(const std::string& FilePath) const;
 	ComPtr<IDxcResult> Compile(const ComPtr<IDxcBlobEncoding>& Blob, TVector<LPCWSTR>& Arguments) const;
 
