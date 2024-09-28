@@ -6,6 +6,7 @@
 
 #include "Renderwerk/Graphics/GraphicsContext.h"
 #include "Renderwerk/Graphics/GraphicsDevice.h"
+#include "Renderwerk/Graphics/GraphicsResource.h"
 #include "Renderwerk/Graphics/ShaderCompiler.h"
 #include "Renderwerk/Graphics/Swapchain.h"
 #include "Renderwerk/Memory/DeletionQueue.h"
@@ -66,4 +67,9 @@ private:
 	TVector<FRenderFrame> RenderFrames;
 
 	TSharedPtr<FShaderCompiler> ShaderCompiler;
+
+	ComPtr<ID3D12RootSignature> RootSignature;
+	ComPtr<ID3D12PipelineState> PipelineState;
+	TSharedPtr<FGraphicsBuffer> VertexBuffer;
+	TSharedPtr<FGraphicsBuffer> IndexBuffer;
 };

@@ -269,3 +269,13 @@ function rw_copy_d3d12_binaries()
 		('{COPY} ' .. rw_make_third_party_location(path.join('AgilitySDK', 'bin', 'x64')) .. ' "' .. path.join(project_build_output_path, '%{prj.name}', 'D3D12') .. '"')
 	})
 end
+
+function rw_copy_assets()
+	prebuildcommands ({
+		('{MKDIR} "' .. path.join(project_build_output_path, '%{prj.name}', 'Assets') .. '"')
+	})
+
+	postbuildcommands ({
+		('{COPY} ' .. path.join(root_path, 'Assets') .. ' "' .. path.join(project_build_output_path, '%{prj.name}', 'Assets') .. '"')
+	})
+end

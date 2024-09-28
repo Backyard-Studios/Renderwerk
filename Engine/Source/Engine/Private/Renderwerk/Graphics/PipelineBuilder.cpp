@@ -40,7 +40,7 @@ FPipelineBuilder::FPipelineBuilder(const ComPtr<ID3D12RootSignature>& RootSignat
 		Description.BlendState.RenderTarget[Index].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 	}
 
-	Description.SampleMask = 0;
+	Description.SampleMask = 0xFFFFFFFF;
 
 	Description.RasterizerState = {};
 	Description.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
@@ -56,7 +56,7 @@ FPipelineBuilder::FPipelineBuilder(const ComPtr<ID3D12RootSignature>& RootSignat
 	Description.RasterizerState.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
 
 	Description.DepthStencilState = {};
-	Description.DepthStencilState.DepthEnable = true;
+	Description.DepthStencilState.DepthEnable = false;
 	Description.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
 	Description.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
 	Description.DepthStencilState.StencilEnable = false;
@@ -80,9 +80,9 @@ FPipelineBuilder::FPipelineBuilder(const ComPtr<ID3D12RootSignature>& RootSignat
 	Description.IBStripCutValue = D3D12_INDEX_BUFFER_STRIP_CUT_VALUE_DISABLED;
 	Description.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 	Description.NumRenderTargets = 1;
-	for (int Index = 0; Index < _countof(Description.RTVFormats); ++Index)
+	for (int Index = 0; Index < Description.NumRenderTargets; ++Index)
 		Description.RTVFormats[Index] = DXGI_FORMAT_R8G8B8A8_UNORM;
-	Description.DSVFormat = DXGI_FORMAT_D32_FLOAT;
+	Description.DSVFormat = DXGI_FORMAT_UNKNOWN;
 
 	Description.SampleDesc = {};
 	Description.SampleDesc.Count = 1;
@@ -163,7 +163,7 @@ FPipelineBuilder* FPipelineBuilder::AddInputElement(const D3D12_INPUT_ELEMENT_DE
 
 FPipelineBuilder* FPipelineBuilder::SetRenderTargetFormat(const DXGI_FORMAT& Format)
 {
-	for (int Index = 0; Index < _countof(Description.RTVFormats); ++Index)
+	for (int Index = 0; Index < Description.NumRenderTargets; ++Index)
 		Description.RTVFormats[Index] = Format;
 	return this;
 }
@@ -192,7 +192,7 @@ FPipelineBuilder* FPipelineBuilder::AddFlags(const D3D12_PIPELINE_STATE_FLAGS& F
 	return this;
 }
 
-ComPtr<ID3D12PipelineState> FPipelineBuilder::Build(const ComPtr<FGraphicsDevice>& Device)
+ComPtr<ID3D12PipelineState> FPipelineBuilder::Build(const TSharedPtr<FGraphicsDevice>& Device)
 {
 	Description.InputLayout.pInputElementDescs = InputElements.data();
 	Description.InputLayout.NumElements = static_cast<uint32>(InputElements.size());

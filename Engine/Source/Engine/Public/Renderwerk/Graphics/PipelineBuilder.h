@@ -40,7 +40,7 @@ public:
 	FPipelineBuilder* SetFlags(const D3D12_PIPELINE_STATE_FLAGS& Flags);
 	FPipelineBuilder* AddFlags(const D3D12_PIPELINE_STATE_FLAGS& Flags);
 
-	ComPtr<ID3D12PipelineState> Build(const ComPtr<FGraphicsDevice>& Device);
+	ComPtr<ID3D12PipelineState> Build(const TSharedPtr<FGraphicsDevice>& Device);
 
 private:
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC Description;
