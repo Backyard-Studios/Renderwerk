@@ -51,12 +51,3 @@ protected:
 	size64 Count;
 	void* Data;
 };
-
-struct ENGINE_API FGraphicsTexture : IGraphicsResource
-{
-public:
-	explicit FGraphicsTexture(const ComPtr<D3D12MA::Allocator>& ResourceAllocator, uint32 InWidth, uint32 InHeight, DXGI_FORMAT InFormat, D3D12_RESOURCE_FLAGS InFlags);
-	~FGraphicsTexture() override;
-
-private:
-};
