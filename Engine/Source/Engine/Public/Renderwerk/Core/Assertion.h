@@ -23,7 +23,7 @@ struct ENGINE_API FAssertionData
  */
 #define RW_ASSERT_CRITICAL(Condition, ...) \
 	{ \
-		if (!(Condition)) \
+		if (!(Condition)) [[unlikely]] \
 			FPlatform::Assertion(FAssertionData(#Condition, std::format(__VA_ARGS__))); \
 	}
 
@@ -36,5 +36,5 @@ struct ENGINE_API FAssertionData
  */
 #	define RW_DEBUG_ASSERT(Condition, ...) RW_ASSERT_CRITICAL(Condition, __VA_ARGS__)
 #else
-#	define RW_DEBUG_ASSERT(Condition, ...)
+#	define RW_DEBUG_ASSERT(Condition, ...) {}
 #endif

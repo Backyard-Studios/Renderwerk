@@ -58,11 +58,15 @@ public:
 	void SetTitle(const std::string& Title);
 	void AppendTitle(const std::string& Title);
 
+	void ResetResizeFlag();
+
 public:
 	[[nodiscard]] HWND GetHandle() const { return WindowHandle; }
 
 	[[nodiscard]] FWindowState GetWindowState() const { return State; }
 	[[nodiscard]] FGuid GetGuid() const { return Guid; }
+
+	[[nodiscard]] bool8 DidResize() const { return bDidResize; }
 
 private:
 	LRESULT WindowProcess(HWND InWindowHandle, UINT Message, WPARAM WParam, LPARAM LParam);
@@ -81,6 +85,7 @@ protected:
 
 	HWND WindowHandle = nullptr;
 	FWindowState State;
+	bool8 bDidResize = false;
 
 	friend LRESULT CALLBACK WindowProcess(HWND WindowHandle, UINT Message, WPARAM WParam, LPARAM LParam);
 };

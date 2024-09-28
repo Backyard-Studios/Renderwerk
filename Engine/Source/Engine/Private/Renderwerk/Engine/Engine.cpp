@@ -2,8 +2,6 @@
 
 #include "Renderwerk/Engine/Engine.h"
 
-#include <cassert>
-
 TSharedPtr<FEngine> GEngine = nullptr;
 
 FEngine::FEngine(const TSharedPtr<IApplication>& Application)
@@ -30,33 +28,21 @@ void FEngine::RequestShutdown()
 void FEngine::Initialize()
 {
 	WindowManager = MakeShared<FWindowManager>();
-	DeletionQueue.Add([this]()
-	{
-		if (WindowManager)
-			WindowManager->ClearRemoveQueue();
-		WindowManager.reset();
-	});
+	DQ_ADD_CUSTOM(WindowManager, WindowManager->ClearRemoveQueue());
 
-	DeletionQueue.Add([this]()
-	{
-		if (Application)
-			Application->Shutdown();
-		Application.reset();
-	});
+	DQ_ADD_CUSTOM(Application, Application->Shutdown());
 	Application->Initialize();
 	RW_LOG_INFO("Application \"{}\" v{} initialized", Application->GetMetadata().Name, FormatVersion(Application->GetMetadata().Version));
 
 	FWindowSettings WindowSettings = {};
 	MainWindow = WindowManager->Create(WindowSettings);
-	DeletionQueue.Add([this]()
-	{
-		if (MainWindow && WindowManager)
-			WindowManager->Remove(MainWindow);
-		MainWindow.reset();
-	});
-	MainWindow->AppendTitle(" [App: " + Application->GetMetadata().Name + ", AppVersion: v" + FormatVersion(Application->GetMetadata().Version) + "]");
-
+	DQ_ADD_CUSTOM_PREDICATE(MainWindow, WindowManager, WindowManager->Remove(MainWindow));
+	MainWindow->SetTitle(Application->GetMetadata().Name + " v" + FormatVersion(Application->GetMetadata().Version));
 	MainWindow->Show();
+
+	FRendererSettings RendererSettings = {};
+	Renderer = MakeShared<FRenderer>(RendererSettings);
+	DQ_ADD(Renderer);
 
 	RW_LOG_INFO("Engine initialized");
 }
@@ -72,6 +58,19 @@ void FEngine::RunLoop()
 
 		WindowManager->ClearRemoveQueue();
 
+		if (!MainWindow->DidResize())
+		{
+			Renderer->BeginFrame();
+			{
+			}
+			Renderer->EndFrame();
+		}
+		else
+		{
+			Renderer->Resize();
+			MainWindow->ResetResizeFlag();
+		}
+
 		RW_PROFILING_MARK_FRAME();
 	}
 }
@@ -83,6 +82,6 @@ void FEngine::Shutdown()
 
 TSharedPtr<FEngine> GetEngine()
 {
-	assert(GEngine);
+	RW_DEBUG_ASSERT(GEngine, "Engine is not initialized")
 	return GEngine;
 }

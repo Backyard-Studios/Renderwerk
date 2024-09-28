@@ -81,12 +81,15 @@
 #if RW_CONFIG_DEBUG
 #	define RW_ENABLE_MEMORY_TRACKING 1
 #	define RW_ENABLE_PROFILING 1
+#	define RW_ENABLE_D3D12_DEBUG_LAYER 1
 #elif RW_CONFIG_DEVELOPMENT
 #	define RW_ENABLE_MEMORY_TRACKING 1
 #	define RW_ENABLE_PROFILING 1
+#	define RW_ENABLE_D3D12_DEBUG_LAYER 0
 #else
 #	define RW_ENABLE_MEMORY_TRACKING 0
 #	define RW_ENABLE_PROFILING 0
+#	define RW_ENABLE_D3D12_DEBUG_LAYER 0
 #endif
 
 #define FORWARD(...) __VA_ARGS__
@@ -107,3 +110,5 @@
 	Class(Class&&) = default; \
 	Class& operator=(const Class&) = default; \
 	Class& operator=(Class&&) = default;
+
+#define DEFINE_ENUM_STRING_CASE(EnumClass, EnumValue) case EnumClass::EnumValue: return #EnumValue

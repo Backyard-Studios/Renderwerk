@@ -3,6 +3,7 @@ import subprocess
 
 import Utils
 import Premake
+import Dependencies
 import ProjectConfig
 
 def Execute():
@@ -16,6 +17,8 @@ def Execute():
 
 	if Premake.IsInstalled() == False:
 		Premake.Install()
+
+	Dependencies.Install()
 
 	ProjectConfig.LoadConfig()
 	Premake.PreprocessProperties()

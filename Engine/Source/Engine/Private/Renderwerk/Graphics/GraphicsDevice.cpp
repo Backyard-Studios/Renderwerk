@@ -1,0 +1,74 @@
+﻿#include "pch.h"
+
+#include "Renderwerk/Graphics/GraphicsDevice.h"
+
+void InfoQueueCallback(D3D12_MESSAGE_CATEGORY Category, D3D12_MESSAGE_SEVERITY Severity, D3D12_MESSAGE_ID MessageId, const LPCSTR Description, void* Context)
+{
+	// RW_LOG_ERROR("D3D12 Message: {}", Description);
+	printf("D3D12 Message: %s\n", Description);
+}
+
+FGraphicsDevice::FGraphicsDevice(const FGraphicsDeviceDesc& InDescription)
+	: Description(InDescription)
+{
+	TSharedPtr<FGraphicsAdapter>& Adapter = Description.Adapter;
+	HRESULT CreateDeviceResult = D3D12CreateDevice(Adapter->GetHandle().Get(), Adapter->GetMaxSupportedFeatureLevel(), IID_PPV_ARGS(Device.GetAddressOf()));
+	CHECK_RESULT(CreateDeviceResult, "Failed to create D3D12 device")
+
+#if RW_ENABLE_D3D12_DEBUG_LAYER
+	CHECK_RESULT(Device->QueryInterface(IID_PPV_ARGS(&DebugDevice)), "Failed to create D3D12 debug device")
+	CHECK_RESULT(DebugDevice->QueryInterface(IID_PPV_ARGS(&InfoQueue)), "Failed to create D3D12 info queue")
+	CHECK_RESULT(InfoQueue->RegisterMessageCallback(InfoQueueCallback, D3D12_MESSAGE_CALLBACK_FLAG_NONE, nullptr, &InfoQueueCookie),
+	             "Failed to register message callback")
+#endif
+
+	D3D12MA::ALLOCATOR_DESC AllocatorDesc = {};
+	AllocatorDesc.pDevice = Device.Get();
+	AllocatorDesc.pAdapter = Adapter->GetHandle().Get();
+
+	CHECK_RESULT(D3D12MA::CreateAllocator(&AllocatorDesc, &ResourceAllocator), "Failed to create D3D12 resource allocator")
+}
+
+FGraphicsDevice::~FGraphicsDevice()
+{
+	ResourceAllocator.Reset();
+#if RW_ENABLE_D3D12_DEBUG_LAYER
+	if (InfoQueue)
+	{
+		HRESULT UnregisterResult = InfoQueue->UnregisterMessageCallback(InfoQueueCookie);
+		if (FAILED(UnregisterResult))
+			RW_LOG_ERROR("Failed to unregister message callback: {}", FPlatform::GetResultHandleDescription(UnregisterResult));
+	}
+	InfoQueue.Reset();
+	DebugDevice.Reset();
+#endif
+	Device.Reset();
+}
+
+TSharedPtr<FCommandQueue> FGraphicsDevice::CreateCommandQueue(const FCommandQueueDesc& InDescription)
+{
+	return MakeShared<FCommandQueue>(this, InDescription);
+}
+
+TSharedPtr<FCommandList> FGraphicsDevice::CreateCommandList(const FCommandListDesc& InDescription)
+{
+	return MakeShared<FCommandList>(this, InDescription);
+}
+
+TSharedPtr<FDescriptorHeap> FGraphicsDevice::CreateDescriptorHeap(const FDescriptorHeapDesc& InDescription)
+{
+	return MakeShared<FDescriptorHeap>(this, InDescription);
+}
+
+TSharedPtr<FFence> FGraphicsDevice::CreateFence()
+{
+	return MakeShared<FFence>(this);
+}
+
+ComPtr<ID3D12PipelineState> FGraphicsDevice::CreatePipelineState(const D3D12_GRAPHICS_PIPELINE_STATE_DESC& Description) const
+{
+	ComPtr<ID3D12PipelineState> PipelineState;
+	CHECK_RESULT(Device->CreateGraphicsPipelineState(&Description, IID_PPV_ARGS(&PipelineState)),
+	             "Failed to create D3D12 pipeline state")
+	return PipelineState;
+}

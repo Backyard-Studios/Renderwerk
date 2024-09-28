@@ -10,4 +10,5 @@ def Execute():
   Utils.RemoveAllFilesInDirectory('Engine', '.vcxproj.filters')
   Utils.RemoveFile('Renderwerk.sln')
   Utils.RemoveFile('Renderwerk.sln.DotSettings.user')
+  Utils.RemoveDirectory('Engine/ThirdParty/AgilitySDK')
   print('Done')

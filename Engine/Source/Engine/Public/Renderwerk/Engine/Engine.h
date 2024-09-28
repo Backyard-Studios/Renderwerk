@@ -6,6 +6,7 @@
 
 #include "Renderwerk/Memory/SmartPointers.h"
 #include "Renderwerk/Platform/WindowManager.h"
+#include "Renderwerk/Renderer/Renderer.h"
 
 class ENGINE_API FEngine
 {
@@ -37,6 +38,8 @@ private:
 	FDeletionQueue DeletionQueue;
 	TSharedPtr<FWindowManager> WindowManager;
 	TSharedPtr<FWindow> MainWindow;
+
+	TSharedPtr<FRenderer> Renderer;
 
 	friend void Launch(const TSharedPtr<IApplication>& Application);
 	friend void Shutdown();
