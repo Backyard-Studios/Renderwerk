@@ -24,6 +24,9 @@ public:
 
 	[[nodiscard]] static std::string GetResultHandleDescription(HRESULT Result);
 
+	[[nodiscard]] static std::string GetCurrentWorkingDirectory();
+	[[nodiscard]] static std::string AppendPath(const std::string& ParentPath, const std::string& PathToAppend);
+
 public:
 	[[nodiscard]] INLINE static int32 GetExitCode() { return ExitCode; }
 	INLINE static void SetExitCode(const int32 NewExitCode) { ExitCode = NewExitCode; }

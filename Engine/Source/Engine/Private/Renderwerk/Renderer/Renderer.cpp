@@ -40,8 +40,7 @@ FRenderer::FRenderer(const FRendererSettings& InSettings)
 	DQ_ADD(ShaderCompiler);
 
 	// TODO: REMOVE HARD CODED PATH
-	ComPtr<IDxcBlob> RootBlob = ShaderCompiler->CompileRootSignature(
-		"G:/Development/Organizations/BackyardStudios/Projects/Renderwerk/Assets/Shaders/DefaultRootSignature.hlsl", EShaderConfiguration::Debug);
+	ComPtr<IDxcBlob> RootBlob = ShaderCompiler->CompileRootSignature(FDirectories::GetShaderPath("DefaultRootSignature.hlsl"), EShaderConfiguration::Debug);
 	CHECK_RESULT(Device->GetHandle()->CreateRootSignature(0, RootBlob->GetBufferPointer(), RootBlob->GetBufferSize(), IID_PPV_ARGS(&RootSignature)),
 	             "Failed to create root signature")
 
@@ -49,15 +48,13 @@ FRenderer::FRenderer(const FRendererSettings& InSettings)
 	FShaderCompilationDesc VertexShaderDesc = {};
 	VertexShaderDesc.Stage = EShaderStage::Vertex;
 	VertexShaderDesc.Configuration = EShaderConfiguration::Debug;
-	FCompiledShader VertexShader = ShaderCompiler->CompileFromFile("G:/Development/Organizations/BackyardStudios/Projects/Renderwerk/Assets/Shaders/Default.hlsl",
-	                                                               VertexShaderDesc);
+	FCompiledShader VertexShader = ShaderCompiler->CompileFromFile(FDirectories::GetShaderPath("Default.hlsl"), VertexShaderDesc);
 
 	// TODO: REMOVE HARD CODED PATH
 	FShaderCompilationDesc PixelShaderDesc = {};
 	PixelShaderDesc.Stage = EShaderStage::Pixel;
 	PixelShaderDesc.Configuration = EShaderConfiguration::Debug;
-	FCompiledShader PixelShader = ShaderCompiler->CompileFromFile("G:/Development/Organizations/BackyardStudios/Projects/Renderwerk/Assets/Shaders/Default.hlsl",
-	                                                              PixelShaderDesc);
+	FCompiledShader PixelShader = ShaderCompiler->CompileFromFile(FDirectories::GetShaderPath("Default.hlsl"), PixelShaderDesc);
 
 	FPipelineBuilder PipelineBuilder(RootSignature);
 	PipelineBuilder.SetVertexShader(VertexShader.GetBytecode());

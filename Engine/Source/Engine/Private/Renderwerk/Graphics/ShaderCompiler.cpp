@@ -51,7 +51,7 @@ FCompiledShader FShaderCompiler::CompileFromFile(const std::string& FilePath, co
 	TVector<LPCWSTR> Arguments = GetArgumentsForDescription(Description);
 
 	Arguments.push_back(L"-I");
-	Arguments.push_back(L"G:/Development/Organizations/BackyardStudios/Projects/Renderwerk/Binaries/Engine/windows-Debug/Editor/Shaders");
+	Arguments.push_back(ToWide(FDirectories::GetShadersDirectory().c_str()).c_str());
 
 	ComPtr<IDxcBlobEncoding> SourceBlob = GetBufferFromFile(FilePath);
 
@@ -79,7 +79,7 @@ ComPtr<IDxcBlob> FShaderCompiler::CompileRootSignature(const std::string& FilePa
 	TVector<LPCWSTR> Arguments = GetArgumentsForDescription(Description);
 
 	Arguments.push_back(L"-I");
-	Arguments.push_back(L"G:/Development/Organizations/BackyardStudios/Projects/Renderwerk/Binaries/Engine/windows-Debug/Editor/Shaders");
+	Arguments.push_back(ToWide(FDirectories::GetShadersDirectory().c_str()).c_str());
 
 	ComPtr<IDxcBlobEncoding> SourceBlob = GetBufferFromFile(FilePath);
 	ComPtr<IDxcResult> Result = Compile(SourceBlob, Arguments);

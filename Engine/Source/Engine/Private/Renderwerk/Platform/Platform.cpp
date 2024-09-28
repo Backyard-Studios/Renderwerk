@@ -4,6 +4,7 @@
 
 #include <cassert>
 #include <dbghelp.h>
+#include <shlwapi.h>
 
 #include "Renderwerk/Platform/Window.h"
 
@@ -91,6 +92,20 @@ std::string FPlatform::GetResultHandleDescription(const HRESULT Result)
 		}
 	}
 	return ResultDescription;
+}
+
+std::string FPlatform::GetCurrentWorkingDirectory()
+{
+	char Buffer[MAX_PATH];
+	GetCurrentDirectoryA(MAX_PATH, Buffer);
+	return Buffer;
+}
+
+std::string FPlatform::AppendPath(const std::string& ParentPath, const std::string& PathToAppend)
+{
+	char Buffer[MAX_PATH];
+	PathCombineA(Buffer, ParentPath.c_str(), PathToAppend.c_str());
+	return Buffer;
 }
 
 LONG ExceptionHandler(EXCEPTION_POINTERS* ExceptionInfo)

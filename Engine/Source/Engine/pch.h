@@ -28,6 +28,7 @@
 #include "Renderwerk/Memory/Memory.h"
 #include "Renderwerk/Memory/SmartPointers.h"
 
+#include "Renderwerk/Platform/Directories.h"
 #include "Renderwerk/Platform/Guid.h"
 #include "Renderwerk/Platform/Platform.h"
 #include "Renderwerk/Platform/Threading/Mutex.h"
