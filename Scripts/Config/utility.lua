@@ -94,6 +94,9 @@ function rw_platform_flags(platform)
 		disablewarnings({
 			'4251',
 		})
+		links({
+			'Shlwapi.lib'
+		})
 	elseif platform == build_platforms.Linux then
 		
 	end
@@ -277,6 +280,6 @@ function rw_copy_assets()
 	})
 
 	postbuildcommands ({
-		('{COPY} ' .. path.join(root_path, 'Assets') .. ' "' .. path.join(project_build_output_path, '%{prj.name}', 'Assets') .. '"')
+		('{COPY} ' .. path.join(root_path, 'Assets') .. ' "' .. path.join(source_folder_path, '%{prj.name}', 'Assets') .. '"')
 	})
 end
