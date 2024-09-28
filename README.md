@@ -5,7 +5,7 @@
     <img src="https://raw.githubusercontent.com/Backyard-Studios/Branding/24006b7753330c3193ae399bb792a810304aea37/Logo/Logo.svg" alt="Logo" width="320" height="120">
   </a>
   <h3 align="center">Renderwerk</h3>
-  <p>Game Engine</p>
+  <p>DirectX 12 powered Game/Rendering Engine</p>
   <p align="center">
     <a href="https://github.com/Drischdaan/Research/blob/main/Projects/Renderwerk/README.md"><strong>Explore my Notes »</strong></a>
   </p>
