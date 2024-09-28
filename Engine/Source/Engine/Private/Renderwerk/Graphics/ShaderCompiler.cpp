@@ -64,7 +64,7 @@ FCompiledShader FShaderCompiler::CompileFromFile(std::string FilePath, const FSh
 	if (Description.bExtractReflection)
 		CHECK_RESULT(Result->GetOutput(DXC_OUT_REFLECTION, IID_PPV_ARGS(&ReflectionBlob), nullptr), "Failed to get reflection blob")
 
-	FCompiledShader CompiledShader;
+	FCompiledShader CompiledShader = {};
 	CompiledShader.Stage = Description.Stage;
 	CompiledShader.ShaderBlob = ShaderBlob;
 	CompiledShader.ReflectionBlob = ReflectionBlob;
