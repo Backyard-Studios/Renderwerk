@@ -73,31 +73,3 @@ D3D12_INDEX_BUFFER_VIEW FGraphicsBuffer::GetIndexBufferView() const
 	IndexBufferView.Format = DXGI_FORMAT_R32_UINT;
 	return IndexBufferView;
 }
-
-FGraphicsTexture::FGraphicsTexture(const ComPtr<D3D12MA::Allocator>& ResourceAllocator, const uint32 InWidth, const uint32 InHeight, const DXGI_FORMAT InFormat,
-                                   const D3D12_RESOURCE_FLAGS InFlags)
-	: IGraphicsResource(EGraphicsResourceType::Texture)
-{
-	Description = {};
-	Description.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
-	Description.Alignment = 0;
-	Description.Width = InWidth;
-	Description.Height = InHeight;
-	Description.DepthOrArraySize = 1;
-	Description.MipLevels = 1;
-	Description.Format = InFormat;
-	Description.SampleDesc.Count = 1;
-	Description.SampleDesc.Quality = 0;
-	Description.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
-	Description.Flags = InFlags;
-
-	D3D12MA::ALLOCATION_DESC AllocationDesc = {};
-	AllocationDesc.HeapType = D3D12_HEAP_TYPE_DEFAULT;
-
-	CHECK_RESULT(ResourceAllocator->CreateResource(&AllocationDesc, &Description, D3D12_RESOURCE_STATE_COMMON, nullptr, &Allocation, IID_PPV_ARGS(&Resource)),
-	             "Failed to create texture resource")
-}
-
-FGraphicsTexture::~FGraphicsTexture()
-{
-}
