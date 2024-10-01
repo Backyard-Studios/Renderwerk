@@ -58,6 +58,8 @@ FGraphicsDevice::FGraphicsDevice(const FGraphicsDeviceDesc& InDescription)
 #endif
 
 	Capabilities = {};
+	Capabilities.FeatureLevel = Adapter->GetMaxSupportedFeatureLevel();
+	Capabilities.ShaderModel = Adapter->GetMaxSupportedShaderModel();
 
 	D3D12_FEATURE_DATA_D3D12_OPTIONS5 Options5 = {};
 	CHECK_RESULT(Device->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS5, &Options5, sizeof(Options5)), "Failed to check D3D12 options 5");

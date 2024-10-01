@@ -36,9 +36,11 @@ ENGINE_API std::string ToString(ERayTracingTier Tier);
 
 struct ENGINE_API FDeviceCapabilities
 {
+	D3D_FEATURE_LEVEL FeatureLevel = D3D_FEATURE_LEVEL_1_0_CORE;
 	EVariableRateShadingTier VariableRateShadingTier = EVariableRateShadingTier::NotSupported;
 	EMeshShaderTier MeshShaderTier = EMeshShaderTier::NotSupported;
 	ERayTracingTier RayTracingTier = ERayTracingTier::NotSupported;
+	D3D_SHADER_MODEL ShaderModel = D3D_SHADER_MODEL_NONE;
 };
 
 struct ENGINE_API FGraphicsDeviceDesc
