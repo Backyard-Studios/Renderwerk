@@ -4,6 +4,7 @@
 
 #include "Renderwerk/Engine/Engine.h"
 #include "Renderwerk/Graphics/PipelineBuilder.h"
+#include "Renderwerk/Graphics/ShaderCache.h"
 
 FRenderer::FRenderer(const FRendererSettings& InSettings)
 	: Settings(InSettings)
@@ -39,6 +40,8 @@ FRenderer::FRenderer(const FRendererSettings& InSettings)
 	ShaderCompiler = MakeShared<FShaderCompiler>();
 	DQ_ADD(ShaderCompiler);
 
+	DeletionQueue.Add([=]() { FShaderCache::Clear(); });
+
 	// TODO: REMOVE HARD CODED PATH
 	ComPtr<IDxcBlob> RootBlob = ShaderCompiler->CompileRootSignature(FDirectories::GetShaderPath("DefaultRootSignature.hlsl"), EShaderConfiguration::Debug);
 	CHECK_RESULT(Device->GetHandle()->CreateRootSignature(0, RootBlob->GetBufferPointer(), RootBlob->GetBufferSize(), IID_PPV_ARGS(&RootSignature)),
@@ -49,12 +52,14 @@ FRenderer::FRenderer(const FRendererSettings& InSettings)
 	VertexShaderDesc.Stage = EShaderStage::Vertex;
 	VertexShaderDesc.Configuration = EShaderConfiguration::Debug;
 	FCompiledShader VertexShader = ShaderCompiler->CompileFromFile(FDirectories::GetShaderPath("Default.hlsl"), VertexShaderDesc);
+	FShaderCache::Register("DefaultVertex", VertexShader);
 
 	// TODO: REMOVE HARD CODED PATH
 	FShaderCompilationDesc PixelShaderDesc = {};
 	PixelShaderDesc.Stage = EShaderStage::Pixel;
 	PixelShaderDesc.Configuration = EShaderConfiguration::Debug;
 	FCompiledShader PixelShader = ShaderCompiler->CompileFromFile(FDirectories::GetShaderPath("Default.hlsl"), PixelShaderDesc);
+	FShaderCache::Register("DefaultPixel", PixelShader);
 
 	FPipelineBuilder PipelineBuilder(RootSignature);
 	PipelineBuilder.SetVertexShader(VertexShader.GetBytecode())
