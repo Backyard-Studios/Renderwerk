@@ -2,6 +2,7 @@
 
 #include "Renderwerk/Application/Application.h"
 #include "Renderwerk/Core/CoreMinimal.h"
+#include "Renderwerk/Jobs/JobSystem.h"
 #include "Renderwerk/Memory/DeletionQueue.h"
 
 #include "Renderwerk/Memory/SmartPointers.h"
@@ -25,6 +26,7 @@ private:
 	void Shutdown();
 
 public:
+	[[nodiscard]] TSharedPtr<FJobSystem> GetJobSystem() const { return JobSystem; }
 	[[nodiscard]] TSharedPtr<FWindowManager> GetWindowManager() const { return WindowManager; }
 	[[nodiscard]] TSharedPtr<FWindow> GetMainWindow() const { return MainWindow; }
 
@@ -36,6 +38,9 @@ private:
 	bool bIsShutdownRequested = false;
 
 	FDeletionQueue DeletionQueue;
+
+	TSharedPtr<FJobSystem> JobSystem;
+
 	TSharedPtr<FWindowManager> WindowManager;
 	TSharedPtr<FWindow> MainWindow;
 

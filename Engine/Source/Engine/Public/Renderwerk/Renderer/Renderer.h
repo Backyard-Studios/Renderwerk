@@ -9,6 +9,7 @@
 #include "Renderwerk/Graphics/GraphicsResource.h"
 #include "Renderwerk/Graphics/ShaderCompiler.h"
 #include "Renderwerk/Graphics/Swapchain.h"
+#include "Renderwerk/Jobs/JobSystem.h"
 #include "Renderwerk/Memory/DeletionQueue.h"
 
 struct ENGINE_API FRendererSettings
@@ -72,4 +73,6 @@ private:
 	ComPtr<ID3D12PipelineState> PipelineState;
 	TSharedPtr<FGraphicsBuffer> VertexBuffer;
 	TSharedPtr<FGraphicsBuffer> IndexBuffer;
+
+	FJobHandle<void> JobHandle;
 };

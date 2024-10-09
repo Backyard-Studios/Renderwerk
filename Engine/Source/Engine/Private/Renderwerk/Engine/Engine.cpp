@@ -17,7 +17,6 @@ void FEngine::Launch()
 
 	Initialize();
 	RunLoop();
-	Shutdown();
 }
 
 void FEngine::RequestShutdown()
@@ -27,6 +26,9 @@ void FEngine::RequestShutdown()
 
 void FEngine::Initialize()
 {
+	JobSystem = MakeShared<FJobSystem>(4);
+	DQ_ADD(JobSystem);
+
 	WindowManager = MakeShared<FWindowManager>();
 	DQ_ADD_CUSTOM(WindowManager, WindowManager->ClearRemoveQueue());
 
@@ -77,6 +79,8 @@ void FEngine::RunLoop()
 
 void FEngine::Shutdown()
 {
+	if (JobSystem)
+		JobSystem->StopAndWaitForRemainingJobs();
 	DeletionQueue.Flush();
 }
 
