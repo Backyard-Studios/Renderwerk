@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include <atomic>
 #include <cstdint>
 #include <functional>
 #include <map>
@@ -63,3 +64,6 @@ using TDeque = std::deque<T>;
 
 template <typename T>
 using TFunction = std::function<T>;
+
+template <typename T>
+using TAtomic = std::atomic<T>;

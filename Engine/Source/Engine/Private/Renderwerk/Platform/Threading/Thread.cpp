@@ -16,11 +16,12 @@ FThread::FThread(FThreadFunction&& InThreadFunction, void* InUserData, const std
 	: ThreadFunction(std::move(InThreadFunction)), UserData(InUserData), Priority(InPriority)
 {
 	Context.Tag = InTag;
-	Context.State = EThreadState::Running;
+	Context.State = EThreadState::Idle;
 
 	LPTHREAD_START_ROUTINE Win32ThreadFunction = [](const LPVOID Param) -> DWORD
 	{
 		FThread* Thread = static_cast<FThread*>(Param);
+		Thread->Context.State = EThreadState::Running;
 
 		std::string ThreadName = Thread->Context.Tag;
 		if (ThreadName == "UnnamedThread")
@@ -28,6 +29,7 @@ FThread::FThread(FThreadFunction&& InThreadFunction, void* InUserData, const std
 		RW_PROFILING_MARK_THREAD(ThreadName.c_str());
 
 		Thread->ThreadFunction(Thread->Context, Thread->UserData);
+		Thread->Context.State = EThreadState::Finished;
 		return 0;
 	};
 	ThreadHandle = CreateThread(nullptr, 0, Win32ThreadFunction, this, 0, reinterpret_cast<LPDWORD>(&Context.ThreadId));
@@ -38,24 +40,34 @@ FThread::~FThread()
 {
 	if (Context.State == EThreadState::Running)
 		ForceKill();
-	if (ThreadHandle)
+	if (ThreadHandle != INVALID_HANDLE_VALUE)
 		CloseHandle(ThreadHandle);
 }
 
 void FThread::Join()
 {
-	DWORD Result = WaitForSingleObject(ThreadHandle, INFINITE);
-	RW_DEBUG_ASSERT(Result == WAIT_OBJECT_0, "Failed to wait for thread")
+	if (Context.State != EThreadState::Running)
+		return;
+	DWORD WaitResult = WaitForSingleObject(ThreadHandle, 100000);
+	RW_DEBUG_ASSERT(WaitResult == WAIT_OBJECT_0, "Failed to wait for thread")
+	BOOL CloseResult = CloseHandle(ThreadHandle);
+	RW_DEBUG_ASSERT(CloseResult != 0, "Failed to close thread handle")
+	ThreadHandle = INVALID_HANDLE_VALUE;
 	Context.State = EThreadState::Finished;
 }
 
 void FThread::ForceKill(const bool bWaitForCompletion)
 {
+	if (Context.State != EThreadState::Running)
+		return;
 	if (bWaitForCompletion)
 		Join();
 
-	bool Result = TerminateThread(ThreadHandle, 0);
-	RW_DEBUG_ASSERT(Result, "Failed to terminate thread")
+	bool TerminateResult = TerminateThread(ThreadHandle, GetExitCodeThread(ThreadHandle, nullptr));
+	RW_DEBUG_ASSERT(TerminateResult, "Failed to terminate thread")
+	BOOL CloseResult = CloseHandle(ThreadHandle);
+	RW_DEBUG_ASSERT(CloseResult != 0, "Failed to close thread handle")
+	ThreadHandle = INVALID_HANDLE_VALUE;
 	Context.State = EThreadState::Finished;
 }
 
