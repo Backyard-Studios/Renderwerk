@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "Renderwerk/Core/CoreDefinitions.h"
+#include "Renderwerk/Core/CoreMinimal.h"
 
 INLINE ENGINE_API std::string ToNarrow(const wchar_t* InWide)
 {

@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "Renderwerk/Core/CoreDefinitions.h"
+#include "Renderwerk/Core/CoreMinimal.h"
 
 #include "Renderwerk/Graphics/GraphicsCommon.h"
 
@@ -67,7 +67,7 @@ public:
 	FShaderCompiler();
 	~FShaderCompiler();
 
-	DELETE_COPY_AND_MOVE(FShaderCompiler)
+	DELETE_COPY_AND_MOVE(FShaderCompiler);
 
 public:
 	FCompiledShader CompileFromFile(const std::string& FilePath, const FShaderCompilationDesc& Description) const;

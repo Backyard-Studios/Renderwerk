@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "Renderwerk/Core/CoreDefinitions.h"
+#include "Renderwerk/Core/CoreMinimal.h"
 
 #include "Renderwerk/Graphics/D3D12Include.h"
 
@@ -20,7 +20,7 @@ public:
 		Context = nullptr;
 	}
 
-	DEFINE_DEFAULT_COPY_AND_MOVE(IGraphicsContextChild)
+	DEFINE_DEFAULT_COPY_AND_MOVE(IGraphicsContextChild);
 
 public:
 	[[nodiscard]] FGraphicsContext* GetDevice() const { return Context; }
@@ -42,7 +42,7 @@ public:
 		Device = nullptr;
 	}
 
-	DEFINE_DEFAULT_COPY_AND_MOVE(IGraphicsDeviceChild)
+	DEFINE_DEFAULT_COPY_AND_MOVE(IGraphicsDeviceChild);
 
 public:
 	[[nodiscard]] FGraphicsDevice* GetDevice() const { return Device; }

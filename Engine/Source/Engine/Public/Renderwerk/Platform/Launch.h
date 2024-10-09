@@ -1,8 +1,7 @@
 ﻿#pragma once
 
 #include "Renderwerk/Application/Application.h"
-#include "Renderwerk/Core/CoreDefinitions.h"
-#include "Renderwerk/Core/CoreTypes.h"
+#include "Renderwerk/Core/CoreMinimal.h"
 #include "Renderwerk/Memory/SmartPointers.h"
 
 #if RW_KIND_CONSOLE_APP

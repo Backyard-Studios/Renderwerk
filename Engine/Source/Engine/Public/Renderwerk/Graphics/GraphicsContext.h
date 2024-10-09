@@ -3,7 +3,7 @@
 
 #include "Swapchain.h"
 
-#include "Renderwerk/Core/CoreDefinitions.h"
+#include "Renderwerk/Core/CoreMinimal.h"
 #include "Renderwerk/Memory/SmartPointers.h"
 
 #include "Renderwerk/Graphics/D3D12Include.h"
@@ -15,7 +15,7 @@ public:
 	FGraphicsContext();
 	~FGraphicsContext();
 
-	DELETE_COPY_AND_MOVE(FGraphicsContext)
+	DELETE_COPY_AND_MOVE(FGraphicsContext);
 
 public:
 	uint32 GetAdapterCount() const;

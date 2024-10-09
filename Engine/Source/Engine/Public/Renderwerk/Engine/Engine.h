@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "Renderwerk/Application/Application.h"
-#include "Renderwerk/Core/CoreDefinitions.h"
+#include "Renderwerk/Core/CoreMinimal.h"
 #include "Renderwerk/Memory/DeletionQueue.h"
 
 #include "Renderwerk/Memory/SmartPointers.h"

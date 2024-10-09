@@ -2,8 +2,7 @@
 
 #include "ShaderCompiler.h"
 
-#include "Renderwerk/Core/CoreDefinitions.h"
-#include "Renderwerk/Core/CoreTypes.h"
+#include "Renderwerk/Core/CoreMinimal.h"
 
 /**
  * @brief Shader cache for storing compiled shaders.

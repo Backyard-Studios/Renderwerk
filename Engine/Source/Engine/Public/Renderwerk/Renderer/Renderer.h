@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "Renderwerk/Core/CoreDefinitions.h"
+#include "Renderwerk/Core/CoreMinimal.h"
 #include "Renderwerk/Graphics/CommandList.h"
 #include "Renderwerk/Memory/SmartPointers.h"
 
@@ -29,7 +29,7 @@ public:
 	FRenderer(const FRendererSettings& InSettings);
 	~FRenderer();
 
-	DELETE_COPY_AND_MOVE(FRenderer)
+	DELETE_COPY_AND_MOVE(FRenderer);
 
 public:
 	void BeginFrame();

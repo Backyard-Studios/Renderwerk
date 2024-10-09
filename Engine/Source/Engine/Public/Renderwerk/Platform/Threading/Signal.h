@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "Renderwerk/Core/CoreDefinitions.h"
+#include "Renderwerk/Core/CoreMinimal.h"
 
 #include "Renderwerk/Platform/Threading/Mutex.h"
 
@@ -15,7 +15,7 @@ public:
 	FSignal();
 	~FSignal();
 
-	DEFINE_DEFAULT_COPY_AND_MOVE(FSignal)
+	DEFINE_DEFAULT_COPY_AND_MOVE(FSignal);
 
 public:
 	/**

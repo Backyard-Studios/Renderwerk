@@ -1,7 +1,6 @@
 ﻿#pragma once
 
-#include "Renderwerk/Core/CoreDefinitions.h"
-#include "Renderwerk/Core/CoreTypes.h"
+#include "Renderwerk/Core/CoreMinimal.h"
 #include "Renderwerk/Memory/SmartPointers.h"
 
 #include "Renderwerk/Platform/Window.h"
@@ -12,7 +11,7 @@ public:
 	FWindowManager();
 	~FWindowManager();
 
-	DELETE_COPY_AND_MOVE(FWindowManager)
+	DELETE_COPY_AND_MOVE(FWindowManager);
 
 public:
 	void Update();

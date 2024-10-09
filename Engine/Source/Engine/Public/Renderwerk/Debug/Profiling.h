@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "Renderwerk/Core/CoreDefinitions.h"
+#include "Renderwerk/Core/CoreMinimal.h"
 
 #if RW_ENABLE_PROFILING
 #	include <tracy/Tracy.hpp>
