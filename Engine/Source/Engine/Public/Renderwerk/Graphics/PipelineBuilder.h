@@ -1,7 +1,6 @@
 ﻿#pragma once
 
-#include "Renderwerk/Core/CoreDefinitions.h"
-#include "Renderwerk/Core/CoreTypes.h"
+#include "Renderwerk/Core/CoreMinimal.h"
 
 #include "Renderwerk/Graphics/GraphicsCommon.h"
 
@@ -15,7 +14,7 @@ public:
 	FPipelineBuilder(const ComPtr<ID3D12RootSignature>& RootSignature);
 	~FPipelineBuilder();
 
-	DELETE_COPY_AND_MOVE(FPipelineBuilder)
+	DELETE_COPY_AND_MOVE(FPipelineBuilder);
 
 public:
 	FPipelineBuilder& SetVertexShader(const D3D12_SHADER_BYTECODE& Shader);

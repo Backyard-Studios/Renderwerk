@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "Renderwerk/Core/CoreDefinitions.h"
+#include "Renderwerk/Core/CoreMinimal.h"
 #include "Renderwerk/Core/Version.h"
 
 struct ENGINE_API FApplicationMetadata
@@ -20,7 +20,7 @@ public:
 
 	virtual ~IApplication() = default;
 
-	DELETE_COPY_AND_MOVE(IApplication)
+	DELETE_COPY_AND_MOVE(IApplication);
 
 public:
 	virtual void Initialize()

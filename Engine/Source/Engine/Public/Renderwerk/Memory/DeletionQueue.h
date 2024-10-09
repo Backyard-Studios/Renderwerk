@@ -1,7 +1,6 @@
 ﻿#pragma once
 
-#include "Renderwerk/Core/CoreDefinitions.h"
-#include "Renderwerk/Core/CoreTypes.h"
+#include "Renderwerk/Core/CoreMinimal.h"
 #include "Renderwerk/Debug/Profiling.h"
 
 struct ENGINE_API FDeletionQueue

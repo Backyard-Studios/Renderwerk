@@ -49,7 +49,7 @@ int32 GuardedMain(const TSharedPtr<IApplication>& Application)
 int32 LaunchRenderwerk(const TSharedPtr<IApplication>& Application)
 {
 	FLogManager::Initialize();
-	RW_LOG_INFO("{} {} [{}]", RW_ENGINE_NAME, RW_ENGINE_FULL_VERSION, RW_PLATFORM);
+	RW_LOG_INFO("{} {} [{}]", RW_ENGINE_NAME, RW_ENGINE_FULL_VERSION, RW_PLATFORM_NAME);
 #if RW_ENABLE_MEMORY_TRACKING
 	RW_LOG_DEBUG("Memory tracking enabled");
 #endif

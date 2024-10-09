@@ -6,8 +6,7 @@
 #include "Fence.h"
 #include "GraphicsAdapter.h"
 
-#include "Renderwerk/Core/CoreDefinitions.h"
-#include "Renderwerk/Core/CoreTypes.h"
+#include "Renderwerk/Core/CoreMinimal.h"
 #include "Renderwerk/Graphics/D3D12Include.h"
 
 enum class ENGINE_API EVariableRateShadingTier : uint8
@@ -54,7 +53,7 @@ public:
 	FGraphicsDevice(const FGraphicsDeviceDesc& InDescription);
 	~FGraphicsDevice();
 
-	DELETE_COPY_AND_MOVE(FGraphicsDevice)
+	DELETE_COPY_AND_MOVE(FGraphicsDevice);
 
 public:
 	[[nodiscard]] TSharedPtr<FCommandQueue> CreateCommandQueue(const FCommandQueueDesc& InDescription);

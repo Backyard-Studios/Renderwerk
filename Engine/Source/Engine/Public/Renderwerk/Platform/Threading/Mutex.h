@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "Renderwerk/Core/CoreDefinitions.h"
+#include "Renderwerk/Core/CoreMinimal.h"
 
 #include <Windows.h>
 
@@ -13,7 +13,7 @@ public:
 	FMutex();
 	~FMutex();
 
-	DEFINE_DEFAULT_COPY_AND_MOVE(FMutex)
+	DEFINE_DEFAULT_COPY_AND_MOVE(FMutex);
 
 public:
 	/**
@@ -52,7 +52,7 @@ public:
 	FScopedLock(FMutex& InMutex);
 	~FScopedLock();
 
-	DELETE_COPY_AND_MOVE(FScopedLock)
+	DELETE_COPY_AND_MOVE(FScopedLock);
 
 public:
 	void Lock();

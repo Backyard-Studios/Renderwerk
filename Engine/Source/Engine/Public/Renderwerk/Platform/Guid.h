@@ -1,7 +1,6 @@
 ﻿#pragma once
 
-#include "Renderwerk/Core/CoreDefinitions.h"
-#include "Renderwerk/Core/CoreTypes.h"
+#include "Renderwerk/Core/CoreMinimal.h"
 
 #include <format>
 #include <string>
@@ -15,7 +14,7 @@ public:
 	FGuid(const std::string& InDataString);
 	~FGuid() = default;
 
-	DEFINE_DEFAULT_COPY_AND_MOVE(FGuid)
+	DEFINE_DEFAULT_COPY_AND_MOVE(FGuid);
 
 public:
 	bool IsValid() const;

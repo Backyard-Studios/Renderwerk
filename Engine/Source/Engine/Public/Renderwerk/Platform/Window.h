@@ -1,7 +1,6 @@
 ﻿#pragma once
 
-#include "Renderwerk/Core/CoreDefinitions.h"
-#include "Renderwerk/Core/CoreTypes.h"
+#include "Renderwerk/Core/CoreMinimal.h"
 #include "Renderwerk/Memory/SmartPointers.h"
 
 class FWindow;
@@ -41,7 +40,7 @@ public:
 	FWindow(const FWindowSettings& InWindowSettings, const FGuid& InGuid);
 	~FWindow();
 
-	DELETE_COPY_AND_MOVE(FWindow)
+	DELETE_COPY_AND_MOVE(FWindow);
 
 public:
 	void Show() const;

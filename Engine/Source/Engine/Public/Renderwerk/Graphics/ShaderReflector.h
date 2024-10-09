@@ -2,8 +2,7 @@
 
 #include "ShaderCompiler.h"
 
-#include "Renderwerk/Core/CoreDefinitions.h"
-#include "Renderwerk/Core/CoreTypes.h"
+#include "Renderwerk/Core/CoreMinimal.h"
 
 #include "Renderwerk/Graphics/GraphicsCommon.h"
 
@@ -13,7 +12,7 @@ public:
 	FShaderReflector(const FCompiledShader& CompiledShader);
 	~FShaderReflector();
 
-	DELETE_COPY_AND_MOVE(FShaderReflector)
+	DELETE_COPY_AND_MOVE(FShaderReflector);
 
 public:
 	[[nodiscard]] TVector<D3D12_INPUT_ELEMENT_DESC> GetInputElements() const { return InputElements; }

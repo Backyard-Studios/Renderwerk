@@ -1,7 +1,6 @@
 ﻿#pragma once
 
-#include "Renderwerk/Core/CoreDefinitions.h"
-#include "Renderwerk/Core/CoreTypes.h"
+#include "Renderwerk/Core/CoreMinimal.h"
 
 enum class ENGINE_API EThreadPriority : uint8
 {
@@ -41,7 +40,7 @@ public:
 	        const EThreadPriority& InPriority = EThreadPriority::Normal);
 	~FThread();
 
-	DELETE_COPY_AND_MOVE(FThread)
+	DELETE_COPY_AND_MOVE(FThread);
 
 public:
 	void Join();

@@ -2,7 +2,7 @@
 
 #include "DescriptorHeap.h"
 
-#include "Renderwerk/Core/CoreDefinitions.h"
+#include "Renderwerk/Core/CoreMinimal.h"
 #include "Renderwerk/Graphics/GraphicsCommon.h"
 
 struct ENGINE_API FCommandListDesc
@@ -24,7 +24,7 @@ public:
 	explicit FCommandList(FGraphicsDevice* InDevice, const FCommandListDesc& InDescription);
 	~FCommandList() override;
 
-	DELETE_COPY_AND_MOVE(FCommandList)
+	DELETE_COPY_AND_MOVE(FCommandList);
 
 public:
 	void Reset() const;

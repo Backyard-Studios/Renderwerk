@@ -3,7 +3,7 @@
 #include "CommandQueue.h"
 #include "DescriptorHeap.h"
 
-#include "Renderwerk/Core/CoreDefinitions.h"
+#include "Renderwerk/Core/CoreMinimal.h"
 
 #include "Renderwerk/Graphics/GraphicsCommon.h"
 #include "Renderwerk/Platform/Window.h"
@@ -25,7 +25,7 @@ public:
 	explicit FSwapchain(FGraphicsContext* InContext, const FSwapchainDesc& InDescription);
 	~FSwapchain() override;
 
-	DELETE_COPY_AND_MOVE(FSwapchain)
+	DELETE_COPY_AND_MOVE(FSwapchain);
 
 public:
 	[[nodiscard]] uint32 GetCurrentImageIndex() const;

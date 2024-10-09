@@ -1,7 +1,6 @@
 ﻿#pragma once
 
-#include "Renderwerk/Core/CoreDefinitions.h"
-#include "Renderwerk/Core/CoreTypes.h"
+#include "Renderwerk/Core/CoreMinimal.h"
 
 #include "Renderwerk/Graphics/GraphicsCommon.h"
 
@@ -13,7 +12,7 @@ public:
 	explicit FFence(FGraphicsDevice* InDevice);
 	~FFence() override;
 
-	DELETE_COPY_AND_MOVE(FFence)
+	DELETE_COPY_AND_MOVE(FFence);
 
 public:
 	void Signal(const TSharedPtr<FCommandQueue>& CommandQueue);

@@ -30,3 +30,27 @@ workspace(project_name)
 		'RW_ENGINE_FULL_VERSION="' .. project_version_string .. '"',
 		'RW_ENGINE_AUTHOR="' .. project_author .. '"',
 	})
+
+	rw_filter_configuration_debug()
+		defines({
+			'RW_ENABLE_MEMORY_TRACKING=1',
+			'RW_ENABLE_PROFILING=1',
+			'RW_ENABLE_D3D12_DEBUG_LAYER=1',
+		})
+	rw_filter_end()
+
+	rw_filter_configuration_development()
+		defines({
+			'RW_ENABLE_MEMORY_TRACKING=1',
+			'RW_ENABLE_PROFILING=1',
+			'RW_ENABLE_D3D12_DEBUG_LAYER=0',
+		})
+	rw_filter_end()
+
+	rw_filter_configuration_shipping()
+		defines({
+			'RW_ENABLE_MEMORY_TRACKING=0',
+			'RW_ENABLE_PROFILING=0',
+			'RW_ENABLE_D3D12_DEBUG_LAYER=0',
+		})
+	rw_filter_end()

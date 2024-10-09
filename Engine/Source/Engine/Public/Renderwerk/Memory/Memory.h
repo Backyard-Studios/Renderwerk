@@ -1,12 +1,12 @@
 ﻿#pragma once
 
 #include "Renderwerk/Core/Assertion.h"
-#include "Renderwerk/Core/CoreDefinitions.h"
-#include "Renderwerk/Core/CoreTypes.h"
+#include "Renderwerk/Core/CoreMinimal.h"
 
 #include "Renderwerk/Platform/Platform.h"
 
 #include <type_traits>
+#include <Windows.h>
 #include <xutility>
 
 enum : uint8

@@ -1,7 +1,6 @@
 ﻿#pragma once
 
-#include "Renderwerk/Core/CoreDefinitions.h"
-#include "Renderwerk/Core/CoreTypes.h"
+#include "Renderwerk/Core/CoreMinimal.h"
 
 #include "Renderwerk/Graphics/GraphicsCommon.h"
 
@@ -42,7 +41,7 @@ public:
 	explicit FDescriptorHeap(FGraphicsDevice* InDevice, const FDescriptorHeapDesc& InDescription);
 	~FDescriptorHeap() override;
 
-	DELETE_COPY_AND_MOVE(FDescriptorHeap)
+	DELETE_COPY_AND_MOVE(FDescriptorHeap);
 
 public:
 	[[nodiscard]] FDescriptorHandle Allocate();
