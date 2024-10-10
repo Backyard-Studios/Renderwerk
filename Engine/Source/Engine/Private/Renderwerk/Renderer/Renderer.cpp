@@ -141,6 +141,7 @@ void FRenderer::RenderScene(const TSharedPtr<FScene>& Scene)
 	static bool8 ShowDemoWindow = true;
 	if (ShowDemoWindow)
 		ImGui::ShowDemoWindow(&ShowDemoWindow);
+	GetEngine()->GetJobSystem()->DebugUI();
 }
 
 void FRenderer::Resize()

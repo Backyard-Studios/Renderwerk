@@ -66,13 +66,18 @@ public:
 		return {std::move(Future)};
 	}
 
+	void DebugUI();
+
 private:
-	void ThreadWorker();
+	void ThreadWorker(size64 Index);
 
 private:
 	size64 WorkerCount;
 
 	TVector<TSharedPtr<FThread>> WorkerThreads;
+
+	FMutex StatesMutex;
+	TVector<bool8> WorkerThreadStates;
 
 	FMutex JobQueueMutex;
 	TQueue<FJobFunction> JobQueue;
