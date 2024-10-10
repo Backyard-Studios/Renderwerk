@@ -54,6 +54,9 @@ public:
 	[[nodiscard]] uint32 GetUsage() const { return AllocatedHandles; }
 	[[nodiscard]] bool8 IsShaderVisible() const { return bIsShaderVisible; }
 
+	[[nodiscard]] D3D12_CPU_DESCRIPTOR_HANDLE GetCpuStartHandle() const { return CPUStartHandle; }
+	[[nodiscard]] D3D12_GPU_DESCRIPTOR_HANDLE GetGpuStartHandle() const { return GPUStartHandle; }
+
 private:
 	FDescriptorHeapDesc Description;
 

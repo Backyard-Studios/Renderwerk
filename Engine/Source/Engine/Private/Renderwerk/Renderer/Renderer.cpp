@@ -6,6 +6,10 @@
 #include "Renderwerk/Graphics/ShaderCache.h"
 #include "Renderwerk/Scene/Components.h"
 
+#include "imgui.h"
+#include "backends/imgui_impl_dx12.h"
+#include "backends/imgui_impl_win32.h"
+
 FRenderer::FRenderer(const FRendererSettings& InSettings)
 	: Settings(InSettings)
 {
@@ -27,6 +31,12 @@ FRenderer::FRenderer(const FRendererSettings& InSettings)
 	RenderTargetViewHeap = Device->CreateDescriptorHeap(RenderTargetViewHeapDesc);
 	DQ_ADD(RenderTargetViewHeap);
 
+	FDescriptorHeapDesc ImmediateShaderResourceViewHeapDesc;
+	ImmediateShaderResourceViewHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	ImmediateShaderResourceViewHeapDesc.Capacity = 1;
+	ImmediateShaderResourceViewHeap = Device->CreateDescriptorHeap(ImmediateShaderResourceViewHeapDesc);
+	DQ_ADD(ImmediateShaderResourceViewHeap);
+
 	FSwapchainDesc SwapchainDesc = {};
 	SwapchainDesc.Device = Device;
 	SwapchainDesc.CommandQueue = DirectCommandQueue;
@@ -41,6 +51,9 @@ FRenderer::FRenderer(const FRendererSettings& InSettings)
 	DQ_ADD(ShaderCompiler);
 
 	DeletionQueue.Add([=]() { FShaderCache::Clear(); });
+
+	SetupImGui();
+	DeletionQueue.Add([=]() { CleanupImGui(); });
 
 	GetEngine()->GetMainWindow()->AppendTitle(std::format(" | D3D12 <{}>", ToString(Adapter->GetMaxSupportedShaderModel())));
 }
@@ -77,6 +90,8 @@ void FRenderer::BeginFrame()
 		ScissorRect.right = static_cast<LONG>(GetEngine()->GetMainWindow()->GetWindowState().ClientWidth);
 		ScissorRect.bottom = static_cast<LONG>(GetEngine()->GetMainWindow()->GetWindowState().ClientHeight);
 		CommandList->GetHandle()->RSSetScissorRects(1, &ScissorRect);
+
+		BeginImGuiFrame();
 	}
 }
 
@@ -88,6 +103,7 @@ void FRenderer::EndFrame()
 
 	TSharedPtr<FCommandList> CommandList = Frame.CommandList;
 	{
+		EndImGuiFrame();
 		CommandList->TransitionResource(Swapchain->GetCurrentImage(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 	}
 	CommandList->Close();
@@ -113,6 +129,10 @@ void FRenderer::RenderScene(const TSharedPtr<FScene>& Scene)
 	CommandList->SetRenderTargetView(Swapchain->GetCurrentRenderTargetViewHandle());
 	CommandList->ClearRenderTargetView(Swapchain->GetCurrentRenderTargetViewHandle(),
 	                                   {SceneSettings->ClearColorRed, SceneSettings->ClearColorGreen, SceneSettings->ClearColorBlue, 1.0f});
+
+	static bool8 ShowDemoWindow = true;
+	if (ShowDemoWindow)
+		ImGui::ShowDemoWindow(&ShowDemoWindow);
 }
 
 void FRenderer::Resize()
@@ -185,4 +205,46 @@ void FRenderer::FlushFrames()
 {
 	for (FRenderFrame& Frame : RenderFrames)
 		Flush(DirectCommandQueue, Frame.Fence);
+}
+
+void FRenderer::SetupImGui() const
+{
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& IO = ImGui::GetIO();
+	IO.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+	IO.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+
+	ImGui::StyleColorsDark();
+	ImGui_ImplWin32_Init(GetEngine()->GetMainWindow()->GetHandle());
+	ImGui_ImplDX12_Init(Device->GetHandle().Get(), Settings.BufferCount, DXGI_FORMAT_R8G8B8A8_UNORM, ImmediateShaderResourceViewHeap->GetHandle().Get(),
+	                    ImmediateShaderResourceViewHeap->GetCpuStartHandle(), ImmediateShaderResourceViewHeap->GetGpuStartHandle());
+}
+
+void FRenderer::CleanupImGui()
+{
+	ImGui_ImplDX12_Shutdown();
+	ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
+}
+
+void FRenderer::BeginImGuiFrame()
+{
+	RW_PROFILING_MARK_FUNCTION();
+
+	ImGui_ImplDX12_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
+}
+
+void FRenderer::EndImGuiFrame()
+{
+	RW_PROFILING_MARK_FUNCTION();
+
+	ImGui::Render();
+
+	FRenderFrame& Frame = RenderFrames.at(FrameIndex);
+	TSharedPtr<FCommandList> CommandList = Frame.CommandList;
+	CommandList->GetHandle()->SetDescriptorHeaps(1, ImmediateShaderResourceViewHeap->GetHandle().GetAddressOf());
+	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), CommandList->GetHandle().Get());
 }
