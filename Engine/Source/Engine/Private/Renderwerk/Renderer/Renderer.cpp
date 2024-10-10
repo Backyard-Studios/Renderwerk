@@ -109,6 +109,14 @@ void FRenderer::EndFrame()
 	CommandList->Close();
 
 	DirectCommandQueue->ExecuteCommandList(CommandList);
+
+	ImGuiIO& IO = ImGui::GetIO();
+	if (IO.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+	{
+		ImGui::UpdatePlatformWindows();
+		ImGui::RenderPlatformWindowsDefault(nullptr, CommandList->GetHandle().Get());
+	}
+
 	Swapchain->Present();
 	Frame.Fence->Signal(DirectCommandQueue);
 
@@ -214,6 +222,8 @@ void FRenderer::SetupImGui() const
 	ImGuiIO& IO = ImGui::GetIO();
 	IO.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 	IO.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+	IO.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+	IO.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
 	ImGui::StyleColorsDark();
 	ImGui_ImplWin32_Init(GetEngine()->GetMainWindow()->GetHandle());
