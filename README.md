@@ -27,6 +27,7 @@
 - **Job System**
 - **Memory Tracking (with support for stl structures)**
 - **Logging based on [spdlog](https://github.com/gabime/spdlog)**
+- **[imgui](https://github.com/ocornut/imgui) Integration**
 
 ## 🚀 Getting Started
 

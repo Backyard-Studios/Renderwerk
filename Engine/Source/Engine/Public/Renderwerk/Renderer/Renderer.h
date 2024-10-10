@@ -48,8 +48,15 @@ private:
 
 	void FlushFrames();
 
+	void SetupImGui() const;
+	void EndImGuiFrame();
+
 private:
 	static void Flush(const TSharedPtr<FCommandQueue>& InCommandQueue, const TSharedPtr<FFence>& InFence);
+
+	static void CleanupImGui();
+
+	static void BeginImGuiFrame();
 
 private:
 	FRendererSettings Settings;
@@ -64,6 +71,7 @@ private:
 	TSharedPtr<FCommandQueue> ComputeCommandQueue;
 
 	TSharedPtr<FDescriptorHeap> RenderTargetViewHeap;
+	TSharedPtr<FDescriptorHeap> ImmediateShaderResourceViewHeap;
 
 	TSharedPtr<FSwapchain> Swapchain;
 

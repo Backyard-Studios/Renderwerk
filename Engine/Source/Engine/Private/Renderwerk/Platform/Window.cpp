@@ -2,6 +2,10 @@
 
 #include "Renderwerk/Platform/Window.h"
 
+#include "backends/imgui_impl_win32.h"
+
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 FWindow::FWindow(const FWindowSettings& InWindowSettings)
 	: FWindow(InWindowSettings, NewGuid())
 {
@@ -124,6 +128,9 @@ void FWindow::ResetResizeFlag()
 
 LRESULT FWindow::WindowProcess(const HWND InWindowHandle, const UINT Message, const WPARAM WParam, const LPARAM LParam)
 {
+	if (ImGui_ImplWin32_WndProcHandler(InWindowHandle, Message, WParam, LParam))
+		return true;
+
 	switch (Message)
 	{
 	case WM_SIZE:

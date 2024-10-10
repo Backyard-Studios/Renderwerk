@@ -10,3 +10,7 @@
 [submodule "Engine/ThirdParty/flecs"]
 	path = Engine/ThirdParty/flecs
 	url = https://github.com/SanderMertens/flecs
+[submodule "Engine/ThirdParty/imgui"]
+	path = Engine/ThirdParty/imgui
+	url = https://github.com/ocornut/imgui
+	branch = docking
