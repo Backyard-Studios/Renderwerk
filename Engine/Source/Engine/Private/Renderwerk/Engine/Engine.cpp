@@ -2,6 +2,8 @@
 
 #include "Renderwerk/Engine/Engine.h"
 
+#include "Renderwerk/Scene/Components.h"
+
 TSharedPtr<FEngine> GEngine = nullptr;
 
 FEngine::FEngine(const TSharedPtr<IApplication>& Application)
@@ -46,6 +48,10 @@ void FEngine::Initialize()
 	Renderer = MakeShared<FRenderer>(RendererSettings);
 	DQ_ADD(Renderer);
 
+	// TODO: Remove temporary code
+	TestScene = MakeShared<FScene>();
+	TestScene->SetSceneComponent<FSceneSettingsComponent>(0.1f, 0.1f, 0.1f);
+
 	RW_LOG_INFO("Engine initialized");
 }
 
@@ -64,6 +70,7 @@ void FEngine::RunLoop()
 		{
 			Renderer->BeginFrame();
 			{
+				Renderer->RenderScene(TestScene);
 			}
 			Renderer->EndFrame();
 		}

@@ -29,6 +29,7 @@ workspace(project_name)
 		'RW_ENGINE_VERSION_SUFFIX="' .. project_version_suffix .. '"',
 		'RW_ENGINE_FULL_VERSION="' .. project_version_string .. '"',
 		'RW_ENGINE_AUTHOR="' .. project_author .. '"',
+		'flecs_STATIC=1',
 	})
 
 	rw_filter_configuration_debug()

@@ -7,3 +7,6 @@
 [submodule "Engine/ThirdParty/D3D12MemoryAllocator"]
 	path = Engine/ThirdParty/D3D12MemoryAllocator
 	url = https://github.com/GPUOpen-LibrariesAndSDKs/D3D12MemoryAllocator
+[submodule "Engine/ThirdParty/flecs"]
+	path = Engine/ThirdParty/flecs
+	url = https://github.com/SanderMertens/flecs
