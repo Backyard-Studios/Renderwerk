@@ -11,6 +11,7 @@
 #include "Renderwerk/Graphics/Swapchain.h"
 #include "Renderwerk/Jobs/JobSystem.h"
 #include "Renderwerk/Memory/DeletionQueue.h"
+#include "Renderwerk/Scene/Scene.h"
 
 struct ENGINE_API FRendererSettings
 {
@@ -35,6 +36,8 @@ public:
 public:
 	void BeginFrame();
 	void EndFrame();
+
+	void RenderScene(const TSharedPtr<FScene>& Scene);
 
 	void Resize();
 
@@ -68,11 +71,4 @@ private:
 	TVector<FRenderFrame> RenderFrames;
 
 	TSharedPtr<FShaderCompiler> ShaderCompiler;
-
-	ComPtr<ID3D12RootSignature> RootSignature;
-	ComPtr<ID3D12PipelineState> PipelineState;
-	TSharedPtr<FGraphicsBuffer> VertexBuffer;
-	TSharedPtr<FGraphicsBuffer> IndexBuffer;
-
-	FJobHandle<void> JobHandle;
 };

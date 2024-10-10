@@ -46,6 +46,9 @@ private:
 
 	TSharedPtr<FRenderer> Renderer;
 
+	// TODO: Remove temporary code
+	TSharedPtr<FScene> TestScene;
+
 	friend void Launch(const TSharedPtr<IApplication>& Application);
 	friend void Shutdown();
 };

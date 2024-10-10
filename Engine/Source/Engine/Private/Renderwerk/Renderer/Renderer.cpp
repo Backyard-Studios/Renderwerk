@@ -3,8 +3,8 @@
 #include "Renderwerk/Renderer/Renderer.h"
 
 #include "Renderwerk/Engine/Engine.h"
-#include "Renderwerk/Graphics/PipelineBuilder.h"
 #include "Renderwerk/Graphics/ShaderCache.h"
+#include "Renderwerk/Scene/Components.h"
 
 FRenderer::FRenderer(const FRendererSettings& InSettings)
 	: Settings(InSettings)
@@ -42,61 +42,6 @@ FRenderer::FRenderer(const FRendererSettings& InSettings)
 
 	DeletionQueue.Add([=]() { FShaderCache::Clear(); });
 
-	JobHandle = GetEngine()->GetJobSystem()->AddJob([=]()
-	{
-		// TODO: REMOVE HARD CODED PATH
-		ComPtr<IDxcBlob> RootBlob = ShaderCompiler->CompileRootSignature(FDirectories::GetShaderPath("DefaultRootSignature.hlsl"), EShaderConfiguration::Debug);
-		CHECK_RESULT(Device->GetHandle()->CreateRootSignature(0, RootBlob->GetBufferPointer(), RootBlob->GetBufferSize(), IID_PPV_ARGS(&RootSignature)),
-		             "Failed to create root signature")
-
-		// TODO: REMOVE HARD CODED PATH
-		FShaderCompilationDesc VertexShaderDesc = {};
-		VertexShaderDesc.Stage = EShaderStage::Vertex;
-		VertexShaderDesc.Configuration = EShaderConfiguration::Debug;
-		FCompiledShader VertexShader = ShaderCompiler->CompileFromFile(FDirectories::GetShaderPath("Default.hlsl"), VertexShaderDesc);
-		FShaderCache::Register("DefaultVertex", VertexShader);
-
-		// TODO: REMOVE HARD CODED PATH
-		FShaderCompilationDesc PixelShaderDesc = {};
-		PixelShaderDesc.Stage = EShaderStage::Pixel;
-		PixelShaderDesc.Configuration = EShaderConfiguration::Debug;
-		FCompiledShader PixelShader = ShaderCompiler->CompileFromFile(FDirectories::GetShaderPath("Default.hlsl"), PixelShaderDesc);
-		FShaderCache::Register("DefaultPixel", PixelShader);
-
-		FPipelineBuilder PipelineBuilder(RootSignature);
-		PipelineBuilder.SetVertexShader(VertexShader.GetBytecode())
-		               .SetPixelShader(PixelShader.GetBytecode())
-		               .AddInputElement({
-			               .SemanticName = "POSITION", .SemanticIndex = 0, .Format = DXGI_FORMAT_R32G32B32_FLOAT, .InputSlot = 0, .AlignedByteOffset = 0,
-			               .InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, .InstanceDataStepRate = 0
-		               }).AddInputElement({
-			               .SemanticName = "COLOR", .SemanticIndex = 0, .Format = DXGI_FORMAT_R32G32B32A32_FLOAT, .InputSlot = 0, .AlignedByteOffset = 12,
-			               .InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, .InstanceDataStepRate = 0
-		               });
-
-		PipelineState = PipelineBuilder.Build(Device);
-
-		struct ENGINE_API FVertex
-		{
-			float32 Position[3];
-			float32 Color[4];
-		};
-
-		TVector<FVertex> Vertices = {
-			{{0.0f, 0.5f, 0.0f}, {1.0f, 0.0f, 0.0f, 1.0f}},
-			{{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f, 1.0f}},
-			{{-0.5f, -0.5f, 0.0f}, {0.0f, 0.0f, 1.0f, 1.0f}}
-		};
-
-		VertexBuffer = MakeShared<FGraphicsBuffer>(Device->GetResourceAllocator(), Vertices.size() * sizeof(FVertex), Vertices.size(), Vertices.data());
-		DQ_ADD(VertexBuffer);
-
-		TVector<uint32> Indices = {0, 1, 2};
-
-		IndexBuffer = MakeShared<FGraphicsBuffer>(Device->GetResourceAllocator(), Indices.size() * sizeof(uint32), Indices.size(), Indices.data());
-		DQ_ADD(IndexBuffer);
-	});
-
 	GetEngine()->GetMainWindow()->AppendTitle(std::format(" | D3D12 <{}>", ToString(Adapter->GetMaxSupportedShaderModel())));
 }
 
@@ -122,15 +67,6 @@ void FRenderer::BeginFrame()
 	{
 		CommandList->TransitionResource(Swapchain->GetCurrentImage(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
-		if (JobHandle.IsReady())
-		{
-			CommandList->GetHandle()->SetPipelineState(PipelineState.Get());
-			CommandList->GetHandle()->SetGraphicsRootSignature(RootSignature.Get());
-		}
-
-		CommandList->SetRenderTargetView(Swapchain->GetCurrentRenderTargetViewHandle());
-		CommandList->ClearRenderTargetView(Swapchain->GetCurrentRenderTargetViewHandle(), {0.1f, 0.1f, 0.1f, 1.0f});
-
 		D3D12_VIEWPORT Viewport = {};
 		Viewport.Width = static_cast<float32>(GetEngine()->GetMainWindow()->GetWindowState().ClientWidth);
 		Viewport.Height = static_cast<float32>(GetEngine()->GetMainWindow()->GetWindowState().ClientHeight);
@@ -141,19 +77,6 @@ void FRenderer::BeginFrame()
 		ScissorRect.right = static_cast<LONG>(GetEngine()->GetMainWindow()->GetWindowState().ClientWidth);
 		ScissorRect.bottom = static_cast<LONG>(GetEngine()->GetMainWindow()->GetWindowState().ClientHeight);
 		CommandList->GetHandle()->RSSetScissorRects(1, &ScissorRect);
-
-		CommandList->GetHandle()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-		if (JobHandle.IsReady())
-		{
-			D3D12_VERTEX_BUFFER_VIEW VertexBufferView = VertexBuffer->GetVertexBufferView();
-			CommandList->GetHandle()->IASetVertexBuffers(0, 1, &VertexBufferView);
-
-			D3D12_INDEX_BUFFER_VIEW IndexBufferView = IndexBuffer->GetIndexBufferView();
-			CommandList->GetHandle()->IASetIndexBuffer(&IndexBufferView);
-
-			CommandList->GetHandle()->DrawIndexedInstanced(3, 1, 0, 0, 0);
-		}
 	}
 }
 
@@ -174,6 +97,22 @@ void FRenderer::EndFrame()
 	Frame.Fence->Signal(DirectCommandQueue);
 
 	FrameIndex = (FrameIndex + 1) % Settings.BufferCount;
+}
+
+void FRenderer::RenderScene(const TSharedPtr<FScene>& Scene)
+{
+	if (!Scene)
+		return;
+	RW_PROFILING_MARK_FUNCTION();
+
+	FRenderFrame& Frame = RenderFrames.at(FrameIndex);
+	TSharedPtr<FCommandList> CommandList = Frame.CommandList;
+
+	const FSceneSettingsComponent* SceneSettings = Scene->GetSceneComponent<FSceneSettingsComponent>();
+
+	CommandList->SetRenderTargetView(Swapchain->GetCurrentRenderTargetViewHandle());
+	CommandList->ClearRenderTargetView(Swapchain->GetCurrentRenderTargetViewHandle(),
+	                                   {SceneSettings->ClearColorRed, SceneSettings->ClearColorGreen, SceneSettings->ClearColorBlue, 1.0f});
 }
 
 void FRenderer::Resize()
