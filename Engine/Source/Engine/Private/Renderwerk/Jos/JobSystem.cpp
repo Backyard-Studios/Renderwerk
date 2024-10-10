@@ -77,6 +77,9 @@ void FJobSystem::ThreadWorker(const size64 Index)
 			WorkerThreadStates[Index] = false;
 		}
 		JobSignal.Wait([=]() { return bIsShutdownRequested || !JobQueue.empty(); });
+
+		RW_PROFILING_MARK_FUNCTION();
+
 		FScopedLock Lock(JobQueueMutex);
 
 		if (bIsShutdownRequested && JobQueue.empty())
