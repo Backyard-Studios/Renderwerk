@@ -18,6 +18,16 @@
 
 </div>
 
+## 🎨 Features
+
+- **DirectX 12 Rendering**
+- **[D3D12 Memory Allocator](https://github.com/GPUOpen-LibrariesAndSDKs/D3D12MemoryAllocator) Integration**
+- **Performance Profiling with [tracy](https://github.com/wolfpld/tracy)**
+- **[flecs](https://github.com/SanderMertens/flecs) Integration (Entity Component System)**
+- **Job System**
+- **Memory Tracking (with support for stl structures)**
+- **Logging based on [spdlog](https://github.com/gabime/spdlog)**
+
 ## 🚀 Getting Started
 
 ### 📦 Prerequisites
