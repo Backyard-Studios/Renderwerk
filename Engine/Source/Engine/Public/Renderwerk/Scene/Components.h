@@ -14,18 +14,6 @@ struct ENGINE_API FIdComponent
 	}
 };
 
-struct ENGINE_API FTagComponent
-{
-	std::string Tag;
-
-	FTagComponent() = default;
-
-	explicit FTagComponent(const std::string& Tag)
-		: Tag(Tag)
-	{
-	}
-};
-
 struct ENGINE_API FSceneSettingsComponent
 {
 	float32 ClearColorRed = 0.0f;

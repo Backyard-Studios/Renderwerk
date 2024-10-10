@@ -38,16 +38,22 @@ public:
 		return World.has<T>();
 	}
 
-	template <typename T>
-	const T* GetSceneComponent()
+	template <typename T, typename... TArguments>
+	void AddSceneComponent(TArguments&&... Arguments)
 	{
-		return World.get<T>();
+		return World.add<T>(T(std::forward<TArguments>(Arguments)...));
 	}
 
 	template <typename T, typename... TArguments>
 	void SetSceneComponent(TArguments&&... Arguments)
 	{
-		return World.set<T>(T{std::forward<TArguments>(Arguments)...});
+		return World.set<T>(T(std::forward<TArguments>(Arguments)...));
+	}
+
+	template <typename T>
+	const T* GetSceneComponent()
+	{
+		return World.get<T>();
 	}
 
 public:

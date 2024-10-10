@@ -21,15 +21,14 @@ FScene::~FScene()
 
 FEntity FScene::CreateEntity(const std::string& InName) const
 {
-	FEntity Entity = World.entity();
+	FEntity Entity = World.entity(InName.c_str());
 	Entity.SetComponent<FIdComponent>(NewGuid());
-	Entity.SetComponent<FTagComponent>(InName);
 	return Entity;
 }
 
 void FScene::DestroyEntity(const FEntity& Entity) const
 {
-	DestroyEntity(Entity.GetId());
+	DestroyEntity(Entity.GetEntityId());
 }
 
 void FScene::DestroyEntity(FEntityId EntityId) const

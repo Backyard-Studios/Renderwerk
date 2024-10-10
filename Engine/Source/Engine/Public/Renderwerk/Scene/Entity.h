@@ -38,19 +38,25 @@ public:
 		return Entity.has<T>();
 	}
 
+	template <typename T, typename... TArguments>
+	void AddComponent(TArguments&&... Arguments)
+	{
+		Entity.add<T>(std::move(T(std::forward<TArguments>(Arguments)...)));
+	}
+
+	template <typename T, typename... TArguments>
+	void SetComponent(TArguments&&... Arguments)
+	{
+		Entity.set(std::move(T(std::forward<TArguments>(Arguments)...)));
+	}
+
 	template <typename T>
 	const T* GetComponent()
 	{
 		return Entity.get<T>();
 	}
 
-	template <typename T, typename... TArguments>
-	void SetComponent(TArguments&&... Arguments)
-	{
-		Entity.set(T(std::forward<TArguments>(Arguments)...));
-	}
-
-	FEntityId GetId() const
+	FEntityId GetEntityId() const
 	{
 		return Entity.id();
 	}
@@ -62,11 +68,9 @@ public:
 		return IdComponent->Id;
 	}
 
-	std::string GetTag() const
+	std::string GetName() const
 	{
-		RW_DEBUG_ASSERT(HasComponent<FTagComponent>(), "Entity does not have a TagComponent")
-		const FTagComponent* TagComponent = Entity.get<FTagComponent>();
-		return TagComponent->Tag;
+		return Entity.name().c_str();
 	}
 
 private:
