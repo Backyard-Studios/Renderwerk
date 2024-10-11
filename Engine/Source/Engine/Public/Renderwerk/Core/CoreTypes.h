@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include <array>
 #include <atomic>
 #include <cstdint>
 #include <functional>
@@ -59,6 +60,9 @@ using TQueue = std::queue<T>;
 
 template <typename T>
 using TDeque = std::deque<T>;
+
+template <typename T, size64 TSize>
+using TArray = std::array<T, TSize>;
 
 #pragma endregion
 

@@ -161,7 +161,20 @@ FPipelineBuilder& FPipelineBuilder::AddInputElement(const D3D12_INPUT_ELEMENT_DE
 	return *this;
 }
 
-FPipelineBuilder& FPipelineBuilder::SetRenderTargetFormat(const DXGI_FORMAT& Format)
+FPipelineBuilder& FPipelineBuilder::SetRenderTargetCount(const uint32 Count)
+{
+	Description.NumRenderTargets = Count;
+	return *this;
+}
+
+FPipelineBuilder& FPipelineBuilder::SetRenderTargetFormat(const uint32 Index, const DXGI_FORMAT& Format)
+{
+	RW_DEBUG_ASSERT(Index < Description.NumRenderTargets, "Index out of range")
+	Description.RTVFormats[Index] = Format;
+	return *this;
+}
+
+FPipelineBuilder& FPipelineBuilder::SetRenderTargetFormatForAll(const DXGI_FORMAT& Format)
 {
 	for (uint32 Index = 0; Index < Description.NumRenderTargets; ++Index)
 		Description.RTVFormats[Index] = Format;

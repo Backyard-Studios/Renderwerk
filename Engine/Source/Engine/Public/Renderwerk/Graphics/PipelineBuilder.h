@@ -31,7 +31,10 @@ public:
 
 	FPipelineBuilder& AddInputElement(const D3D12_INPUT_ELEMENT_DESC& Element);
 
-	FPipelineBuilder& SetRenderTargetFormat(const DXGI_FORMAT& Format);
+	FPipelineBuilder& SetRenderTargetCount(uint32 Count);
+
+	FPipelineBuilder& SetRenderTargetFormat(uint32 Index, const DXGI_FORMAT& Format);
+	FPipelineBuilder& SetRenderTargetFormatForAll(const DXGI_FORMAT& Format);
 	FPipelineBuilder& SetDepthStencilFormat(const DXGI_FORMAT& Format);
 
 	FPipelineBuilder& SetSample(const DXGI_SAMPLE_DESC& SampleDesc);
