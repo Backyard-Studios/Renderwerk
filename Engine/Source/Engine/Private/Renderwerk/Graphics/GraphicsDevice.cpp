@@ -57,7 +57,6 @@ FGraphicsDevice::FGraphicsDevice(const FGraphicsDeviceDesc& InDescription)
 	             "Failed to register message callback")
 #endif
 
-	Capabilities = {};
 	Capabilities.FeatureLevel = Adapter->GetMaxSupportedFeatureLevel();
 	Capabilities.ShaderModel = Adapter->GetMaxSupportedShaderModel();
 
@@ -78,17 +77,10 @@ FGraphicsDevice::FGraphicsDevice(const FGraphicsDeviceDesc& InDescription)
 	Capabilities.MeshShaderTier = static_cast<EMeshShaderTier>(Options7.MeshShaderTier);
 
 	RW_LOG_INFO("Mesh Shader Tier: {}", ToString(Capabilities.MeshShaderTier));
-
-	D3D12MA::ALLOCATOR_DESC AllocatorDesc = {};
-	AllocatorDesc.pDevice = Device.Get();
-	AllocatorDesc.pAdapter = Adapter->GetHandle().Get();
-
-	CHECK_RESULT(D3D12MA::CreateAllocator(&AllocatorDesc, &ResourceAllocator), "Failed to create D3D12 resource allocator")
 }
 
 FGraphicsDevice::~FGraphicsDevice()
 {
-	ResourceAllocator.Reset();
 #if RW_ENABLE_D3D12_DEBUG_LAYER
 	if (InfoQueue)
 	{

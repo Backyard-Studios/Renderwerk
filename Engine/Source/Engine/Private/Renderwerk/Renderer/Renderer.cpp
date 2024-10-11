@@ -10,6 +10,8 @@
 #include "backends/imgui_impl_dx12.h"
 #include "backends/imgui_impl_win32.h"
 
+#include "Renderwerk/Graphics/ResourceAllocator.h"
+
 FRenderer::FRenderer(const FRendererSettings& InSettings)
 	: Settings(InSettings)
 {
@@ -49,6 +51,9 @@ FRenderer::FRenderer(const FRendererSettings& InSettings)
 
 	ShaderCompiler = MakeShared<FShaderCompiler>();
 	DQ_ADD(ShaderCompiler);
+
+	ResourceAllocator = MakeShared<FResourceAllocator>(Device);
+	DQ_ADD(ResourceAllocator);
 
 	DeletionQueue.Add([=]() { FShaderCache::Clear(); });
 
@@ -138,9 +143,7 @@ void FRenderer::RenderScene(const TSharedPtr<FScene>& Scene)
 	CommandList->ClearRenderTargetView(Swapchain->GetCurrentRenderTargetViewHandle(),
 	                                   {SceneSettings->ClearColorRed, SceneSettings->ClearColorGreen, SceneSettings->ClearColorBlue, 1.0f});
 
-	static bool8 ShowDemoWindow = true;
-	if (ShowDemoWindow)
-		ImGui::ShowDemoWindow(&ShowDemoWindow);
+	// TODO: Move this to a separate imgui pass
 	GetEngine()->GetJobSystem()->DebugUI();
 }
 

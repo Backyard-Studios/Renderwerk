@@ -10,18 +10,23 @@ struct ENGINE_API FDescriptorHandle
 {
 public:
 	FDescriptorHandle();
-	FDescriptorHandle(FDescriptorHeap* InHeap, const D3D12_CPU_DESCRIPTOR_HANDLE& InCPUHandle, const D3D12_GPU_DESCRIPTOR_HANDLE& InGPUHandle);
+	FDescriptorHandle(FDescriptorHeap* InHeap, D3D12_DESCRIPTOR_HEAP_TYPE InType, const D3D12_CPU_DESCRIPTOR_HANDLE& InCPUHandle,
+	                  const D3D12_GPU_DESCRIPTOR_HANDLE& InGPUHandle);
 
 public:
 	[[nodiscard]] bool8 IsShaderVisible() const;
 	[[nodiscard]] bool8 IsValid() const;
 
 public:
+	[[nodiscard]] D3D12_DESCRIPTOR_HEAP_TYPE GetType() const { return Type; }
+
 	[[nodiscard]] D3D12_CPU_DESCRIPTOR_HANDLE GetCPUHandle() const { return CPUHandle; }
 	[[nodiscard]] D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle() const { return GPUHandle; }
 
 private:
 	FDescriptorHeap* Heap;
+
+	D3D12_DESCRIPTOR_HEAP_TYPE Type;
 
 	D3D12_CPU_DESCRIPTOR_HANDLE CPUHandle;
 	D3D12_GPU_DESCRIPTOR_HANDLE GPUHandle;

@@ -67,7 +67,6 @@ public:
 
 	[[nodiscard]] TSharedPtr<FGraphicsAdapter> GetAdapter() const { return Description.Adapter; }
 	[[nodiscard]] FDeviceCapabilities GetCapabilities() const { return Capabilities; }
-	[[nodiscard]] ComPtr<D3D12MA::Allocator> GetResourceAllocator() const { return ResourceAllocator; }
 
 private:
 	FGraphicsDeviceDesc Description;
@@ -81,6 +80,4 @@ private:
 #endif
 
 	FDeviceCapabilities Capabilities;
-
-	ComPtr<D3D12MA::Allocator> ResourceAllocator;
 };

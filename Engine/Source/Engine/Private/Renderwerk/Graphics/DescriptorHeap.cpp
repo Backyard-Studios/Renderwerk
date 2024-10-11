@@ -5,12 +5,13 @@
 #include "Renderwerk/Graphics/GraphicsDevice.h"
 
 FDescriptorHandle::FDescriptorHandle()
-	: Heap(nullptr), CPUHandle({}), GPUHandle({})
+	: Heap(nullptr), Type(D3D12_DESCRIPTOR_HEAP_TYPE_NUM_TYPES), CPUHandle({}), GPUHandle({})
 {
 }
 
-FDescriptorHandle::FDescriptorHandle(FDescriptorHeap* InHeap, const D3D12_CPU_DESCRIPTOR_HANDLE& InCPUHandle, const D3D12_GPU_DESCRIPTOR_HANDLE& InGPUHandle)
-	: Heap(InHeap), CPUHandle(InCPUHandle), GPUHandle(InGPUHandle)
+FDescriptorHandle::FDescriptorHandle(FDescriptorHeap* InHeap, const D3D12_DESCRIPTOR_HEAP_TYPE InType, const D3D12_CPU_DESCRIPTOR_HANDLE& InCPUHandle,
+                                     const D3D12_GPU_DESCRIPTOR_HANDLE& InGPUHandle)
+	: Heap(InHeap), Type(InType), CPUHandle(InCPUHandle), GPUHandle(InGPUHandle)
 {
 }
 
@@ -56,7 +57,7 @@ FDescriptorHeap::FDescriptorHeap(FGraphicsDevice* InDevice, const FDescriptorHea
 		if (bIsShaderVisible)
 			GPUHandle.ptr += Index * DescriptorSize;
 
-		FreeHandles.push(FDescriptorHandle(this, CPUHandle, GPUHandle));
+		FreeHandles.push(FDescriptorHandle(this, Description.Type, CPUHandle, GPUHandle));
 	}
 }
 

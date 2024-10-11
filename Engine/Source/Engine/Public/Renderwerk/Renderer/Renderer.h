@@ -6,10 +6,9 @@
 
 #include "Renderwerk/Graphics/GraphicsContext.h"
 #include "Renderwerk/Graphics/GraphicsDevice.h"
-#include "Renderwerk/Graphics/GraphicsResource.h"
+#include "Renderwerk/Graphics/ResourceAllocator.h"
 #include "Renderwerk/Graphics/ShaderCompiler.h"
 #include "Renderwerk/Graphics/Swapchain.h"
-#include "Renderwerk/Jobs/JobSystem.h"
 #include "Renderwerk/Memory/DeletionQueue.h"
 #include "Renderwerk/Scene/Scene.h"
 
@@ -79,4 +78,6 @@ private:
 	TVector<FRenderFrame> RenderFrames;
 
 	TSharedPtr<FShaderCompiler> ShaderCompiler;
+
+	TSharedPtr<FResourceAllocator> ResourceAllocator;
 };
