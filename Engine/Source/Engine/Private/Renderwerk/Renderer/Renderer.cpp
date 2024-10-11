@@ -85,16 +85,10 @@ void FRenderer::BeginFrame()
 	{
 		CommandList->TransitionResource(Swapchain->GetCurrentImage(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
-		D3D12_VIEWPORT Viewport = {};
+		FViewport Viewport = {};
 		Viewport.Width = static_cast<float32>(GetEngine()->GetMainWindow()->GetWindowState().ClientWidth);
 		Viewport.Height = static_cast<float32>(GetEngine()->GetMainWindow()->GetWindowState().ClientHeight);
-		Viewport.MaxDepth = 1.0f;
-		CommandList->GetHandle()->RSSetViewports(1, &Viewport);
-
-		D3D12_RECT ScissorRect = {};
-		ScissorRect.right = static_cast<LONG>(GetEngine()->GetMainWindow()->GetWindowState().ClientWidth);
-		ScissorRect.bottom = static_cast<LONG>(GetEngine()->GetMainWindow()->GetWindowState().ClientHeight);
-		CommandList->GetHandle()->RSSetScissorRects(1, &ScissorRect);
+		CommandList->SetViewportWithDefaultScissor(Viewport);
 
 		BeginImGuiFrame();
 	}

@@ -18,6 +18,21 @@ struct ENGINE_API FClearColor
 	float32 Alpha = 1.0f;
 };
 
+struct ENGINE_API FViewport
+{
+	uint32 Width = 0;
+	uint32 Height = 0;
+	float32 Depth = 1.0f;
+};
+
+struct ENGINE_API FScissor
+{
+	uint32 Left = 0;
+	uint32 Top = 0;
+	uint32 Right = 0;
+	uint32 Bottom = 0;
+};
+
 class ENGINE_API FCommandList : public IGraphicsDeviceChild
 {
 public:
@@ -33,6 +48,11 @@ public:
 	void TransitionResource(const ComPtr<ID3D12Resource2>& Resource, D3D12_RESOURCE_STATES StateBefore, D3D12_RESOURCE_STATES StateAfter) const;
 	void SetRenderTargetView(const FDescriptorHandle& RenderTargetViewHandle) const;
 	void ClearRenderTargetView(const FDescriptorHandle& RenderTargetViewHandle, const FClearColor& ClearColor = {}) const;
+
+	void SetViewport(const FViewport& Viewport) const;
+	void SetViewportWithDefaultScissor(const FViewport& Viewport) const;
+	void SetScissor(const FScissor& Scissor) const;
+	void SetViewportAndScissor(const FViewport& Viewport, const FScissor& Scissor) const;
 
 public:
 	[[nodiscard]] ComPtr<ID3D12GraphicsCommandList10> GetHandle() const { return CommandList; }

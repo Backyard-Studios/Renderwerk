@@ -13,7 +13,7 @@ FGraphicsPipeline::FGraphicsPipeline(const TSharedPtr<FGraphicsDevice>& Device, 
 	                                                                             IID_PPV_ARGS(RootSignature.GetAddressOf()));
 	CHECK_RESULT(RootSignatureCreateResult, "Failed to create root signature")
 
-	TUniquePtr<FPipelineBuilder> Builder = MakeUnique<FPipelineBuilder>(RootSignature);
+	TSharedPtr<FPipelineBuilder> Builder = MakeShared<FPipelineBuilder>(RootSignature);
 	Builder->SetFillMode(Description.FillMode);
 	Builder->SetCullMode(Description.CullMode);
 	Builder->SetRenderTargetCount(Description.RenderTargetCount);
@@ -31,7 +31,7 @@ FGraphicsPipeline::FGraphicsPipeline(const TSharedPtr<FGraphicsDevice>& Device, 
 			{
 				Builder->SetVertexShader(Shader.GetBytecode());
 
-				TUniquePtr<FShaderReflector> Reflector = MakeUnique<FShaderReflector>(Shader);
+				TSharedPtr<FShaderReflector> Reflector = MakeShared<FShaderReflector>(Shader);
 				for (const D3D12_INPUT_ELEMENT_DESC& Element : Reflector->GetInputElements())
 					Builder->AddInputElement(Element);
 			}
