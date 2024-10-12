@@ -29,6 +29,10 @@
 - **Logging based on [spdlog](https://github.com/gabime/spdlog)**
 - **[imgui](https://github.com/ocornut/imgui) Integration**
 
+## 🔮 Future Plans
+
+- [ ] Mesh Shading Pipeline
+
 ## 🚀 Getting Started
 
 ### 📦 Prerequisites
