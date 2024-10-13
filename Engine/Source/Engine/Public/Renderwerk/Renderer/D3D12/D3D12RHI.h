@@ -19,7 +19,7 @@ public:
 	[[nodiscard]] TSharedPtr<IAdapter> GetAdapter(const std::string& Name) override;
 	[[nodiscard]] TSharedPtr<IAdapter> GetSuitableAdapter() override;
 
-	[[nodiscard]] TSharedPtr<IDevice> CreateDevice(const TSharedPtr<IAdapter>& Adapter) override;
+	[[nodiscard]] TSharedPtr<IDevice> CreateDevice(const TSharedPtr<IAdapter>& Adapter, const FDeviceDesc& Desc) override;
 
 private:
 	ComPtr<IDXGIDebug1> DXGIDebug;

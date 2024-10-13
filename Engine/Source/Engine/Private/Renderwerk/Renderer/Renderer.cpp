@@ -19,7 +19,9 @@ FRenderer::FRenderer(const FRendererSettings& InDescription)
 	RW_LOG_INFO("\t- Mesh Shading: {}", Adapter->GetCapabilities().bSupportsMeshShading);
 	RW_LOG_INFO("\t- Ray Tracing: {}", Adapter->GetCapabilities().bSupportsRayTracing);
 	RW_LOG_INFO("\t- Variable Rate Shading: {}", Adapter->GetCapabilities().bSupportsVariableRateShading);
-	Device = RHI->CreateDevice(Adapter);
+
+	FDeviceDesc DeviceDesc = {};
+	Device = RHI->CreateDevice(Adapter, DeviceDesc);
 }
 
 FRenderer::~FRenderer()

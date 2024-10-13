@@ -36,7 +36,7 @@ public:
 	[[nodiscard]] virtual TSharedPtr<IAdapter> GetAdapter(const std::string& Name) = 0;
 	[[nodiscard]] virtual TSharedPtr<IAdapter> GetSuitableAdapter() = 0;
 
-	[[nodiscard]] virtual TSharedPtr<IDevice> CreateDevice(const TSharedPtr<IAdapter>& Adapter) = 0;
+	[[nodiscard]] virtual TSharedPtr<IDevice> CreateDevice(const TSharedPtr<IAdapter>& Adapter, const FDeviceDesc& Desc) = 0;
 
 public:
 	[[nodiscard]] EGraphicsAPI GetGraphicsApi() const { return GraphicsAPI; }

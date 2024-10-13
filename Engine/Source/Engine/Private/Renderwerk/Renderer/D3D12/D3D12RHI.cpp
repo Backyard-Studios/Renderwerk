@@ -85,7 +85,7 @@ TSharedPtr<IAdapter> FD3D12RHI::GetSuitableAdapter()
 	return nullptr;
 }
 
-TSharedPtr<IDevice> FD3D12RHI::CreateDevice(const TSharedPtr<IAdapter>& Adapter)
+TSharedPtr<IDevice> FD3D12RHI::CreateDevice(const TSharedPtr<IAdapter>& Adapter, const FDeviceDesc& Desc)
 {
-	return MakeShared<FD3D12Device>(Adapter);
+	return MakeShared<FD3D12Device>(Adapter, Desc);
 }
