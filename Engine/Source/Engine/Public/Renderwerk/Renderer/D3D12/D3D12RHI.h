@@ -1,0 +1,23 @@
+﻿#pragma once
+
+#include "Renderwerk/Core/CoreMinimal.h"
+#include "Renderwerk/Renderer/RHI.h"
+#include "Renderwerk/Renderer/D3D12/D3D12Include.h"
+
+class ENGINE_API FD3D12RHI : public IRHI
+{
+public:
+	FD3D12RHI(const FRHIDesc& InDesc);
+	~FD3D12RHI() override;
+
+	DELETE_COPY_AND_MOVE(FD3D12RHI);
+
+public:
+	[[nodiscard]] TVector<TSharedPtr<IAdapter>> GetAdapters() override;
+
+private:
+	ComPtr<IDXGIDebug1> DXGIDebug;
+	ComPtr<ID3D12Debug6> D3D12Debug;
+
+	ComPtr<IDXGIFactory7> Factory;
+};

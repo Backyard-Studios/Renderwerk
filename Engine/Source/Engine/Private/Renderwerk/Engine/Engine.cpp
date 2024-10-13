@@ -44,7 +44,8 @@ void FEngine::Initialize()
 	MainWindow->SetTitle(Application->GetMetadata().Name + " v" + FormatVersion(Application->GetMetadata().Version));
 	MainWindow->Show();
 
-	FRendererSettings RendererSettings = {};
+	FRendererSettings RendererSettings;
+	RendererSettings.GraphicsAPI = EGraphicsAPI::DirectX12;
 	Renderer = MakeShared<FRenderer>(RendererSettings);
 	DQ_ADD(Renderer);
 
@@ -66,19 +67,19 @@ void FEngine::RunLoop()
 
 		WindowManager->ClearRemoveQueue();
 
-		if (!MainWindow->DidResize())
-		{
-			Renderer->BeginFrame();
-			{
-				Renderer->RenderScene(TestScene);
-			}
-			Renderer->EndFrame();
-		}
-		else
-		{
-			Renderer->Resize();
-			MainWindow->ResetResizeFlag();
-		}
+		// if (!MainWindow->DidResize())
+		// {
+		// 	Renderer->BeginFrame();
+		// 	{
+		// 		Renderer->RenderScene(TestScene);
+		// 	}
+		// 	Renderer->EndFrame();
+		// }
+		// else
+		// {
+		// 	Renderer->Resize();
+		// 	MainWindow->ResetResizeFlag();
+		// }
 
 		RW_PROFILING_MARK_FRAME();
 	}

@@ -1,16 +1,12 @@
 ﻿#pragma once
 
-#include <Renderwerk/Core/Assertion.h>
-
 #include <d3d12.h>
 #include <d3d12sdklayers.h>
 #include <dxgi1_6.h>
 #include <dxgidebug.h>
-
 #include <wrl.h>
 
 #include "D3D12MemAlloc.h"
-
 #include "d3d12shader.h"
 #include "dxcapi.h"
 
@@ -22,6 +18,7 @@ using Microsoft::WRL::ComPtr;
 #	define CHECK_RESULT(Result, ...) Result;
 #endif
 #define CHECK_RESULT_CRITICAL(Result, ...) { HRESULT UNIQUE_NAME(Result) = ResultPredicate; if(FAILED(UNIQUE_NAME(Result))) RW_LOG_ERROR("{}", D3D12ResultToString(UNIQUE_NAME(Result))); RW_ASSERT_CRITICAL(SUCCEEDED(UNIQUE_NAME(Result)), __VA_ARGS__) }
+
 
 ENGINE_API INLINE std::string ToString(const D3D_FEATURE_LEVEL FeatureLevel)
 {

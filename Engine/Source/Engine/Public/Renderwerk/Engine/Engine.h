@@ -8,6 +8,7 @@
 #include "Renderwerk/Memory/SmartPointers.h"
 #include "Renderwerk/Platform/WindowManager.h"
 #include "Renderwerk/Renderer/Renderer.h"
+#include "Renderwerk/Scene/Scene.h"
 
 class ENGINE_API FEngine
 {
