@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
 
-#include "Renderwerk/Renderer/D3D12/D3D12DescriptorHeap.h"
+#include "Renderwerk/Renderer/DescriptorHeap.h"
 
 std::string ToString(const EDescriptorType Type)
 {
@@ -34,7 +34,7 @@ FDescriptorHandle::FDescriptorHandle()
 {
 }
 
-FDescriptorHandle::FDescriptorHandle(FD3D12DescriptorHeap* InHeap, const D3D12_CPU_DESCRIPTOR_HANDLE& InCPUHandle, const D3D12_GPU_DESCRIPTOR_HANDLE& InGPUHandle)
+FDescriptorHandle::FDescriptorHandle(FDescriptorHeap* InHeap, const D3D12_CPU_DESCRIPTOR_HANDLE& InCPUHandle, const D3D12_GPU_DESCRIPTOR_HANDLE& InGPUHandle)
 	: Heap(InHeap), CPUHandle(InCPUHandle), GPUHandle(InGPUHandle)
 {
 }
@@ -58,7 +58,7 @@ EDescriptorType FDescriptorHandle::GetType() const
 	return Heap->GetType();
 }
 
-FD3D12DescriptorHeap::FD3D12DescriptorHeap(const ComPtr<ID3D12Device14>& Device, const FD3D12DescriptorHeapDesc& Desc)
+FDescriptorHeap::FDescriptorHeap(const ComPtr<ID3D12Device14>& Device, const FD3D12DescriptorHeapDesc& Desc)
 	: Description(Desc)
 {
 	bIsShaderVisible = Description.Type == EDescriptorType::ShaderResource || Description.Type == EDescriptorType::Sampler;
@@ -89,14 +89,14 @@ FD3D12DescriptorHeap::FD3D12DescriptorHeap(const ComPtr<ID3D12Device14>& Device,
 	}
 }
 
-FD3D12DescriptorHeap::~FD3D12DescriptorHeap()
+FDescriptorHeap::~FDescriptorHeap()
 {
 	for (size64 Index = 0; Index < FreeHandles.size(); ++Index)
 		FreeHandles.pop();
 	DescriptorHeap.Reset();
 }
 
-FDescriptorHandle FD3D12DescriptorHeap::Allocate()
+FDescriptorHandle FDescriptorHeap::Allocate()
 {
 	RW_DEBUG_ASSERT(!FreeHandles.empty(), "Descriptor heap is full")
 
@@ -107,7 +107,7 @@ FDescriptorHandle FD3D12DescriptorHeap::Allocate()
 	return Handle;
 }
 
-void FD3D12DescriptorHeap::Free(const FDescriptorHandle& Handle)
+void FDescriptorHeap::Free(const FDescriptorHandle& Handle)
 {
 	RW_DEBUG_ASSERT(Handle.Heap == this, "Invalid descriptor handle")
 
@@ -116,7 +116,7 @@ void FD3D12DescriptorHeap::Free(const FDescriptorHandle& Handle)
 	AllocatedHandles--;
 }
 
-EDescriptorType FD3D12DescriptorHeap::GetType() const
+EDescriptorType FDescriptorHeap::GetType() const
 {
 	return Description.Type;
 }

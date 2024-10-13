@@ -1,12 +1,9 @@
 ﻿#include "pch.h"
 
-#include "Renderwerk/Renderer/D3D12/D3D12RHI.h"
+#include "Renderwerk/Renderer/RendererContext.h"
 
-#include "Renderwerk/Renderer/D3D12/D3D12Adapter.h"
-#include "Renderwerk/Renderer/D3D12/D3D12Device.h"
-
-FD3D12RHI::FD3D12RHI(const FRHIDesc& InDesc)
-	: IRHI(EGraphicsAPI::DirectX12, InDesc)
+FRendererContext::FRendererContext(const FRendererContextDesc& InDesc)
+	: Description(InDesc)
 {
 	if (Description.bEnableDebugging)
 	{
@@ -31,7 +28,7 @@ FD3D12RHI::FD3D12RHI(const FRHIDesc& InDesc)
 	CHECK_RESULT(CreateDXGIFactory2(FactoryFlags, IID_PPV_ARGS(&Factory)), "Failed to create DXGI factory")
 }
 
-FD3D12RHI::~FD3D12RHI()
+FRendererContext::~FRendererContext()
 {
 	Factory.Reset();
 	if (Description.bEnableDebugging)
@@ -47,34 +44,34 @@ FD3D12RHI::~FD3D12RHI()
 	DXGIDebug.Reset();
 }
 
-TVector<TSharedPtr<IAdapter>> FD3D12RHI::GetAdapters()
+TVector<TSharedPtr<FAdapter>> FRendererContext::GetAdapters() const
 {
-	TVector<TSharedPtr<IAdapter>> Adapters;
+	TVector<TSharedPtr<FAdapter>> Adapters;
 	ComPtr<IDXGIAdapter4> TempAdapter;
 	for (uint32 AdapterIndex = 0; Factory->EnumAdapterByGpuPreference(AdapterIndex, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, IID_PPV_ARGS(&TempAdapter)) !=
 	     DXGI_ERROR_NOT_FOUND; ++AdapterIndex)
-		Adapters.push_back(MakeShared<FD3D12Adapter>(TempAdapter));
+		Adapters.push_back(MakeShared<FAdapter>(TempAdapter));
 	return Adapters;
 }
 
-TSharedPtr<IAdapter> FD3D12RHI::GetPrimaryAdapter()
+TSharedPtr<FAdapter> FRendererContext::GetPrimaryAdapter() const
 {
 	return GetAdapters().at(0);
 }
 
-TSharedPtr<IAdapter> FD3D12RHI::GetAdapter(const std::string& Name)
+TSharedPtr<FAdapter> FRendererContext::GetAdapter(const std::string& Name) const
 {
-	TVector<TSharedPtr<IAdapter>> Adapters = GetAdapters();
-	for (const TSharedPtr<IAdapter>& Adapter : Adapters)
+	TVector<TSharedPtr<FAdapter>> Adapters = GetAdapters();
+	for (const TSharedPtr<FAdapter>& Adapter : Adapters)
 		if (Adapter->GetName() == Name)
 			return Adapter;
 	return nullptr;
 }
 
-TSharedPtr<IAdapter> FD3D12RHI::GetSuitableAdapter()
+TSharedPtr<FAdapter> FRendererContext::GetSuitableAdapter() const
 {
-	TVector<TSharedPtr<IAdapter>> Adapters = GetAdapters();
-	for (const TSharedPtr<IAdapter>& Adapter : Adapters)
+	TVector<TSharedPtr<FAdapter>> Adapters = GetAdapters();
+	for (const TSharedPtr<FAdapter>& Adapter : Adapters)
 	{
 		if (Adapter->GetType() != EAdapterType::Discrete)
 			continue;
@@ -85,7 +82,7 @@ TSharedPtr<IAdapter> FD3D12RHI::GetSuitableAdapter()
 	return nullptr;
 }
 
-TSharedPtr<IDevice> FD3D12RHI::CreateDevice(const TSharedPtr<IAdapter>& Adapter, const FDeviceDesc& Desc)
+TSharedPtr<FDevice> FRendererContext::CreateDevice(const TSharedPtr<FAdapter>& Adapter, const FDeviceDesc& Desc)
 {
-	return MakeShared<FD3D12Device>(Adapter, Desc);
+	return MakeShared<FDevice>(Adapter, Desc);
 }

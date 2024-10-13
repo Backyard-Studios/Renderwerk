@@ -1,13 +1,11 @@
 ﻿#include "pch.h"
 
-#include "Renderwerk/Renderer/D3D12/D3D12Device.h"
+#include "Renderwerk/Renderer/Device.h"
 
-#include "Renderwerk/Renderer/D3D12/D3D12Adapter.h"
-
-FD3D12Device::FD3D12Device(const TSharedPtr<IAdapter>& InAdapter, const FDeviceDesc& InDesc)
-	: IDevice(InAdapter, InDesc)
+FDevice::FDevice(const TSharedPtr<FAdapter>& InAdapter, const FDeviceDesc& InDesc)
+	: Adapter(InAdapter), Description(InDesc)
 {
-	TSharedPtr<FD3D12Adapter> D3D12Adapter = static_pointer_cast<FD3D12Adapter>(Adapter);
+	TSharedPtr<FAdapter> D3D12Adapter = static_pointer_cast<FAdapter>(Adapter);
 	HRESULT CreateResult = D3D12CreateDevice(D3D12Adapter->GetHandle().Get(), D3D12Adapter->GetMaxSupportedFeatureLevel(), IID_PPV_ARGS(Device.GetAddressOf()));
 	CHECK_RESULT(CreateResult, "Failed to create D3D12 device")
 
@@ -32,16 +30,17 @@ FD3D12Device::FD3D12Device(const TSharedPtr<IAdapter>& InAdapter, const FDeviceD
 	SamplerHeap = CreateDescriptorHeap(SamplerHeapDesc);
 }
 
-FD3D12Device::~FD3D12Device()
+FDevice::~FDevice()
 {
 	SamplerHeap.reset();
 	DepthStencilViewHeap.reset();
 	RenderTargetViewHeap.reset();
 	ShaderResourcesHeap.reset();
 	Device.Reset();
+	Adapter.reset();
 }
 
-TSharedPtr<FD3D12DescriptorHeap> FD3D12Device::CreateDescriptorHeap(const FD3D12DescriptorHeapDesc& Desc) const
+TSharedPtr<FDescriptorHeap> FDevice::CreateDescriptorHeap(const FD3D12DescriptorHeapDesc& Desc) const
 {
-	return MakeShared<FD3D12DescriptorHeap>(Device.Get(), Desc);
+	return MakeShared<FDescriptorHeap>(Device.Get(), Desc);
 }

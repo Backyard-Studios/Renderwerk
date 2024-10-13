@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
 
-#include "Renderwerk/Renderer/D3D12/D3D12Adapter.h"
+#include "Renderwerk/Renderer/Adapter.h"
 
 EAdapterVendor ConvertVendor(const uint32 VendorId)
 {
@@ -17,8 +17,8 @@ EAdapterVendor ConvertVendor(const uint32 VendorId)
 #undef DEFINE_CASE
 }
 
-FD3D12Adapter::FD3D12Adapter(const ComPtr<IDXGIAdapter4>& InAdapter)
-	: IAdapter(), Adapter(InAdapter)
+FAdapter::FAdapter(const ComPtr<IDXGIAdapter4>& InAdapter)
+	: Adapter(InAdapter)
 {
 	CHECK_RESULT(Adapter->GetDesc3(&Description), "Failed to get adapter description")
 	AdapterName = ToNarrow(Description.Description);
@@ -72,12 +72,12 @@ FD3D12Adapter::FD3D12Adapter(const ComPtr<IDXGIAdapter4>& InAdapter)
 	TempDevice.Reset();
 }
 
-FD3D12Adapter::~FD3D12Adapter()
+FAdapter::~FAdapter()
 {
 	Adapter.Reset();
 }
 
-std::string FD3D12Adapter::GetName() const
+std::string FAdapter::GetName() const
 {
 	return AdapterName;
 }

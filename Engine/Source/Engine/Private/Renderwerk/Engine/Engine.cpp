@@ -44,8 +44,7 @@ void FEngine::Initialize()
 	MainWindow->SetTitle(Application->GetMetadata().Name + " v" + FormatVersion(Application->GetMetadata().Version));
 	MainWindow->Show();
 
-	FRendererSettings RendererSettings;
-	RendererSettings.GraphicsAPI = EGraphicsAPI::DirectX12;
+	FRendererSettings RendererSettings = {};
 	Renderer = MakeShared<FRenderer>(RendererSettings);
 	DQ_ADD(Renderer);
 

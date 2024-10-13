@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "Renderwerk/Core/CoreMinimal.h"
+#include "Renderwerk/Renderer/D3D12Include.h"
 
 enum class ENGINE_API EAdapterType : uint8
 {
@@ -52,26 +53,39 @@ struct ENGINE_API FAdapterCapabilities
 	bool8 bSupportsVariableRateShading = false;
 };
 
-class ENGINE_API IAdapter
+class ENGINE_API FAdapter
 {
 public:
-	IAdapter() = default;
-	virtual ~IAdapter() = default;
+	FAdapter(const ComPtr<IDXGIAdapter4>& InAdapter);
+	~FAdapter();
 
-	DELETE_COPY_AND_MOVE(IAdapter);
-
-public:
-	[[nodiscard]] virtual std::string GetName() const = 0;
+	DELETE_COPY_AND_MOVE(FAdapter);
 
 public:
+	[[nodiscard]] std::string GetName() const;
+
+public:
+	[[nodiscard]] ComPtr<IDXGIAdapter4> GetHandle() const { return Adapter; }
+
 	[[nodiscard]] EAdapterType GetType() const { return Type; }
 	[[nodiscard]] EAdapterVendor GetVendor() const { return Vendor; }
+
+	[[nodiscard]] D3D_FEATURE_LEVEL GetMaxSupportedFeatureLevel() const { return MaxSupportedFeatureLevel; }
+	[[nodiscard]] D3D_SHADER_MODEL GetMaxSupportedShaderModel() const { return MaxSupportedShaderModel; }
 
 	[[nodiscard]] FAdapterCapabilities GetCapabilities() const { return Capabilities; }
 
 protected:
 	EAdapterType Type = EAdapterType::Unknown;
 	EAdapterVendor Vendor = EAdapterVendor::Unknown;
+
+	ComPtr<IDXGIAdapter4> Adapter;
+
+	DXGI_ADAPTER_DESC3 Description;
+	std::string AdapterName;
+
+	D3D_FEATURE_LEVEL MaxSupportedFeatureLevel = D3D_FEATURE_LEVEL_1_0_GENERIC;
+	D3D_SHADER_MODEL MaxSupportedShaderModel = D3D_SHADER_MODEL_NONE;
 
 	FAdapterCapabilities Capabilities;
 };

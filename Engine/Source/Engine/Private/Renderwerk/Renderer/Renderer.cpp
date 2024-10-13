@@ -2,17 +2,15 @@
 
 #include "Renderwerk/Renderer/Renderer.h"
 
-#include "Renderwerk/Renderer/D3D12/D3D12RHI.h"
-
 FRenderer::FRenderer(const FRendererSettings& InDescription)
 	: Description(InDescription)
 {
-	FRHIDesc RHIDesc;
-	RHIDesc.bEnableDebugging = true;
-	RHIDesc.bEnableValidation = true;
-	RHI = CreateRHI(RHIDesc);
+	FRendererContextDesc RendererContextDesc;
+	RendererContextDesc.bEnableDebugging = true;
+	RendererContextDesc.bEnableValidation = true;
+	Context = MakeShared<FRendererContext>(RendererContextDesc);
 
-	TSharedPtr<IAdapter> Adapter = RHI->GetSuitableAdapter();
+	TSharedPtr<FAdapter> Adapter = Context->GetSuitableAdapter();
 	RW_LOG_INFO("Adapter: {}", Adapter->GetName());
 	RW_LOG_INFO("\t- Vendor: {}", ToString(Adapter->GetVendor()));
 	RW_LOG_INFO("\t- Type: {}", ToString(Adapter->GetType()));
@@ -21,23 +19,11 @@ FRenderer::FRenderer(const FRendererSettings& InDescription)
 	RW_LOG_INFO("\t- Variable Rate Shading: {}", Adapter->GetCapabilities().bSupportsVariableRateShading);
 
 	FDeviceDesc DeviceDesc = {};
-	Device = RHI->CreateDevice(Adapter, DeviceDesc);
+	Device = Context->CreateDevice(Adapter, DeviceDesc);
 }
 
 FRenderer::~FRenderer()
 {
 	Device.reset();
-	RHI.reset();
-}
-
-TSharedPtr<IRHI> FRenderer::CreateRHI(const FRHIDesc& Desc) const
-{
-	switch (Description.GraphicsAPI)
-	{
-	case EGraphicsAPI::DirectX12: return MakeShared<FD3D12RHI>(Desc);
-	case EGraphicsAPI::None:
-	default:
-		RW_DEBUG_ASSERT(false, "Invalid graphics API")
-		return nullptr;
-	}
+	Context.reset();
 }

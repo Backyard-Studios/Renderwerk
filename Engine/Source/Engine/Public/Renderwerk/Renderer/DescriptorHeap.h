@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "Renderwerk/Core/CoreMinimal.h"
-#include "Renderwerk/Renderer/D3D12/D3D12Include.h"
+#include "Renderwerk/Renderer/D3D12Include.h"
 
 enum class ENGINE_API EDescriptorType : uint8
 {
@@ -16,13 +16,13 @@ ENGINE_API std::string ToString(EDescriptorType Type);
 ENGINE_API D3D12_DESCRIPTOR_HEAP_TYPE ToD3D12DescriptorHeapType(EDescriptorType Type);
 
 // Forward declaration of FDescriptorHeap for use in FDescriptorHandle
-class FD3D12DescriptorHeap;
+class FDescriptorHeap;
 
 struct ENGINE_API FDescriptorHandle
 {
 public:
 	FDescriptorHandle();
-	FDescriptorHandle(FD3D12DescriptorHeap* InHeap, const D3D12_CPU_DESCRIPTOR_HANDLE& InCPUHandle, const D3D12_GPU_DESCRIPTOR_HANDLE& InGPUHandle);
+	FDescriptorHandle(FDescriptorHeap* InHeap, const D3D12_CPU_DESCRIPTOR_HANDLE& InCPUHandle, const D3D12_GPU_DESCRIPTOR_HANDLE& InGPUHandle);
 	~FDescriptorHandle();
 
 	DEFINE_DEFAULT_COPY_AND_MOVE(FDescriptorHandle);
@@ -39,12 +39,12 @@ public:
 	[[nodiscard]] D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle() const { return GPUHandle; }
 
 private:
-	FD3D12DescriptorHeap* Heap = nullptr;
+	FDescriptorHeap* Heap = nullptr;
 
 	D3D12_CPU_DESCRIPTOR_HANDLE CPUHandle = {};
 	D3D12_GPU_DESCRIPTOR_HANDLE GPUHandle = {};
 
-	friend class FD3D12DescriptorHeap;
+	friend class FDescriptorHeap;
 };
 
 struct ENGINE_API FD3D12DescriptorHeapDesc
@@ -53,13 +53,13 @@ struct ENGINE_API FD3D12DescriptorHeapDesc
 	uint32 Capacity;
 };
 
-class ENGINE_API FD3D12DescriptorHeap
+class ENGINE_API FDescriptorHeap
 {
 public:
-	FD3D12DescriptorHeap(const ComPtr<ID3D12Device14>& Device, const FD3D12DescriptorHeapDesc& Desc);
-	~FD3D12DescriptorHeap();
+	FDescriptorHeap(const ComPtr<ID3D12Device14>& Device, const FD3D12DescriptorHeapDesc& Desc);
+	~FDescriptorHeap();
 
-	DELETE_COPY_AND_MOVE(FD3D12DescriptorHeap);
+	DELETE_COPY_AND_MOVE(FDescriptorHeap);
 
 public:
 	[[nodiscard]] FDescriptorHandle Allocate();
