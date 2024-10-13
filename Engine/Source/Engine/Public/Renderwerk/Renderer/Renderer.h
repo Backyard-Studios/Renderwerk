@@ -1,8 +1,7 @@
 ﻿#pragma once
 
-#include "RHI.h"
-
 #include "Renderwerk/Core/CoreMinimal.h"
+#include "Renderwerk/Renderer/RHI.h"
 
 struct ENGINE_API FRendererSettings
 {
@@ -24,4 +23,6 @@ private:
 	FRendererSettings Description;
 
 	TSharedPtr<IRHI> RHI;
+
+	TSharedPtr<IDevice> Device;
 };

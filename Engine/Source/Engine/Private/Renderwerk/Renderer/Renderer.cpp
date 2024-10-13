@@ -12,13 +12,19 @@ FRenderer::FRenderer(const FRendererSettings& InDescription)
 	RHIDesc.bEnableValidation = true;
 	RHI = CreateRHI(RHIDesc);
 
-	TVector<TSharedPtr<IAdapter>> Adapters = RHI->GetAdapters();
-	for (const TSharedPtr<IAdapter>& Adapter : Adapters)
-		RW_LOG_INFO("Adapter: {0}", Adapter->GetName());
+	TSharedPtr<IAdapter> Adapter = RHI->GetSuitableAdapter();
+	RW_LOG_INFO("Adapter: {}", Adapter->GetName());
+	RW_LOG_INFO("\t- Vendor: {}", ToString(Adapter->GetVendor()));
+	RW_LOG_INFO("\t- Type: {}", ToString(Adapter->GetType()));
+	RW_LOG_INFO("\t- Mesh Shading: {}", Adapter->GetCapabilities().bSupportsMeshShading);
+	RW_LOG_INFO("\t- Ray Tracing: {}", Adapter->GetCapabilities().bSupportsRayTracing);
+	RW_LOG_INFO("\t- Variable Rate Shading: {}", Adapter->GetCapabilities().bSupportsVariableRateShading);
+	Device = RHI->CreateDevice(Adapter);
 }
 
 FRenderer::~FRenderer()
 {
+	Device.reset();
 	RHI.reset();
 }
 

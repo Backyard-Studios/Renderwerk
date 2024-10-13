@@ -1,8 +1,8 @@
 ﻿#pragma once
 
-#include "Adapter.h"
-
 #include "Renderwerk/Core/CoreMinimal.h"
+#include "Renderwerk/Renderer/Adapter.h"
+#include "Renderwerk/Renderer/Device.h"
 
 enum class ENGINE_API EGraphicsAPI : uint8
 {
@@ -32,6 +32,11 @@ public:
 
 public:
 	[[nodiscard]] virtual TVector<TSharedPtr<IAdapter>> GetAdapters() = 0;
+	[[nodiscard]] virtual TSharedPtr<IAdapter> GetPrimaryAdapter() = 0;
+	[[nodiscard]] virtual TSharedPtr<IAdapter> GetAdapter(const std::string& Name) = 0;
+	[[nodiscard]] virtual TSharedPtr<IAdapter> GetSuitableAdapter() = 0;
+
+	[[nodiscard]] virtual TSharedPtr<IDevice> CreateDevice(const TSharedPtr<IAdapter>& Adapter) = 0;
 
 public:
 	[[nodiscard]] EGraphicsAPI GetGraphicsApi() const { return GraphicsAPI; }

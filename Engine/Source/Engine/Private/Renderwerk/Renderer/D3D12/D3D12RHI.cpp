@@ -3,6 +3,7 @@
 #include "Renderwerk/Renderer/D3D12/D3D12RHI.h"
 
 #include "Renderwerk/Renderer/D3D12/D3D12Adapter.h"
+#include "Renderwerk/Renderer/D3D12/D3D12Device.h"
 
 FD3D12RHI::FD3D12RHI(const FRHIDesc& InDesc)
 	: IRHI(EGraphicsAPI::DirectX12, InDesc)
@@ -54,4 +55,37 @@ TVector<TSharedPtr<IAdapter>> FD3D12RHI::GetAdapters()
 	     DXGI_ERROR_NOT_FOUND; ++AdapterIndex)
 		Adapters.push_back(MakeShared<FD3D12Adapter>(TempAdapter));
 	return Adapters;
+}
+
+TSharedPtr<IAdapter> FD3D12RHI::GetPrimaryAdapter()
+{
+	return GetAdapters().at(0);
+}
+
+TSharedPtr<IAdapter> FD3D12RHI::GetAdapter(const std::string& Name)
+{
+	TVector<TSharedPtr<IAdapter>> Adapters = GetAdapters();
+	for (const TSharedPtr<IAdapter>& Adapter : Adapters)
+		if (Adapter->GetName() == Name)
+			return Adapter;
+	return nullptr;
+}
+
+TSharedPtr<IAdapter> FD3D12RHI::GetSuitableAdapter()
+{
+	TVector<TSharedPtr<IAdapter>> Adapters = GetAdapters();
+	for (const TSharedPtr<IAdapter>& Adapter : Adapters)
+	{
+		if (Adapter->GetType() != EAdapterType::Discrete)
+			continue;
+		if (!Adapter->GetCapabilities().bSupportsMeshShading)
+			continue;
+		return Adapter;
+	}
+	return nullptr;
+}
+
+TSharedPtr<IDevice> FD3D12RHI::CreateDevice(const TSharedPtr<IAdapter>& Adapter)
+{
+	return MakeShared<FD3D12Device>(Adapter);
 }

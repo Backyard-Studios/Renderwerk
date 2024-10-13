@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "Renderwerk/Core/CoreMinimal.h"
+#include "Renderwerk/Renderer/Device.h"
 #include "Renderwerk/Renderer/RHI.h"
 #include "Renderwerk/Renderer/D3D12/D3D12Include.h"
 
@@ -14,6 +15,11 @@ public:
 
 public:
 	[[nodiscard]] TVector<TSharedPtr<IAdapter>> GetAdapters() override;
+	[[nodiscard]] TSharedPtr<IAdapter> GetPrimaryAdapter() override;
+	[[nodiscard]] TSharedPtr<IAdapter> GetAdapter(const std::string& Name) override;
+	[[nodiscard]] TSharedPtr<IAdapter> GetSuitableAdapter() override;
+
+	[[nodiscard]] TSharedPtr<IDevice> CreateDevice(const TSharedPtr<IAdapter>& Adapter) override;
 
 private:
 	ComPtr<IDXGIDebug1> DXGIDebug;

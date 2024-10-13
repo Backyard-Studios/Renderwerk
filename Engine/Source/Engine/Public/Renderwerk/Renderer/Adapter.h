@@ -9,7 +9,17 @@ enum class ENGINE_API EAdapterType : uint8
 	Discrete,
 };
 
-ENGINE_API std::string ToString(EAdapterType Type);
+ENGINE_API INLINE std::string ToString(const EAdapterType Type)
+{
+	switch (Type)
+	{
+	case EAdapterType::Software: return "Software";
+	case EAdapterType::Discrete: return "Discrete";
+	case EAdapterType::Unknown:
+	default:
+		return "Unknown";
+	}
+}
 
 // https://pcisig.com/membership/member-companies
 enum class ENGINE_API EAdapterVendor : uint16
@@ -21,7 +31,26 @@ enum class ENGINE_API EAdapterVendor : uint16
 	Microsoft = 0x1414,
 };
 
-ENGINE_API std::string ToString(EAdapterVendor Vendor);
+ENGINE_API INLINE std::string ToString(const EAdapterVendor Vendor)
+{
+	switch (Vendor)
+	{
+	case EAdapterVendor::NVIDIA: return "NVIDIA";
+	case EAdapterVendor::AMD: return "AMD";
+	case EAdapterVendor::Intel: return "Intel";
+	case EAdapterVendor::Microsoft: return "Microsoft";
+	case EAdapterVendor::Unknown:
+	default:
+		return "Unknown";
+	}
+}
+
+struct ENGINE_API FAdapterCapabilities
+{
+	bool8 bSupportsMeshShading = false;
+	bool8 bSupportsRayTracing = false;
+	bool8 bSupportsVariableRateShading = false;
+};
 
 class ENGINE_API IAdapter
 {
@@ -38,7 +67,11 @@ public:
 	[[nodiscard]] EAdapterType GetType() const { return Type; }
 	[[nodiscard]] EAdapterVendor GetVendor() const { return Vendor; }
 
+	[[nodiscard]] FAdapterCapabilities GetCapabilities() const { return Capabilities; }
+
 protected:
 	EAdapterType Type = EAdapterType::Unknown;
 	EAdapterVendor Vendor = EAdapterVendor::Unknown;
+
+	FAdapterCapabilities Capabilities;
 };

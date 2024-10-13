@@ -18,9 +18,15 @@ public:
 public:
 	[[nodiscard]] ComPtr<IDXGIAdapter4> GetHandle() const { return Adapter; }
 
+	[[nodiscard]] D3D_FEATURE_LEVEL GetMaxSupportedFeatureLevel() const { return MaxSupportedFeatureLevel; }
+	[[nodiscard]] D3D_SHADER_MODEL GetMaxSupportedShaderModel() const { return MaxSupportedShaderModel; }
+
 private:
 	ComPtr<IDXGIAdapter4> Adapter;
 
 	DXGI_ADAPTER_DESC3 Description;
 	std::string AdapterName;
+
+	D3D_FEATURE_LEVEL MaxSupportedFeatureLevel = D3D_FEATURE_LEVEL_1_0_GENERIC;
+	D3D_SHADER_MODEL MaxSupportedShaderModel = D3D_SHADER_MODEL_NONE;
 };
