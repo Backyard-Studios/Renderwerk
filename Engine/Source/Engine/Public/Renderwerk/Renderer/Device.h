@@ -7,6 +7,7 @@
 #include "Renderwerk/Renderer/DescriptorHeap.h"
 #include "Renderwerk/Renderer/Fence.h"
 #include "Renderwerk/Renderer/RendererTypes.h"
+#include "Renderwerk/Renderer/ShaderCompiler.h"
 
 struct ENGINE_API FDeviceDesc
 {
@@ -31,6 +32,8 @@ public:
 
 	[[nodiscard]] ComPtr<ID3D12CommandQueue> CreateCommandQueue(ECommandListType Type) const;
 	[[nodiscard]] TSharedPtr<FCommandList> CreateCommandList(FCommandListDesc Description) const;
+
+	[[nodiscard]] ComPtr<ID3D12RootSignature> CreateRootSignatureFromShader(const FShader& RootSignatureShader) const;
 
 public:
 	[[nodiscard]] ComPtr<ID3D12Device14> GetHandle() const { return Device; }

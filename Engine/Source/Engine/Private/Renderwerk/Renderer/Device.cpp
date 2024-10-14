@@ -74,3 +74,14 @@ TSharedPtr<FCommandList> FDevice::CreateCommandList(FCommandListDesc Description
 {
 	return MakeShared<FCommandList>(Device.Get(), Description);
 }
+
+ComPtr<ID3D12RootSignature> FDevice::CreateRootSignatureFromShader(const FShader& RootSignatureShader) const
+{
+	void* BufferPointer = RootSignatureShader.GetData()->GetBufferPointer();
+	size64 BufferSize = RootSignatureShader.GetData()->GetBufferSize();
+
+	ComPtr<ID3D12RootSignature> RootSignature;
+	HRESULT CreateResult = Device->CreateRootSignature(0, BufferPointer, BufferSize, IID_PPV_ARGS(RootSignature.GetAddressOf()));
+	CHECK_RESULT(CreateResult, "Failed to create root signature")
+	return RootSignature;
+}

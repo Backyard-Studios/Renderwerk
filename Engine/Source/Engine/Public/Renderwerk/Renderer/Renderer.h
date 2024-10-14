@@ -1,10 +1,9 @@
 ﻿#pragma once
 
-#include "ShaderCompiler.h"
-
 #include "Renderwerk/Core/CoreMinimal.h"
 #include "Renderwerk/Platform/Window.h"
 #include "Renderwerk/Renderer/RendererContext.h"
+#include "Renderwerk/Renderer/ShaderCompiler.h"
 #include "Renderwerk/Renderer/Swapchain.h"
 
 struct ENGINE_API FRendererSettings

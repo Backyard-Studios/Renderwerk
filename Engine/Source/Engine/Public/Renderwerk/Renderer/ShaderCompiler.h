@@ -11,6 +11,7 @@ enum class ENGINE_API EShaderType : uint8
 	Compute,
 	Amplification,
 	Mesh,
+	RootSignature,
 };
 
 ENGINE_API std::string ToString(EShaderType Type);

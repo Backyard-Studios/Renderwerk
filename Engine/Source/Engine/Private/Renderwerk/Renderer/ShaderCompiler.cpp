@@ -2,6 +2,22 @@
 
 #include "Renderwerk/Renderer/ShaderCompiler.h"
 
+std::string ToString(const EShaderType Type)
+{
+	switch (Type)
+	{
+	case EShaderType::Vertex: return "Vertex";
+	case EShaderType::Pixel: return "Pixel";
+	case EShaderType::Compute: return "Compute";
+	case EShaderType::Amplification: return "Amplification";
+	case EShaderType::Mesh: return "Mesh";
+	case EShaderType::RootSignature: return "RootSignature";
+	case EShaderType::None:
+	default:
+		return "None";
+	}
+}
+
 FShader::FShader()
 {
 }
@@ -143,6 +159,7 @@ LPCWSTR FShaderCompiler::GetEntrypointForType(const EShaderType Type)
 	case EShaderType::Compute: return L"CSMain";
 	case EShaderType::Amplification: return L"ASMain";
 	case EShaderType::Mesh: return L"MSMain";
+	case EShaderType::RootSignature: return L"ROOT_SIGNATURE";
 	case EShaderType::None:
 	default:
 		return L"";
@@ -158,6 +175,7 @@ std::wstring FShaderCompiler::GetShaderModelTargetForType(const EShaderType Type
 	case EShaderType::Compute: return std::format(L"cs_{}", GetShaderModelString(ShaderModel));
 	case EShaderType::Amplification: return std::format(L"as_{}", GetShaderModelString(ShaderModel));
 	case EShaderType::Mesh: return std::format(L"ms_{}", GetShaderModelString(ShaderModel));
+	case EShaderType::RootSignature: return L"rootsig_1_1";
 	case EShaderType::None:
 	default:
 		return L"None";
