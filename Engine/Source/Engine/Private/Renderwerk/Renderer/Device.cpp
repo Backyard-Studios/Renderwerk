@@ -9,8 +9,8 @@ FDevice::FDevice(const TSharedPtr<FAdapter>& InAdapter, const FDeviceDesc& InDes
 	HRESULT DeviceCreateResult = D3D12CreateDevice(D3D12Adapter->GetHandle().Get(), D3D12Adapter->GetMaxSupportedFeatureLevel(), IID_PPV_ARGS(Device.GetAddressOf()));
 	CHECK_RESULT(DeviceCreateResult, "Failed to create D3D12 device")
 
-	GraphicsQueue = CreateCommandQueue(D3D12_COMMAND_LIST_TYPE_DIRECT);
-	ComputeQueue = CreateCommandQueue(D3D12_COMMAND_LIST_TYPE_COMPUTE);
+	GraphicsQueue = CreateCommandQueue(ECommandListType::Graphics);
+	ComputeQueue = CreateCommandQueue(ECommandListType::Compute);
 
 	FD3D12DescriptorHeapDesc ShaderResourcesHeapDesc;
 	ShaderResourcesHeapDesc.Type = EDescriptorType::ShaderResource;
@@ -50,16 +50,26 @@ TSharedPtr<FDescriptorHeap> FDevice::CreateDescriptorHeap(const FD3D12Descriptor
 	return MakeShared<FDescriptorHeap>(Device.Get(), Desc);
 }
 
-ComPtr<ID3D12CommandQueue> FDevice::CreateCommandQueue(const D3D12_COMMAND_LIST_TYPE Type, const D3D12_COMMAND_QUEUE_PRIORITY Priority) const
+TSharedPtr<FFence> FDevice::CreateFence() const
+{
+	return MakeShared<FFence>(Device.Get());
+}
+
+ComPtr<ID3D12CommandQueue> FDevice::CreateCommandQueue(const ECommandListType Type) const
 {
 	D3D12_COMMAND_QUEUE_DESC ComputeQueueDesc;
 	ComputeQueueDesc.NodeMask = 0;
 	ComputeQueueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
-	ComputeQueueDesc.Type = Type;
-	ComputeQueueDesc.Priority = Priority;
+	ComputeQueueDesc.Type = ToD3D12CommandListType(Type);
+	ComputeQueueDesc.Priority = D3D12_COMMAND_QUEUE_PRIORITY_HIGH;
 
 	ComPtr<ID3D12CommandQueue> Queue;
 	HRESULT ComputeQueueCreateResult = Device->CreateCommandQueue(&ComputeQueueDesc, IID_PPV_ARGS(Queue.GetAddressOf()));
 	CHECK_RESULT(ComputeQueueCreateResult, "Failed to create queue")
 	return Queue;
+}
+
+TSharedPtr<FCommandList> FDevice::CreateCommandList(FCommandListDesc Description) const
+{
+	return MakeShared<FCommandList>(Device.Get(), Description);
 }

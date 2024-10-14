@@ -2,9 +2,11 @@
 
 #include "Renderwerk/Core/CoreMinimal.h"
 #include "Renderwerk/Renderer/Adapter.h"
+#include "Renderwerk/Renderer/CommandList.h"
 #include "Renderwerk/Renderer/D3D12Include.h"
-
 #include "Renderwerk/Renderer/DescriptorHeap.h"
+#include "Renderwerk/Renderer/Fence.h"
+#include "Renderwerk/Renderer/RendererTypes.h"
 
 struct ENGINE_API FDeviceDesc
 {
@@ -24,8 +26,11 @@ public:
 
 public:
 	[[nodiscard]] TSharedPtr<FDescriptorHeap> CreateDescriptorHeap(const FD3D12DescriptorHeapDesc& Desc) const;
-	[[nodiscard]] ComPtr<ID3D12CommandQueue> CreateCommandQueue(D3D12_COMMAND_LIST_TYPE Type,
-	                                                            D3D12_COMMAND_QUEUE_PRIORITY Priority = D3D12_COMMAND_QUEUE_PRIORITY_HIGH) const;
+
+	[[nodiscard]] TSharedPtr<FFence> CreateFence() const;
+
+	[[nodiscard]] ComPtr<ID3D12CommandQueue> CreateCommandQueue(ECommandListType Type) const;
+	[[nodiscard]] TSharedPtr<FCommandList> CreateCommandList(FCommandListDesc Description) const;
 
 public:
 	[[nodiscard]] ComPtr<ID3D12Device14> GetHandle() const { return Device; }

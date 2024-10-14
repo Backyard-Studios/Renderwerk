@@ -5,6 +5,7 @@
 #include <dxgi1_6.h>
 #include <dxgidebug.h>
 #include <wrl.h>
+#include <d3dx12/d3dx12.h>
 
 #include "D3D12MemAlloc.h"
 #include "d3d12shader.h"
