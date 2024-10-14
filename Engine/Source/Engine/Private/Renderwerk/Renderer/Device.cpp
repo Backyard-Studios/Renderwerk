@@ -32,10 +32,13 @@ FDevice::FDevice(const TSharedPtr<FAdapter>& InAdapter, const FDeviceDesc& InDes
 	SamplerHeapDesc.Type = EDescriptorType::Sampler;
 	SamplerHeapDesc.Capacity = Description.MaxSamplers;
 	SamplerHeap = CreateDescriptorHeap(SamplerHeapDesc);
+
+	ResourceAllocator = MakeShared<FResourceAllocator>(Adapter->GetHandle(), Device);
 }
 
 FDevice::~FDevice()
 {
+	ResourceAllocator.reset();
 	SamplerHeap.reset();
 	DepthStencilViewHeap.reset();
 	RenderTargetViewHeap.reset();

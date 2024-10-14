@@ -7,6 +7,7 @@
 #include "Renderwerk/Renderer/DescriptorHeap.h"
 #include "Renderwerk/Renderer/Fence.h"
 #include "Renderwerk/Renderer/RendererTypes.h"
+#include "Renderwerk/Renderer/ResourceAllocator.h"
 #include "Renderwerk/Renderer/ShaderCompiler.h"
 
 struct ENGINE_API FDeviceDesc
@@ -46,8 +47,10 @@ public:
 
 	[[nodiscard]] TSharedPtr<FDescriptorHeap> GetResourceViewsHeap() const { return ShaderResourcesHeap; }
 	[[nodiscard]] TSharedPtr<FDescriptorHeap> GetRenderTargetViewHeap() const { return RenderTargetViewHeap; }
-	[[nodiscard]] TSharedPtr<FDescriptorHeap> GetSamplerHeap() const { return SamplerHeap; }
 	[[nodiscard]] TSharedPtr<FDescriptorHeap> GetDepthStencilViewHeap() const { return DepthStencilViewHeap; }
+	[[nodiscard]] TSharedPtr<FDescriptorHeap> GetSamplerHeap() const { return SamplerHeap; }
+
+	[[nodiscard]] TSharedPtr<FResourceAllocator> GetResourceAllocator() const { return ResourceAllocator; }
 
 protected:
 	TSharedPtr<FAdapter> Adapter;
@@ -63,4 +66,6 @@ protected:
 	TSharedPtr<FDescriptorHeap> RenderTargetViewHeap;
 	TSharedPtr<FDescriptorHeap> DepthStencilViewHeap;
 	TSharedPtr<FDescriptorHeap> SamplerHeap;
+
+	TSharedPtr<FResourceAllocator> ResourceAllocator;
 };
