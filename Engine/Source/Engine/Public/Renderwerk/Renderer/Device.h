@@ -39,6 +39,7 @@ public:
 
 	[[nodiscard]] ComPtr<ID3D12CommandQueue> GetGraphicsQueue() const { return GraphicsQueue; }
 	[[nodiscard]] ComPtr<ID3D12CommandQueue> GetComputeQueue() const { return ComputeQueue; }
+	[[nodiscard]] ComPtr<ID3D12CommandQueue> GetCopyQueue() const { return CopyQueue; }
 
 	[[nodiscard]] TSharedPtr<FDescriptorHeap> GetResourceViewsHeap() const { return ShaderResourcesHeap; }
 	[[nodiscard]] TSharedPtr<FDescriptorHeap> GetRenderTargetViewHeap() const { return RenderTargetViewHeap; }
@@ -53,6 +54,7 @@ protected:
 
 	ComPtr<ID3D12CommandQueue> GraphicsQueue;
 	ComPtr<ID3D12CommandQueue> ComputeQueue;
+	ComPtr<ID3D12CommandQueue> CopyQueue;
 
 	TSharedPtr<FDescriptorHeap> ShaderResourcesHeap;
 	TSharedPtr<FDescriptorHeap> RenderTargetViewHeap;

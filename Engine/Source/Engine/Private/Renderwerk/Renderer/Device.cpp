@@ -11,6 +11,7 @@ FDevice::FDevice(const TSharedPtr<FAdapter>& InAdapter, const FDeviceDesc& InDes
 
 	GraphicsQueue = CreateCommandQueue(ECommandListType::Graphics);
 	ComputeQueue = CreateCommandQueue(ECommandListType::Compute);
+	CopyQueue = CreateCommandQueue(ECommandListType::Copy);
 
 	FD3D12DescriptorHeapDesc ShaderResourcesHeapDesc;
 	ShaderResourcesHeapDesc.Type = EDescriptorType::ShaderResource;
