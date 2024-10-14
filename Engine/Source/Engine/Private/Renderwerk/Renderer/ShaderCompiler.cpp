@@ -8,6 +8,9 @@ std::string ToString(const EShaderType Type)
 	{
 	case EShaderType::Vertex: return "Vertex";
 	case EShaderType::Pixel: return "Pixel";
+	case EShaderType::Geometry: return "Geometry";
+	case EShaderType::Domain: return "Domain";
+	case EShaderType::Hull: return "Hull";
 	case EShaderType::Compute: return "Compute";
 	case EShaderType::Amplification: return "Amplification";
 	case EShaderType::Mesh: return "Mesh";
@@ -156,6 +159,9 @@ LPCWSTR FShaderCompiler::GetEntrypointForType(const EShaderType Type)
 	{
 	case EShaderType::Vertex: return L"VSMain";
 	case EShaderType::Pixel: return L"PSMain";
+	case EShaderType::Geometry: return L"GSMain";
+	case EShaderType::Domain: return L"DSMain";
+	case EShaderType::Hull: return L"HSMain";
 	case EShaderType::Compute: return L"CSMain";
 	case EShaderType::Amplification: return L"ASMain";
 	case EShaderType::Mesh: return L"MSMain";
@@ -172,6 +178,9 @@ std::wstring FShaderCompiler::GetShaderModelTargetForType(const EShaderType Type
 	{
 	case EShaderType::Vertex: return std::format(L"vs_{}", GetShaderModelString(ShaderModel));
 	case EShaderType::Pixel: return std::format(L"ps_{}", GetShaderModelString(ShaderModel));
+	case EShaderType::Geometry: return std::format(L"gs_{}", GetShaderModelString(ShaderModel));
+	case EShaderType::Domain: return std::format(L"ds_{}", GetShaderModelString(ShaderModel));
+	case EShaderType::Hull: return std::format(L"hs_{}", GetShaderModelString(ShaderModel));
 	case EShaderType::Compute: return std::format(L"cs_{}", GetShaderModelString(ShaderModel));
 	case EShaderType::Amplification: return std::format(L"as_{}", GetShaderModelString(ShaderModel));
 	case EShaderType::Mesh: return std::format(L"ms_{}", GetShaderModelString(ShaderModel));
