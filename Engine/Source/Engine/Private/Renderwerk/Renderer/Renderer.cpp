@@ -20,10 +20,15 @@ FRenderer::FRenderer(const FRendererSettings& InDescription)
 
 	FDeviceDesc DeviceDesc = {};
 	Device = Context->CreateDevice(Adapter, DeviceDesc);
+
+	FSwapchainDesc SwapchainDesc = {};
+	SwapchainDesc.Window = Description.Window;
+	Swapchain = MakeShared<FSwapchain>(Context->GetFactory(), Device, SwapchainDesc);
 }
 
 FRenderer::~FRenderer()
 {
+	Swapchain.reset();
 	Device.reset();
 	Context.reset();
 }

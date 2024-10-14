@@ -45,6 +45,7 @@ void FEngine::Initialize()
 	MainWindow->Show();
 
 	FRendererSettings RendererSettings = {};
+	RendererSettings.Window = MainWindow;
 	Renderer = MakeShared<FRenderer>(RendererSettings);
 	DQ_ADD(Renderer);
 

@@ -31,6 +31,9 @@ public:
 
 	[[nodiscard]] TSharedPtr<FDevice> CreateDevice(const TSharedPtr<FAdapter>& Adapter, const FDeviceDesc& Desc);
 
+public:
+	[[nodiscard]] ComPtr<IDXGIFactory7> GetFactory() const { return Factory; }
+
 private:
 	FRendererContextDesc Description;
 

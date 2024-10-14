@@ -24,11 +24,16 @@ public:
 
 public:
 	[[nodiscard]] TSharedPtr<FDescriptorHeap> CreateDescriptorHeap(const FD3D12DescriptorHeapDesc& Desc) const;
+	[[nodiscard]] ComPtr<ID3D12CommandQueue> CreateCommandQueue(D3D12_COMMAND_LIST_TYPE Type,
+	                                                            D3D12_COMMAND_QUEUE_PRIORITY Priority = D3D12_COMMAND_QUEUE_PRIORITY_HIGH) const;
 
 public:
 	[[nodiscard]] ComPtr<ID3D12Device14> GetHandle() const { return Device; }
 
 	[[nodiscard]] TSharedPtr<FAdapter> GetAdapter() const { return Adapter; }
+
+	[[nodiscard]] ComPtr<ID3D12CommandQueue> GetGraphicsQueue() const { return GraphicsQueue; }
+	[[nodiscard]] ComPtr<ID3D12CommandQueue> GetComputeQueue() const { return ComputeQueue; }
 
 	[[nodiscard]] TSharedPtr<FDescriptorHeap> GetResourceViewsHeap() const { return ShaderResourcesHeap; }
 	[[nodiscard]] TSharedPtr<FDescriptorHeap> GetRenderTargetViewHeap() const { return RenderTargetViewHeap; }
@@ -40,6 +45,9 @@ protected:
 	FDeviceDesc Description;
 
 	ComPtr<ID3D12Device14> Device;
+
+	ComPtr<ID3D12CommandQueue> GraphicsQueue;
+	ComPtr<ID3D12CommandQueue> ComputeQueue;
 
 	TSharedPtr<FDescriptorHeap> ShaderResourcesHeap;
 	TSharedPtr<FDescriptorHeap> RenderTargetViewHeap;
