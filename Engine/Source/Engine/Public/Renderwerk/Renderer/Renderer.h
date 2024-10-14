@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include "ShaderCompiler.h"
+
 #include "Renderwerk/Core/CoreMinimal.h"
 #include "Renderwerk/Platform/Window.h"
 #include "Renderwerk/Renderer/RendererContext.h"
@@ -25,4 +27,6 @@ private:
 
 	TSharedPtr<FDevice> Device;
 	TSharedPtr<FSwapchain> Swapchain;
+
+	TSharedPtr<FShaderCompiler> ShaderCompiler;
 };

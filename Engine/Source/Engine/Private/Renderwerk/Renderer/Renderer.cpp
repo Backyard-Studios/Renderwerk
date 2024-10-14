@@ -24,10 +24,15 @@ FRenderer::FRenderer(const FRendererSettings& InDescription)
 	FSwapchainDesc SwapchainDesc = {};
 	SwapchainDesc.Window = Description.Window;
 	Swapchain = MakeShared<FSwapchain>(Context->GetFactory(), Device, SwapchainDesc);
+
+	FShaderCompilerDesc ShaderCompilerDesc;
+	ShaderCompilerDesc.ShaderModel = Device->GetAdapter()->GetMaxSupportedShaderModel();
+	ShaderCompiler = MakeShared<FShaderCompiler>(ShaderCompilerDesc);
 }
 
 FRenderer::~FRenderer()
 {
+	ShaderCompiler.reset();
 	Swapchain.reset();
 	Device.reset();
 	Context.reset();
