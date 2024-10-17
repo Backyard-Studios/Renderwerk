@@ -15,3 +15,5 @@
 #include <unordered_map>
 #include <vector>
 #include <xutility>
+
+#include "Renderwerk/Core/CoreMinimal.h"

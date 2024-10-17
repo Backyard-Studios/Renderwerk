@@ -27,4 +27,5 @@ workspace(project_name)
 		'RW_ENGINE_VERSION_SUFFIX="' .. project_version_suffix .. '"',
 		'RW_ENGINE_FULL_VERSION="' .. project_version_string .. '"',
 		'RW_ENGINE_AUTHOR="' .. project_author .. '"',
+		'RW_LIBRARY_SHARED=1',
 	})
