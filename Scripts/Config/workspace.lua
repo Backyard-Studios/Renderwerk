@@ -29,3 +29,21 @@ workspace(project_name)
 		'RW_ENGINE_AUTHOR="' .. project_author .. '"',
 		'RW_LIBRARY_SHARED=1',
 	})
+
+	rw_filter_configuration_debug()
+		defines({
+			'RW_ENABLE_MEMORY_TRACKING=1',
+		})
+	rw_filter_end()
+	
+	rw_filter_configuration_development()
+		defines({
+			'RW_ENABLE_MEMORY_TRACKING=1',
+		})
+	rw_filter_end()
+	
+	rw_filter_configuration_shipping()
+		defines({
+			'RW_ENABLE_MEMORY_TRACKING=0',
+		})
+	rw_filter_end()
