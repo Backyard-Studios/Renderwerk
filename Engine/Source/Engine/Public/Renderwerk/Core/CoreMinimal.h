@@ -2,7 +2,6 @@
 
 #include "Renderwerk/Core/Compiler.h"
 #include "Renderwerk/Core/CoreDefinitions.h"
-#include "Renderwerk/Core/CoreTypes.h"
 #include "Renderwerk/Core/Platform.h"
 
 // []===================================================================[]
