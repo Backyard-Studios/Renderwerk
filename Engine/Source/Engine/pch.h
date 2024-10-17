@@ -17,3 +17,4 @@
 #include <xutility>
 
 #include "Renderwerk/Core/CoreMinimal.h"
+#include "Renderwerk/Memory/MemoryUnits.h"
