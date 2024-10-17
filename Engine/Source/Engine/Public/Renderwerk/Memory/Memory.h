@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "Renderwerk/Core/CoreMinimal.h"
-#include "Renderwerk/DataTypes/TypeDefinitions.h"
+#include "Renderwerk/DataTypes/Types.h"
 
 #if RW_ENABLE_MEMORY_TRACKING
 
@@ -33,7 +33,7 @@ public:
 	}
 
 	template <typename T, typename... TArguments>
-	NODISCARD static T* NewAligned(const uint8 Alignment, TArguments&&... Arguments)
+	NODISCARD static T* NewAligned(const size64 Alignment, TArguments&&... Arguments)
 	{
 		void* Memory = Allocate(sizeof(T), Alignment);
 		return new(Memory) T(std::forward<TArguments>(Arguments)...);
@@ -53,7 +53,7 @@ public:
 	}
 
 	template <typename T, typename... TArguments>
-	NODISCARD static T* NewArrayAligned(const size64 Count, const uint8 Alignment, TArguments&&... Arguments)
+	NODISCARD static T* NewArrayAligned(const size64 Count, const size64 Alignment, TArguments&&... Arguments)
 	{
 		const size64 Size = sizeof(T) * Count;
 		void* Memory = Allocate(Size, Alignment);

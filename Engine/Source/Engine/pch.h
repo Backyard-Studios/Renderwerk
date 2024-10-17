@@ -17,5 +17,5 @@
 #include <xutility>
 
 #include "Renderwerk/Core/CoreMinimal.h"
-#include "Renderwerk/DataTypes/TypeDefinitions.h"
+#include "Renderwerk/DataTypes/Types.h"
 #include "Renderwerk/Memory/MemoryUnits.h"
