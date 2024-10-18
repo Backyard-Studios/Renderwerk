@@ -5,7 +5,7 @@
 #include <format>
 #include <string>
 
-class ENGINE_API FGuid
+class RENDERWERK_API FGuid
 {
 public:
 	FGuid();

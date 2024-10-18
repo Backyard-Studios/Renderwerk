@@ -5,20 +5,18 @@
 #include "Renderwerk/DataTypes/Types.h"
 #include "Renderwerk/Memory/Memory.h"
 
+#include <cstddef>
+
 template <typename T>
 class FSTLAllocator
 {
 public:
 	using value_type = T;
-	using pointer = T*;
-	using const_pointer = const T*;
-	using reference = T&;
-	using const_reference = const T&;
 	using size_type = size64;
 	using difference_type = std::ptrdiff_t;
 
-	constexpr FSTLAllocator() = default;
-	constexpr FSTLAllocator(const FSTLAllocator& Other) noexcept = default;
+	constexpr FSTLAllocator() noexcept = default;
+	constexpr FSTLAllocator(const FSTLAllocator&) noexcept = default;
 
 	template <typename TOther>
 	constexpr FSTLAllocator(const FSTLAllocator<TOther>&) noexcept
@@ -27,20 +25,17 @@ public:
 
 	constexpr ~FSTLAllocator() = default;
 
-	FSTLAllocator& operator=(const FSTLAllocator& Other) = default;
+	constexpr FSTLAllocator& operator=(const FSTLAllocator&) = default;
 
-	pointer allocate(const size_type Count)
+	NODISCARD constexpr value_type* allocate(const size_type Count)
 	{
-		return FMemory::NewArray<value_type>(Count);
+		return static_cast<T*>(FMemory::Allocate(sizeof(T) * Count));
 	}
 
-	void deallocate(const pointer Pointer, size_type Count) noexcept
+	constexpr void deallocate(value_type* Pointer, size_type Count) noexcept
 	{
-		FMemory::DeleteArray(Pointer, Count);
+		FMemory::Free(Pointer);
 	}
-
-	friend bool operator==(const FSTLAllocator& A, const FSTLAllocator& B) { return &A == &B; }
-	friend bool operator!=(const FSTLAllocator& A, const FSTLAllocator& B) { return &A != &B; }
 
 	template <typename TOther>
 	struct rebind
@@ -50,3 +45,9 @@ public:
 
 private:
 };
+
+template <class T, class TOther>
+bool operator==(const FSTLAllocator<T>&, const FSTLAllocator<TOther>&) { return true; }
+
+template <class T, class TOther>
+bool operator!=(const FSTLAllocator<T>&, const FSTLAllocator<TOther>&) { return false; }

@@ -18,19 +18,19 @@ template <typename T>
 using TVector = std::vector<T, FSTLAllocator<T>>;
 
 template <typename TKey, typename TValue>
-using TMap = std::map<TKey, TValue, FSTLAllocator<std::pair<const TKey, TValue>>>;
+using TMap = std::map<TKey, TValue, std::less<TKey>, FSTLAllocator<std::pair<const TKey, TValue>>>;
 
 template <typename TKey, typename TValue>
-using TUnorderedMap = std::unordered_map<TKey, TValue, FSTLAllocator<std::pair<const TKey, TValue>>>;
+using TUnorderedMap = std::unordered_map<TKey, TValue, std::hash<TKey>, std::equal_to<TKey>, FSTLAllocator<std::pair<const TKey, TValue>>>;
 
 template <typename T>
-using TSet = std::set<T, FSTLAllocator<T>>;
+using TSet = std::set<T, std::less<T>, FSTLAllocator<T>>;
 
 template <typename T>
 using TUnorderedSet = std::unordered_set<T, FSTLAllocator<T>>;
 
 template <typename T>
-using TQueue = std::queue<T, FSTLAllocator<T>>;
+using TDeque = std::deque<T, FSTLAllocator<T>>;
 
 template <typename T>
-using TDeque = std::deque<T, FSTLAllocator<T>>;
+using TQueue = std::queue<T, TDeque<T>>;
