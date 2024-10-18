@@ -56,6 +56,7 @@ void FModuleManager::UnloadAllModules()
 TSharedPtr<IModule> FModuleManager::GetModule(const FString& ModuleName) const
 {
 	DEBUG_ASSERTM(!ModuleName.empty(), "Module name is empty");
+	ASSERTM(Modules.contains(ModuleName), "Module not found: {}", ModuleName);
 	return Modules.at(ModuleName);
 }
 
