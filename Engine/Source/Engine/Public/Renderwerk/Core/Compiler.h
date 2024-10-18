@@ -88,6 +88,11 @@
 #	else
 #		define UNLIKELY
 #	endif
+#	if __has_cpp_attribute(maybe_unused)
+#		define MAYBE_UNUSED [[maybe_unused]]
+#	else
+#		define MAYBE_UNUSED
+#	endif
 #else
 #	define DEPRECATED
 #	define DEPRECATED_MSG(msg)
@@ -95,6 +100,7 @@
 #	define NODISCARD_MSG(msg)
 #	define LIKELY
 #	define UNLIKELY
+#	define MAYBE_UNUSED
 #endif
 
 #ifdef __cpp_static_assert

@@ -34,10 +34,10 @@ public:
 	}
 
 public:
-	[[nodiscard]] FModuleInfo GetModuleInfo() const { return ModuleInfo; }
+	NODISCARD FModuleInfo GetModuleInfo() const { return ModuleInfo; }
 
 private:
-	[[maybe_unused]] FModuleInfo ModuleInfo = {};
+	MAYBE_UNUSED FModuleInfo ModuleInfo = {};
 };
 
 #define MODULE_CREATE_FUNCTION_NAME CreateModule
