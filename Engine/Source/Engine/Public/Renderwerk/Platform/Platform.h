@@ -11,6 +11,12 @@ struct RENDERWERK_API FProcessorInfo
 	FString Name = TEXT("");
 };
 
+struct RENDERWERK_API FMemoryInfo
+{
+	uint64 TotalPhysicalMemory = 0;
+	uint64 FreePhysicalMemory = 0;
+};
+
 class RENDERWERK_API FPlatform
 {
 public:
@@ -21,12 +27,14 @@ public:
 
 public:
 	NODISCARD FProcessorInfo GetProcessorInfo() const { return ProcessorInfo; }
+	NODISCARD FMemoryInfo GetMemoryInfo() const { return MemoryInfo; }
 
 private:
 	static FString QueryCPUName();
 
 private:
 	FProcessorInfo ProcessorInfo = {};
+	FMemoryInfo MemoryInfo = {};
 };
 
 /**

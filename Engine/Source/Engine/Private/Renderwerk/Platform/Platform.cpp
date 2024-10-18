@@ -6,13 +6,20 @@ TSharedPtr<FPlatform> GPlatform = nullptr;
 
 FPlatform::FPlatform()
 {
-	SYSTEM_INFO SystemInfo;
+	SYSTEM_INFO SystemInfo = {};
 	GetNativeSystemInfo(&SystemInfo);
 
 	ProcessorInfo.PhysicalCoreCount = SystemInfo.dwNumberOfProcessors / 2;
 	ProcessorInfo.LogicalCoreCount = SystemInfo.dwNumberOfProcessors;
 	ProcessorInfo.bIs64Bit = SystemInfo.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64;
 	ProcessorInfo.Name = QueryCPUName();
+
+	MEMORYSTATUSEX MemoryStatus = {};
+	MemoryStatus.dwLength = sizeof(MEMORYSTATUSEX);
+	GlobalMemoryStatusEx(&MemoryStatus);
+
+	MemoryInfo.TotalPhysicalMemory = MemoryStatus.ullTotalPhys;
+	MemoryInfo.FreePhysicalMemory = MemoryStatus.ullAvailPhys;
 }
 
 FPlatform::~FPlatform()
