@@ -201,8 +201,8 @@ function rw_kind_shared_lib(name)
 		macro_prefix .. 'KIND=TEXT("SharedLib")',
 		macro_prefix .. 'COMPILE_' .. string.upper(name) .. '_API=1',
 		macro_prefix .. 'KIND_CONSOLE_APP=0',
+		macro_prefix .. 'KIND_WINDOWED_APP=0',
 		macro_prefix .. 'KIND_STATIC_LIB=0',
-		macro_prefix .. 'KIND_SHARED_LIB=0',
 	})
 end
 

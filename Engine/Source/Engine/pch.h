@@ -10,6 +10,7 @@
 #include <queue>
 #include <ranges>
 #include <set>
+#include <source_location>
 #include <string>
 #include <type_traits>
 #include <unordered_map>
@@ -22,3 +23,4 @@
 #include "Renderwerk/DataTypes/StringUtils.h"
 #include "Renderwerk/DataTypes/Types.h"
 #include "Renderwerk/Memory/MemoryUnits.h"
+#include "Renderwerk/Platform/ExceptionHandling.h"

@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <functional>
+#include <source_location>
 
 #pragma region Primitive Types
 
@@ -26,9 +27,7 @@ using size64 = uint64;
 
 #pragma endregion
 
-#pragma region Function Types
-
 template <typename T>
 using TFunction = std::function<T>;
 
-#pragma endregion
+using FSourceLocation = std::source_location;

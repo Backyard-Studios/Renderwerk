@@ -1,6 +1,5 @@
 ﻿#include "pch.h"
 
-int main()
-{
-	return 0;
-}
+#include "Renderwerk/Platform/Launch.h"
+
+LAUNCH_RENDERWERK()
