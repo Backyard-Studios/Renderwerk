@@ -17,11 +17,5 @@
 #include <vector>
 #include <xutility>
 
-#include "Renderwerk/Core/CoreMinimal.h"
-#include "Renderwerk/DataTypes/Containers.h"
-#include "Renderwerk/DataTypes/String.h"
-#include "Renderwerk/DataTypes/StringUtils.h"
-#include "Renderwerk/DataTypes/Types.h"
-#include "Renderwerk/Memory/MemoryUnits.h"
-#include "Renderwerk/Platform/ExceptionHandling.h"
+#include "Renderwerk/EngineMinimal.h"
 #include "Renderwerk/Platform/Platform.h"
