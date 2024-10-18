@@ -10,7 +10,7 @@
 #define ASSERT(Condition) \
 	{ \
 		if (!(Condition)) UNLIKELY \
-			FExceptionHandling::Report(FExceptionInfo(TEXT(#Condition), TEXT(__FILE__), __LINE__, TEXT(__FUNCTION__))); \
+			FExceptionHandling::Report(FExceptionInfo(FString(TEXT(#Condition)), TEXT(__FILE__), __LINE__, TEXT(__FUNCTION__))); \
 	}
 
 /**
@@ -22,7 +22,7 @@
 #define ASSERTM(Condition, Message, ...) \
 	{ \
 		if (!(Condition)) UNLIKELY \
-			FExceptionHandling::Report(FExceptionInfo(std::format(TEXT(Message), __VA_ARGS__).c_str(), TEXT(__FILE__), __LINE__, TEXT(__FUNCTION__))); \
+			FExceptionHandling::Report(FExceptionInfo(FString(std::format(TEXT(Message), __VA_ARGS__).c_str()), TEXT(__FILE__), __LINE__, TEXT(__FUNCTION__))); \
 	}
 
 #if RW_CONFIG_DEBUG || RW_CONFIG_DEVELOPMENT

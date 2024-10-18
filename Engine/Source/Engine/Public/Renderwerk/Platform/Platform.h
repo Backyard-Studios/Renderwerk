@@ -26,6 +26,10 @@ public:
 	DELETE_COPY_AND_MOVE(FPlatform);
 
 public:
+	NODISCARD HMODULE LoadDynamicLibrary(const FString& LibraryPath) const;
+	NODISCARD void UnloadDynamicLibrary(HMODULE LibraryHandle) const;
+
+public:
 	NODISCARD FProcessorInfo GetProcessorInfo() const { return ProcessorInfo; }
 	NODISCARD FMemoryInfo GetMemoryInfo() const { return MemoryInfo; }
 

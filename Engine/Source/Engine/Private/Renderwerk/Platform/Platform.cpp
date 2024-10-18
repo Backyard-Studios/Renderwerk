@@ -1,4 +1,5 @@
 ﻿#include "pch.h"
+// ReSharper disable CppMemberFunctionMayBeStatic
 
 #include "Renderwerk/Platform/Platform.h"
 
@@ -24,6 +25,16 @@ FPlatform::FPlatform()
 
 FPlatform::~FPlatform()
 {
+}
+
+HMODULE FPlatform::LoadDynamicLibrary(const FString& LibraryPath) const
+{
+	return LoadLibrary(LibraryPath.c_str());
+}
+
+void FPlatform::UnloadDynamicLibrary(const HMODULE LibraryHandle) const
+{
+	FreeLibrary(LibraryHandle);
 }
 
 FString FPlatform::QueryCPUName()
@@ -52,4 +63,10 @@ FString FPlatform::QueryCPUName()
 #else
 	return FStringUtils::ConvertToWideString(Name);
 #endif
+}
+
+TSharedPtr<FPlatform> GetPlatform()
+{
+	DEBUG_ASSERTM(GPlatform, "Global platform pointer is null");
+	return GPlatform;
 }
