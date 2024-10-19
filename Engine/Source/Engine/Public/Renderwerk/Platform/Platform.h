@@ -35,6 +35,7 @@ public:
 
 private:
 	static FString QueryCPUName();
+	static uint32 QueryPhysicalCoreCount();
 
 private:
 	FProcessorInfo ProcessorInfo = {};

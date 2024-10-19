@@ -10,8 +10,7 @@ FPlatform::FPlatform()
 	SYSTEM_INFO SystemInfo = {};
 	GetNativeSystemInfo(&SystemInfo);
 
-	// TODO: This is a naive way to determine the number of physical cores, but for now it will do.
-	ProcessorInfo.PhysicalCoreCount = SystemInfo.dwNumberOfProcessors / 2;
+	ProcessorInfo.PhysicalCoreCount = QueryPhysicalCoreCount();
 	ProcessorInfo.LogicalCoreCount = SystemInfo.dwNumberOfProcessors;
 	ProcessorInfo.bIs64Bit = SystemInfo.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64;
 	ProcessorInfo.Name = QueryCPUName();
@@ -64,6 +63,29 @@ FString FPlatform::QueryCPUName()
 #else
 	return FStringUtils::ConvertToWideString(Name);
 #endif
+}
+
+uint32 FPlatform::QueryPhysicalCoreCount()
+{
+	DWORD BufferSize = 0;
+	GetLogicalProcessorInformationEx(RelationProcessorCore, nullptr, &BufferSize);
+	ASSERT(GetLastError() == ERROR_INSUFFICIENT_BUFFER);
+
+	std::byte* Buffer = FMemory::NewArray<std::byte>(BufferSize);
+	const PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX Info = reinterpret_cast<PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX>(Buffer);
+	bool8 Result = GetLogicalProcessorInformationEx(RelationProcessorCore, Info, &BufferSize);
+	ASSERT(Result)
+
+	uint32 PhysicalCoreCount = 0;
+	size64 Offset = 0;
+	do
+	{
+		const PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX CurrentInfo = reinterpret_cast<PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX>(Buffer + Offset);
+		Offset += CurrentInfo->Size;
+		++PhysicalCoreCount;
+	}
+	while (Offset < BufferSize);
+	return PhysicalCoreCount;
 }
 
 TSharedPtr<FPlatform> GetPlatform()
