@@ -13,6 +13,20 @@ public:
 	DELETE_COPY_AND_MOVE(FEngine);
 
 private:
+	/**
+	 * Contains the main loop of the engine.
+	 */
+	void Run() const;
+
+	void SignalHandler(int Signal);
+
+private:
+	static void RegisterInterruptSignals();
+
+private:
+	bool8 bIsRunning = true;
+
+	friend void GuardedMain();
 };
 
 /**

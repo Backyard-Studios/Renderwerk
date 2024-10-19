@@ -19,7 +19,9 @@ void GuardedMain()
 
 	RW_LOG(LogDefault, Info, "Memory Information:");
 	RW_LOG(LogDefault, Info, "\t- Total Physical Memory: {} Gb", RW_GIBIBYTE(GetPlatform()->GetMemoryInfo().TotalPhysicalMemory));
+
 	GEngine = MakeShared<FEngine>();
+	GEngine->Run();
 
 	GEngine.reset();
 	GPlatform.reset();
