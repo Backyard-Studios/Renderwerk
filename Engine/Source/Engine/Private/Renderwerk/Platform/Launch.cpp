@@ -2,13 +2,16 @@
 
 #include "Renderwerk/Platform/Launch.h"
 
+#include "Renderwerk/Engine/Engine.h"
 #include "Renderwerk/Platform/ExceptionHandling.h"
 #include "Renderwerk/Platform/Platform.h"
 
 void GuardedMain()
 {
 	GPlatform = MakeShared<FPlatform>();
+	GEngine = MakeShared<FEngine>();
 
+	GEngine.reset();
 	GPlatform.reset();
 }
 
