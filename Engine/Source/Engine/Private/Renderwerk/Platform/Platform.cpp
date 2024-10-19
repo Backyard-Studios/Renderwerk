@@ -10,6 +10,7 @@ FPlatform::FPlatform()
 	SYSTEM_INFO SystemInfo = {};
 	GetNativeSystemInfo(&SystemInfo);
 
+	// TODO: This is a naive way to determine the number of physical cores, but for now it will do.
 	ProcessorInfo.PhysicalCoreCount = SystemInfo.dwNumberOfProcessors / 2;
 	ProcessorInfo.LogicalCoreCount = SystemInfo.dwNumberOfProcessors;
 	ProcessorInfo.bIs64Bit = SystemInfo.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64;
