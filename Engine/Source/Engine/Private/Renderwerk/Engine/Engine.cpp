@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 
 #include "Renderwerk/Engine/Engine.h"
+#include "Renderwerk/Utils/Timer.h"
 
 #include <csignal>
 
@@ -22,8 +23,12 @@ FEngine::~FEngine()
 
 void FEngine::Run() const
 {
+	FTimer Timer;
 	while (bIsRunning)
 	{
+		Timer.Start();
+
+		Timer.Stop();
 	}
 }
 
