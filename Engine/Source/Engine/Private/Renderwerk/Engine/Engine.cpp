@@ -12,12 +12,14 @@ TSharedPtr<FEngine> GEngine = nullptr;
 FEngine::FEngine()
 {
 	RegisterInterruptSignals();
-
 	OnSignalReceived.Bind(BIND_MEMBER_ONE(FEngine::SignalHandler));
+
+	SubsystemManager = MakeUnique<FSubsystemManager>();
 }
 
 FEngine::~FEngine()
 {
+	SubsystemManager.reset();
 	OnSignalReceived.Unbind();
 }
 
@@ -27,7 +29,7 @@ void FEngine::Run() const
 	while (bIsRunning)
 	{
 		Timer.Start();
-
+		OnTick.Execute(Timer.GetElapsedTime());
 		Timer.Stop();
 	}
 }

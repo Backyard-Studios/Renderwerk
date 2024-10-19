@@ -2,12 +2,15 @@
 
 #include "Renderwerk/Core/CoreMinimal.h"
 #include "Renderwerk/DataTypes/Delegates/Delegate.h"
+#include "Renderwerk/DataTypes/Delegates/MulticastDelegate.h"
+#include "Renderwerk/Engine/SubsystemManager.h"
 #include "Renderwerk/Logging/LogCategory.h"
 #include "Renderwerk/Memory/SmartPointers.h"
 
 DECLARE_LOG_CATEGORY(LogEngine, Trace);
 
 DECLARE_DELEGATE(SignalReceived, uint32);
+DECLARE_MULTICAST_DELEGATE(Tick, float64);
 
 class RENDERWERK_API FEngine
 {
@@ -16,6 +19,9 @@ public:
 	~FEngine();
 
 	DELETE_COPY_AND_MOVE(FEngine);
+
+public:
+	NODISCARD FTickDelegate GetTickDelegate() const { return OnTick; }
 
 private:
 	/**
@@ -33,6 +39,9 @@ private:
 
 private:
 	bool8 bIsRunning = true;
+
+	TUniquePtr<FSubsystemManager> SubsystemManager;
+	FTickDelegate OnTick;
 
 	friend void GuardedMain();
 };
