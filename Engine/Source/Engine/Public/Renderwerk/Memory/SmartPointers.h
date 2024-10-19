@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include "Renderwerk/DataTypes/Types.h"
 #include "Renderwerk/Memory/Memory.h"
 
 template <class T>

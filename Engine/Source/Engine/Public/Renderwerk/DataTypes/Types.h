@@ -27,7 +27,24 @@ using size64 = uint64;
 
 #pragma endregion
 
+using FSourceLocation = std::source_location;
+
 template <typename T>
 using TFunction = std::function<T>;
 
-using FSourceLocation = std::source_location;
+/**
+ * @brief Utility macro to streamline binding of functions.
+ */
+#define BIND_STATIC(Function) &Function
+
+/**
+ * @brief Utility macro to streamline binding of functions.
+ */
+#define BIND_LAMBDA(Lambda) Lambda
+
+#define BIND_MEMBER(Function) std::bind(&Function, this)
+#define BIND_MEMBER_ONE(Function) std::bind(&Function, this, std::placeholders::_1)
+#define BIND_MEMBER_TWO(Function) std::bind(&Function, this, std::placeholders::_1, std::placeholders::_2)
+#define BIND_MEMBER_THREE(Function) std::bind(&Function, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
+#define BIND_MEMBER_FOUR(Function) std::bind(&Function, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4)
+#define BIND_MEMBER_FIVE(Function) std::bind(&Function, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4, std::placeholders::_5)

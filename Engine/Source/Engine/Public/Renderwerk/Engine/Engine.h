@@ -1,10 +1,13 @@
 ﻿#pragma once
 
 #include "Renderwerk/Core/CoreMinimal.h"
+#include "Renderwerk/DataTypes/Delegates/Delegate.h"
 #include "Renderwerk/Logging/LogCategory.h"
 #include "Renderwerk/Memory/SmartPointers.h"
 
 DECLARE_LOG_CATEGORY(LogEngine, Trace);
+
+DECLARE_DELEGATE(SignalReceived, uint32);
 
 class RENDERWERK_API FEngine
 {
@@ -24,6 +27,9 @@ private:
 
 private:
 	static void RegisterInterruptSignals();
+
+private:
+	INLINE static FSignalReceivedDelegate OnSignalReceived;
 
 private:
 	bool8 bIsRunning = true;

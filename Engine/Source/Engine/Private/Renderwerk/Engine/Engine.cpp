@@ -11,10 +11,13 @@ TSharedPtr<FEngine> GEngine = nullptr;
 FEngine::FEngine()
 {
 	RegisterInterruptSignals();
+
+	OnSignalReceived.Bind(BIND_MEMBER_ONE(FEngine::SignalHandler));
 }
 
 FEngine::~FEngine()
 {
+	OnSignalReceived.Unbind();
 }
 
 void FEngine::Run() const
@@ -58,7 +61,8 @@ void FEngine::RegisterInterruptSignals()
 {
 	_crt_signal_t SignalHandlerFunc = [](const int Signal)
 	{
-		GetEngine()->SignalHandler(Signal);
+		if (OnSignalReceived.IsBound())
+			OnSignalReceived.Execute(Signal);
 	};
 	signal(SIGTERM, SignalHandlerFunc);
 	signal(SIGSEGV, SignalHandlerFunc);
