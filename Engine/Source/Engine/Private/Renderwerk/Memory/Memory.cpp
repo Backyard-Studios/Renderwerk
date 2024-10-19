@@ -5,7 +5,7 @@
 #include <Windows.h>
 
 #if RW_ENABLE_MEMORY_TRACKING
-FMemoryStatistics* FMemory::MemoryStatistics = new FMemoryStatistics();
+FMemoryStatistics* FMemory::MemoryStatistics = nullptr;
 #endif
 
 void* FMemory::Allocate(const size64 Size, const size64 Alignment)
@@ -14,6 +14,8 @@ void* FMemory::Allocate(const size64 Size, const size64 Alignment)
 	DEBUG_ASSERTM(Alignment % 2 == 0, "Alignment must be a power of 2");
 	size64 AlignedSize = CalculateAlignedSize(Size, Alignment);
 #if RW_ENABLE_MEMORY_TRACKING
+	if (!MemoryStatistics)
+		MemoryStatistics = new FMemoryStatistics();
 	MemoryStatistics->CurrentUsage += AlignedSize;
 #endif
 	return HeapAlloc(GetProcessHeap(), 0, CalculateAlignedSize(Size, Alignment));
@@ -23,6 +25,8 @@ void FMemory::Free(void* Memory)
 {
 	DEBUG_ASSERTM(Memory, "Memory must not be null");
 #if RW_ENABLE_MEMORY_TRACKING
+	if (!MemoryStatistics)
+		MemoryStatistics = new FMemoryStatistics();
 	MemoryStatistics->CurrentUsage -= GetSizeOfMemory(Memory);
 #endif
 	HeapFree(GetProcessHeap(), 0, Memory);

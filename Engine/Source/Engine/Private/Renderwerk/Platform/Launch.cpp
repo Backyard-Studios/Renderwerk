@@ -17,13 +17,16 @@ void GuardedMain()
 
 int32 LaunchRenderwerk()
 {
-	__try
-	{
-		GuardedMain();
-	}
-	__except (FExceptionHandling::Handler(GetExceptionInformation()))
-	{
-		return EXIT_FAILURE;
-	}
+	FLogManager::Initialize();
+	// __try
+	// {
+	GuardedMain();
+	// }
+	// __except (FExceptionHandling::Handler(GetExceptionInformation()))
+	// {
+	// 	FLogManager::Shutdown();
+	// 	return EXIT_FAILURE;
+	// }
+	FLogManager::Shutdown();
 	return EXIT_SUCCESS;
 }

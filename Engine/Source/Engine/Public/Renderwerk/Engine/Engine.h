@@ -2,6 +2,8 @@
 
 #include "Renderwerk/EngineMinimal.h"
 
+DECLARE_LOG_CATEGORY(LogEngine, Trace);
+
 class RENDERWERK_API FEngine
 {
 public:

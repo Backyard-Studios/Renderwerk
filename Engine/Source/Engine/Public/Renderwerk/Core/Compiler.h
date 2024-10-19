@@ -115,10 +115,12 @@
 #	define INLINE __inline
 #	define DLL_EXPORT __declspec(dllexport)
 #	define DLL_IMPORT __declspec(dllimport)
+#	define CONSTEXPR constexpr
 #elif RW_COMPILER_GCC || RW_COMPILER_CLANG
 #	define FORCEINLINE __attribute__((always_inline)) inline
 #	define NOINLINE __attribute__((noinline))
 #	define INLINE inline
 #	define DLL_EXPORT __attribute__((visibility("default")))
 #	define DLL_IMPORT
+#	define CONSTEXPR constexpr
 #endif
