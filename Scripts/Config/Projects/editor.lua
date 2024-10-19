@@ -18,4 +18,6 @@ rw_project('Editor')
 	rw_default_includes()
 	rw_precompiled_header()
 
+	-- Dependencies
 	rw_link_project('Engine')
+	rw_link_project('spdlog', rw_make_third_party_location(path.join('spdlog', 'include')))
