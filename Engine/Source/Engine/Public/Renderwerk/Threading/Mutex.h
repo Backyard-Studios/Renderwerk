@@ -31,9 +31,9 @@ public:
 	void Unlock();
 
 public:
-	[[nodiscard]] CRITICAL_SECTION GetHandle() const { return CriticalSection; }
+	NODISCARD CRITICAL_SECTION GetHandle() const { return CriticalSection; }
 
-	[[nodiscard]] bool8 IsLocked() const { return bIsLocked; }
+	NODISCARD bool8 IsLocked() const { return bIsLocked; }
 
 private:
 	CRITICAL_SECTION CriticalSection;
