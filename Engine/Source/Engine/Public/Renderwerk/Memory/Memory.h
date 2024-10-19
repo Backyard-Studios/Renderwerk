@@ -26,13 +26,13 @@ public:
 	NODISCARD static size64 GetSizeOfMemory(const void* Memory);
 	NODISCARD static size64 CalculateAlignedSize(size64 Size, size64 Alignment);
 
-	template <typename T, typename... TArguments>
+	template <typename T, typename... TArguments, typename = std::enable_if_t<std::is_constructible_v<T, TArguments...>>>
 	NODISCARD static T* New(TArguments&&... Arguments)
 	{
 		return NewAligned<T>(RW_DEFAULT_MEMORY_ALIGNMENT, std::forward<TArguments>(Arguments)...);
 	}
 
-	template <typename T, typename... TArguments>
+	template <typename T, typename... TArguments, typename = std::enable_if_t<std::is_constructible_v<T, TArguments...>>>
 	NODISCARD static T* NewAligned(const size64 Alignment, TArguments&&... Arguments)
 	{
 		void* Memory = Allocate(sizeof(T), Alignment);
@@ -46,13 +46,13 @@ public:
 		Free(Object);
 	}
 
-	template <typename T, typename... TArguments>
+	template <typename T, typename... TArguments, typename = std::enable_if_t<std::is_constructible_v<T, TArguments...>>>
 	NODISCARD static T* NewArray(const size64 Count, TArguments&&... Arguments)
 	{
 		return NewArrayAligned<T>(Count, RW_DEFAULT_MEMORY_ALIGNMENT, std::forward<TArguments>(Arguments)...);
 	}
 
-	template <typename T, typename... TArguments>
+	template <typename T, typename... TArguments, typename = std::enable_if_t<std::is_constructible_v<T, TArguments...>>>
 	NODISCARD static T* NewArrayAligned(const size64 Count, const size64 Alignment, TArguments&&... Arguments)
 	{
 		const size64 Size = sizeof(T) * Count;
