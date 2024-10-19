@@ -11,3 +11,6 @@
 #include "Renderwerk/Platform/Assert.h"
 #include "Renderwerk/Platform/ExceptionHandling.h"
 #include "Renderwerk/Platform/Guid.h"
+#include "Renderwerk/Threading/Mutex.h"
+#include "Renderwerk/Threading/Signal.h"
+#include "Renderwerk/Threading/Thread.h"
