@@ -5,6 +5,8 @@
 #include <dbghelp.h>
 #include <format>
 
+#include "Renderwerk/Renderer/Graphics/GraphicsCommon.h"
+
 #define CLR_EXCEPTION FORWARD(0xE0434352)
 #define REPORT_EXCEPTION_CODE MAKE_HRESULT(SEVERITY_ERROR, FACILITY_ITF, 0x1001)
 
@@ -41,6 +43,8 @@ LONG FExceptionHandling::Handler(EXCEPTION_POINTERS* ExceptionInfo)
 
 		FString Message = TEXT("An exception was reported.\n\n");
 		Message += Info->Message + TEXT("\n");
+		if (Info->CustomCode != 0)
+			Message += TEXT("\nCode: ") + GetResultString(Info->CustomCode);
 #ifdef RW_USE_ANSI_STRINGS
 		Message += TEXT("\nFile: ") + std::format(TEXT("{}:{}"), Info->File, std::to_string(Info->Line));
 #else
@@ -82,6 +86,10 @@ FString FExceptionHandling::GetResultString(const HRESULT Result)
 			ResultDescription = TEXT("Exception reported");
 		else
 			ResultDescription = TEXT("Interface specific error");
+	}
+	else if (Facility == FACILITY_DIRECT3D12 || Facility == FACILITY_DXGI)
+	{
+		ResultDescription = D3D12ResultToString(Result);
 	}
 	else
 	{

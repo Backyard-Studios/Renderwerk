@@ -1,6 +1,8 @@
 ﻿#pragma once
+// ReSharper disable CppUnusedIncludeDirective
 
 #include "Renderwerk/Core/CoreDefinitions.h"
+#include "Renderwerk/DataTypes/String.h"
 #include "Renderwerk/Logging/LogCategory.h"
 #include "Renderwerk/Platform/Assert.h"
 
@@ -16,25 +18,27 @@ using Microsoft::WRL::ComPtr;
 #define CHECK_RESULT(ResultPredicate) \
 	{ \
 		HRESULT UNIQUE_NAME(Result) = ResultPredicate; \
-		ASSERT(SUCCEEDED(UNIQUE_NAME(Result))) \
+		ASSERTR(SUCCEEDED(UNIQUE_NAME(Result)), UNIQUE_NAME(Result)) \
 	}
 
 #define CHECK_RESULTM(ResultPredicate, ...) \
 	{ \
 		HRESULT UNIQUE_NAME(Result) = ResultPredicate; \
-		ASSERTM(SUCCEEDED(UNIQUE_NAME(Result)), __VA_ARGS__) \
+		ASSERTRM(SUCCEEDED(UNIQUE_NAME(Result)), UNIQUE_NAME(Result), __VA_ARGS__) \
 	}
 
 #define DEBUG_CHECK_RESULT(ResultPredicate) \
 	{ \
 		HRESULT UNIQUE_NAME(Result) = ResultPredicate; \
-		DEBUG_ASSERT(SUCCEEDED(UNIQUE_NAME(Result))) \
+		DEBUG_ASSERTR(SUCCEEDED(UNIQUE_NAME(Result)), UNIQUE_NAME(Result)) \
 	}
 
 #define DEBUG_CHECK_RESULTM(ResultPredicate, ...) \
 	{ \
 		HRESULT UNIQUE_NAME(Result) = ResultPredicate; \
-		DEBUG_ASSERTM(SUCCEEDED(UNIQUE_NAME(Result)), __VA_ARGS__) \
+		DEBUG_ASSERTRM(SUCCEEDED(UNIQUE_NAME(Result)), UNIQUE_NAME(Result), __VA_ARGS__) \
 	}
 
 DECLARE_LOG_CATEGORY(LogGraphics, Trace);
+
+RENDERWERK_API FString D3D12ResultToString(HRESULT Result);
