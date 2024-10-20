@@ -27,6 +27,7 @@ private:
 	void OnTick(float64 DeltaTime) const;
 
 private:
+	static TSharedPtr<FAdapter> SelectSuitableAdapter(const TVector<TSharedPtr<FAdapter>>& Adapters);
 	static bool8 IsAdapterSuitable(const TSharedPtr<FAdapter>& Adapter);
 
 private:
