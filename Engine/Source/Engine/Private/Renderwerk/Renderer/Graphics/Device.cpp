@@ -3,6 +3,8 @@
 #include "Renderwerk/Renderer/Graphics/Device.h"
 
 #include "Renderwerk/Renderer/Graphics/Adapter.h"
+#include "Renderwerk/Renderer/Graphics/CommandQueue.h"
+#include "Renderwerk/Renderer/Graphics/Fence.h"
 #include "Renderwerk/Renderer/Graphics/GraphicsContext.h"
 
 DECLARE_LOG_CATEGORY(LogD3D12, Trace);
@@ -39,10 +41,17 @@ FDevice::FDevice(const TSharedPtr<FGraphicsContext>& InContext, const TSharedPtr
 	HRESULT RegisterResult = InfoQueue->RegisterMessageCallback(InfoQueueCallback, D3D12_MESSAGE_CALLBACK_FLAG_NONE, nullptr, &InfoQueueCookie);
 	DEBUG_CHECK_RESULTM(RegisterResult, "Failed to register message callback");
 #endif
+
+	GraphicsQueue = CreateCommandQueue(ECommandListType::Graphics);
+	ComputeQueue = CreateCommandQueue(ECommandListType::Compute);
+	CopyQueue = CreateCommandQueue(ECommandListType::Copy);
 }
 
 FDevice::~FDevice()
 {
+	CopyQueue.reset();
+	ComputeQueue.reset();
+	GraphicsQueue.reset();
 #if RW_ENABLE_GPU_DEBUGGING
 	if (InfoQueue && InfoQueueCookie != 0)
 	{
@@ -54,4 +63,14 @@ FDevice::~FDevice()
 	Device.Reset();
 	Adapter.reset();
 	Context.reset();
+}
+
+TSharedPtr<FCommandQueue> FDevice::CreateCommandQueue(const ECommandListType& Type) const
+{
+	return MakeShared<FCommandQueue>(Device, Type);
+}
+
+TSharedPtr<FFence> FDevice::CreateFence() const
+{
+	return MakeShared<FFence>(Device);
 }

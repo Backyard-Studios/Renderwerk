@@ -121,3 +121,16 @@ FString ToString(const EMeshShaderTier& MeshShaderTier)
 		return TEXT("None");
 	}
 }
+
+FString ToString(const ECommandListType& CommandListType)
+{
+	switch (CommandListType)
+	{
+	ENUM_CASE(ECommandListType, Graphics);
+	ENUM_CASE(ECommandListType, Compute);
+	ENUM_CASE(ECommandListType, Copy);
+	case ECommandListType::None:
+	default:
+		return TEXT("None");
+	}
+}

@@ -39,6 +39,14 @@ using Microsoft::WRL::ComPtr;
 		DEBUG_ASSERTRM(SUCCEEDED(UNIQUE_NAME(Result)), UNIQUE_NAME(Result), __VA_ARGS__) \
 	}
 
+#if RW_ENABLE_GPU_DEBUGGING
+#	define D3D12_SET_NAME(Object, Name) Object->SetName(TEXT(Name))
+#	define GRAPHICS_SET_NAME(Object, Name) D3D12_SET_NAME(Object->GetHandle(), Name)
+#else
+#	define D3D12_SET_NAME(Object, Name)
+#	define GRAPHICS_SET_NAME(Object, Name)
+#endif
+
 DECLARE_LOG_CATEGORY(LogGraphics, Trace);
 
 RENDERWERK_API FString D3D12ResultToString(HRESULT Result);
@@ -98,3 +106,13 @@ enum class RENDERWERK_API EMeshShaderTier
 };
 
 RENDERWERK_API FString ToString(const EMeshShaderTier& MeshShaderTier);
+
+enum class RENDERWERK_API ECommandListType
+{
+	None = D3D12_COMMAND_LIST_TYPE_NONE,
+	Graphics = D3D12_COMMAND_LIST_TYPE_DIRECT,
+	Compute = D3D12_COMMAND_LIST_TYPE_COMPUTE,
+	Copy = D3D12_COMMAND_LIST_TYPE_COPY,
+};
+
+RENDERWERK_API FString ToString(const ECommandListType& CommandListType);

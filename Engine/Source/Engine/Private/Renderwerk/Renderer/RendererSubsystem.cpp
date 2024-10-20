@@ -33,6 +33,7 @@ void FRendererSubsystem::Initialize()
 	RW_LOG(LogRenderer, Info, "Selected Adapter: {}", SelectedAdapter->GetName());
 
 	Device = MakeShared<FDevice>(GraphicsContext, SelectedAdapter);
+	GRAPHICS_SET_NAME(Device, "MainDevice");
 
 	RW_LOG(LogRenderer, Info, "Renderer subsystem initialized");
 }
