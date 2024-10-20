@@ -7,6 +7,7 @@ FGraphicsContext::FGraphicsContext()
 {
 	RW_PROFILING_MARK_FUNCTION();
 
+	RW_LOG(LogGraphics, Info, "D3D12 SDK Version: {}", D3D12_SDK_VERSION);
 #if RW_ENABLE_GPU_DEBUGGING
 	CHECK_RESULT(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&DXGIDebug)));
 	DXGIDebug->EnableLeakTrackingForThread();
