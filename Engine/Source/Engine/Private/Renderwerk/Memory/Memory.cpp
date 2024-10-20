@@ -66,8 +66,10 @@ size64 FMemory::CalculateAlignedSize(const size64 Size, const size64 Alignment)
 	return (Size + Alignment - 1) & ~(Alignment - 1);
 }
 
+#if RW_ENABLE_MEMORY_TRACKING
 FMemoryStatistics* FMemory::GetMemoryStatistics()
 {
 	DEBUG_ASSERTM(MemoryStatistics, "MemoryStatistics must not be null");
 	return MemoryStatistics;
 }
+#endif
