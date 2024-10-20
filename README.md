@@ -20,17 +20,14 @@
 
 ## 🎨 Features
 
-- **DirectX 12 Rendering**
-- **[D3D12 Memory Allocator](https://github.com/GPUOpen-LibrariesAndSDKs/D3D12MemoryAllocator) Integration**
 - **Performance Profiling with [tracy](https://github.com/wolfpld/tracy)**
-- **[flecs](https://github.com/SanderMertens/flecs) Integration (Entity Component System)**
 - **Job System**
 - **Memory Tracking (with support for stl structures)**
 - **Logging based on [spdlog](https://github.com/gabime/spdlog)**
-- **[imgui](https://github.com/ocornut/imgui) Integration**
 
 ## 🔮 Future Plans
 
+- [ ] DirectX 12 Rendering
 - [ ] Mesh Shading Pipeline
 
 ## 🚀 Getting Started
@@ -42,6 +39,7 @@
   - Desktop development with C++
   - MSVC v143
   - Windows 11 SDK (10.0.26100.0 or above recommended, not tested with older versions)
+- [tracy v0.11.1](https://github.com/wolfpld/tracy/releases/tag/v0.11.1) (If you want to profile the engine)
 
 ### 🛠️ Setting up the workspace
 
@@ -64,6 +62,11 @@ If you encounter any issues with the build system, you can clean the workspace w
 ```
 
 This will remove all build artifacts, intermediate files, manually downloaded dependencies and tools. You need to run the setup script again to restore the workspace to a working state.
+
+### ⌚ Profiling
+
+If you want to profile the engine, you need to download the [tracy](https://github.com/wolfpld/tracy) profiler software (Look into the [prerequisites](#-prerequisites) section for the specific version). In order to start profiling, you first need to run the downloaded tracy executable and press "Connect". This will start listening for incoming connections. After that, you can start the engine and the profiler will automatically connect to the engine.
+Doing this will allow you to also profile the engine initialization process. Closing the engine, while the profiler is still connected, will also allow you to profile the shutdown process. Attaching the profiler while the engine is running is also possible, but it will not allow you to profile the initialization process.
 
 ## 📜 License
 
