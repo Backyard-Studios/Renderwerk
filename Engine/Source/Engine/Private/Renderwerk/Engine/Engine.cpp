@@ -1,98 +1,118 @@
 ﻿#include "pch.h"
 
+#include <csignal>
+
 #include "Renderwerk/Engine/Engine.h"
 
-#include "Renderwerk/Scene/Components.h"
+#include "Renderwerk/Jobs/JobSubsystem.h"
+#include "Renderwerk/Platform/WindowSubsystem.h"
+#include "Renderwerk/Utils/Timer.h"
+
+DEFINE_LOG_CATEGORY(LogEngine);
 
 TSharedPtr<FEngine> GEngine = nullptr;
 
-FEngine::FEngine(const TSharedPtr<IApplication>& Application)
-	: Application(Application)
+FEngine::FEngine()
 {
 }
 
-FEngine::~FEngine() = default;
-
-void FEngine::Launch()
+FEngine::~FEngine()
 {
-	RW_PROFILING_MARK_THREAD("MainThread");
+}
 
+void FEngine::RequestExit()
+{
+	RW_LOG(LogEngine, Warn, "Engine exit requested");
+	bIsRunning = false;
+}
+
+void FEngine::Run()
+{
 	Initialize();
-	RunLoop();
-}
 
-void FEngine::RequestShutdown()
-{
-	bIsShutdownRequested = true;
+	FTimer Timer;
+	while (bIsRunning)
+	{
+		RW_PROFILING_MARK_FRAME_START();
+		Timer.Start();
+		{
+			RW_PROFILING_MARK_SCOPE("OnTick");
+			OnTick.Execute(Timer.GetElapsedTime());
+		}
+		Timer.Stop();
+		RW_PROFILING_MARK_FRAME_END();
+	}
+
+	Shutdown();
 }
 
 void FEngine::Initialize()
 {
-	JobSystem = MakeShared<FJobSystem>(4);
-	DQ_ADD(JobSystem);
+	RW_PROFILING_MARK_FUNCTION();
 
-	WindowManager = MakeShared<FWindowManager>();
-	DQ_ADD_CUSTOM(WindowManager, WindowManager->ClearRemoveQueue());
+	RegisterInterruptSignals();
+	OnSignalReceived.Bind(BIND_MEMBER_ONE(FEngine::SignalHandler));
 
-	DQ_ADD_CUSTOM(Application, Application->Shutdown());
-	Application->Initialize();
-	RW_LOG_INFO("Application \"{}\" v{} initialized", Application->GetMetadata().Name, FormatVersion(Application->GetMetadata().Version));
-
-	FWindowSettings WindowSettings = {};
-	MainWindow = WindowManager->Create(WindowSettings);
-	DQ_ADD_CUSTOM_PREDICATE(MainWindow, WindowManager, WindowManager->Remove(MainWindow));
-	MainWindow->SetTitle(Application->GetMetadata().Name + " v" + FormatVersion(Application->GetMetadata().Version));
-	MainWindow->Show();
-
-	FRendererSettings RendererSettings = {};
-	Renderer = MakeShared<FRenderer>(RendererSettings);
-	DQ_ADD(Renderer);
-
-	// TODO: Remove temporary code
-	TestScene = MakeShared<FScene>();
-	TestScene->SetSceneComponent<FSceneSettingsComponent>(0.1f, 0.1f, 0.1f);
-
-	RW_LOG_INFO("Engine initialized");
-}
-
-void FEngine::RunLoop()
-{
-	while (!bIsShutdownRequested)
-	{
-		WindowManager->Update();
-
-		if (MainWindow->GetWindowState().bIsClosed)
-			RequestShutdown();
-
-		WindowManager->ClearRemoveQueue();
-
-		if (!MainWindow->DidResize())
-		{
-			Renderer->BeginFrame();
-			{
-				Renderer->RenderScene(TestScene);
-			}
-			Renderer->EndFrame();
-		}
-		else
-		{
-			Renderer->Resize();
-			MainWindow->ResetResizeFlag();
-		}
-
-		RW_PROFILING_MARK_FRAME();
-	}
+	SubsystemManager = MakeUnique<FSubsystemManager>();
+	SubsystemManager->Register<FWindowSubsystem>();
+	SubsystemManager->Register<FJobSubsystem>();
 }
 
 void FEngine::Shutdown()
 {
-	if (JobSystem)
-		JobSystem->StopAndWaitForRemainingJobs();
-	DeletionQueue.Flush();
+	RW_PROFILING_MARK_FUNCTION();
+
+	SubsystemManager.reset();
+	OnSignalReceived.Unbind();
+}
+
+void FEngine::SignalHandler(int Signal)
+{
+	switch (Signal)
+	{
+	case SIGTERM:
+		RW_LOG(LogEngine, Warn, "Termination signal received");
+		break;
+	case SIGSEGV:
+		RW_LOG(LogEngine, Warn, "Segmentation fault signal received");
+		break;
+	case SIGINT:
+		RW_LOG(LogEngine, Warn, "External Interrupt signal received");
+		break;
+	case SIGILL:
+		RW_LOG(LogEngine, Warn, "Illegal Instruction signal received");
+		break;
+	case SIGABRT:
+		RW_LOG(LogEngine, Warn, "Abort signal received");
+		break;
+	case SIGFPE:
+		RW_LOG(LogEngine, Warn, "Erroneous arithmetic operation signal received");
+		break;
+	default:
+		RW_LOG(LogEngine, Warn, "Signal {} received", Signal);
+		break;
+	}
+	RW_LOG(LogEngine, Warn, "Shutting down the engine");
+	bIsRunning = false;
+}
+
+void FEngine::RegisterInterruptSignals()
+{
+	_crt_signal_t SignalHandlerFunc = [](const int Signal)
+	{
+		if (OnSignalReceived.IsBound())
+			OnSignalReceived.Execute(Signal);
+	};
+	signal(SIGTERM, SignalHandlerFunc);
+	signal(SIGSEGV, SignalHandlerFunc);
+	signal(SIGINT, SignalHandlerFunc);
+	signal(SIGILL, SignalHandlerFunc);
+	signal(SIGABRT, SignalHandlerFunc);
+	signal(SIGFPE, SignalHandlerFunc);
 }
 
 TSharedPtr<FEngine> GetEngine()
 {
-	RW_DEBUG_ASSERT(GEngine, "Engine is not initialized")
+	DEBUG_ASSERTM(GEngine, "Global engine pointer is null");
 	return GEngine;
 }

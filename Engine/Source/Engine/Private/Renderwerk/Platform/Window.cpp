@@ -2,50 +2,33 @@
 
 #include "Renderwerk/Platform/Window.h"
 
-#include "backends/imgui_impl_win32.h"
-
-extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
-FWindow::FWindow(const FWindowSettings& InWindowSettings)
-	: FWindow(InWindowSettings, NewGuid())
+FWindow::FWindow(const WNDCLASSEX& WindowClass, const FWindowDesc& InDescription)
+	: Id(NewGuid()), Description(InDescription)
 {
-}
+	uint32 Style = GetStyleFromDescription(Description);
+	uint32 ExtendedStyle = GetExtendedStyleFromDescription(Description);
 
-FWindow::FWindow(const FWindowSettings& InWindowSettings, const FGuid& InGuid)
-	: Settings(InWindowSettings), Guid(InGuid)
-{
-	State.WindowWidth = InWindowSettings.Width;
-	State.WindowHeight = InWindowSettings.Height;
-	State.ClientWidth = InWindowSettings.Width;
-	State.ClientHeight = InWindowSettings.Height;
-	State.PositionX = InWindowSettings.PositionX;
-	State.PositionY = InWindowSettings.PositionY;
-	State.bIsVisible = InWindowSettings.bIsVisibleAfterCreation;
-	State.Title = InWindowSettings.Title;
-	State.ParentWindow = InWindowSettings.ParentWindow;
+	int32 PositionX = 200;
+	int32 PositionY = 200;
 
-	uint32 WindowStyle = WS_OVERLAPPEDWINDOW;
-	uint32 WindowExStyle = WS_EX_APPWINDOW;
+	if (Description.bUseCustomPosition)
+	{
+		PositionX = Description.CustomPositionX;
+		PositionY = Description.CustomPositionY;
+	}
 
-	if (Settings.bIsVisibleAfterCreation)
-		WindowStyle |= WS_VISIBLE;
-
-	int32 PositionX = Settings.PositionX;
-	int32 PositionY = Settings.PositionY;
-
-	HWND ParentHandle = nullptr;
-	if (Settings.ParentWindow)
-		ParentHandle = Settings.ParentWindow->GetHandle();
-
-	WindowHandle = CreateWindowEx(WindowExStyle,
-	                              FPlatform::GetWindowClass().lpszClassName,
-	                              ToWide(Settings.Title.c_str()).c_str(),
-	                              WindowStyle,
+	HWND ParentWindowHandle = nullptr;
+	if (Description.ParentWindow)
+		ParentWindowHandle = Description.ParentWindow->GetHandle();
+	WindowHandle = CreateWindowEx(ExtendedStyle,
+	                              WindowClass.lpszClassName,
+	                              Description.Title.c_str(),
+	                              Style,
 	                              PositionX, PositionY,
-	                              static_cast<int32>(Settings.Width), static_cast<int32>(Settings.Height),
-	                              ParentHandle,
+	                              Description.Width, Description.Height,
+	                              ParentWindowHandle,
 	                              nullptr,
-	                              FPlatform::GetWindowClass().hInstance,
+	                              WindowClass.hInstance,
 	                              this);
 }
 
@@ -58,25 +41,21 @@ FWindow::~FWindow()
 void FWindow::Show() const
 {
 	ShowWindow(WindowHandle, SW_SHOW);
-	UpdateWindow(WindowHandle);
 }
 
 void FWindow::Hide() const
 {
 	ShowWindow(WindowHandle, SW_HIDE);
-	UpdateWindow(WindowHandle);
 }
 
 void FWindow::Minimize() const
 {
 	ShowWindow(WindowHandle, SW_MINIMIZE);
-	UpdateWindow(WindowHandle);
 }
 
 void FWindow::Maximize() const
 {
 	ShowWindow(WindowHandle, SW_MAXIMIZE);
-	UpdateWindow(WindowHandle);
 }
 
 void FWindow::Restore() const
@@ -95,9 +74,11 @@ void FWindow::Close() const
 	CloseWindow(WindowHandle);
 }
 
-void FWindow::Destroy() const
+void FWindow::Destroy()
 {
+	DEBUG_ASSERTM(WindowHandle && IsWindow(WindowHandle), "Window handle is invalid")
 	DestroyWindow(WindowHandle);
+	WindowHandle = nullptr;
 }
 
 void FWindow::SetPosition(const int32 PositionX, const int32 PositionY) const
@@ -110,27 +91,24 @@ void FWindow::SetSize(const int32 Width, const int32 Height) const
 	SetWindowPos(WindowHandle, nullptr, 0, 0, Width, Height, SWP_NOMOVE | SWP_NOZORDER);
 }
 
-void FWindow::SetTitle(const std::string& Title)
+void FWindow::SetTitle(const FString& Title)
 {
 	State.Title = Title;
-	SetWindowText(WindowHandle, ToWide(Title.c_str()).c_str());
+	SetWindowText(WindowHandle, Title.c_str());
 }
 
-void FWindow::AppendTitle(const std::string& Title)
+void FWindow::AppendTitle(const FString& Title)
 {
 	SetTitle(State.Title + Title);
 }
 
-void FWindow::ResetResizeFlag()
+bool8 FWindow::IsValid() const
 {
-	bDidResize = false;
+	return WindowHandle && !IsClosed() && !IsDestroyed();
 }
 
 LRESULT FWindow::WindowProcess(const HWND InWindowHandle, const UINT Message, const WPARAM WParam, const LPARAM LParam)
 {
-	if (ImGui_ImplWin32_WndProcHandler(InWindowHandle, Message, WParam, LParam))
-		return true;
-
 	switch (Message)
 	{
 	case WM_SIZE:
@@ -139,9 +117,6 @@ LRESULT FWindow::WindowProcess(const HWND InWindowHandle, const UINT Message, co
 	case WM_MOVE:
 		OnMoveMessage(LParam);
 		break;
-	case WM_CLOSE:
-		OnCloseMessage();
-		return 0;
 	case WM_ENTERSIZEMOVE:
 		OnEnterSizeMoveMessage(WParam);
 		break;
@@ -150,6 +125,15 @@ LRESULT FWindow::WindowProcess(const HWND InWindowHandle, const UINT Message, co
 		break;
 	case WM_SHOWWINDOW:
 		OnShowWindowMessage(WParam);
+		break;
+	case WM_SETFOCUS:
+		OnSetFocusMessage();
+		break;
+	case WM_KILLFOCUS:
+		OnKillFocusMessage();
+		break;
+	case WM_CLOSE:
+		OnCloseMessage();
 		break;
 	case WM_DESTROY:
 		OnDestroyMessage();
@@ -170,18 +154,14 @@ void FWindow::OnSizeMessage(const LPARAM LParam)
 	State.WindowWidth = WindowRect.right - WindowRect.left;
 	State.WindowHeight = WindowRect.bottom - WindowRect.top;
 
-	bDidResize = true;
+	OnWindowResized.Execute(State.WindowWidth, State.WindowHeight);
+	OnClientAreaResized.Execute(State.ClientWidth, State.ClientHeight);
 }
 
 void FWindow::OnMoveMessage(const LPARAM LParam)
 {
 	State.PositionX = LOWORD(LParam);
 	State.PositionY = HIWORD(LParam);
-}
-
-void FWindow::OnCloseMessage()
-{
-	State.bIsClosed = true;
 }
 
 void FWindow::OnEnterSizeMoveMessage(const WPARAM WParam)
@@ -205,7 +185,52 @@ void FWindow::OnShowWindowMessage(const WPARAM WParam)
 	State.bIsVisible = WParam != 0;
 }
 
+void FWindow::OnSetFocusMessage()
+{
+	State.bIsFocused = true;
+	OnFocusChange.Execute(true);
+}
+
+void FWindow::OnKillFocusMessage()
+{
+	State.bIsFocused = false;
+	OnFocusChange.Execute(false);
+}
+
+void FWindow::OnCloseMessage()
+{
+	bIsClosed = true;
+}
+
 void FWindow::OnDestroyMessage()
 {
-	State.bIsDestroyed = true;
+	bIsDestroyed = true;
+}
+
+uint32 FWindow::GetStyleFromDescription(const FWindowDesc& Description)
+{
+	uint32 Style = 0;
+
+	if (Description.Style == EWindowStyle::Windowed)
+		Style |= WS_OVERLAPPEDWINDOW;
+	else if (Description.Style == EWindowStyle::Borderless)
+		Style |= WS_POPUP | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
+
+	if (Description.ParentWindow)
+		Style |= WS_CHILDWINDOW;
+
+	if (Description.bShowAfterCreation)
+		Style |= WS_VISIBLE;
+
+	return Style;
+}
+
+uint32 FWindow::GetExtendedStyleFromDescription(const FWindowDesc& Description)
+{
+	uint32 ExStyle = 0;
+	if (Description.Style == EWindowStyle::Windowed)
+		ExStyle |= WS_EX_OVERLAPPEDWINDOW | WS_EX_APPWINDOW;
+	else if (Description.Style == EWindowStyle::Borderless)
+		ExStyle |= WS_EX_APPWINDOW;
+	return ExStyle;
 }

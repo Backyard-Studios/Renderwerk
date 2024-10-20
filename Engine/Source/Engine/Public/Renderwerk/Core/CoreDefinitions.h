@@ -1,5 +1,4 @@
-#pragma once
-// ReSharper disable CppClangTidyModernizeMacroToEnum
+﻿#pragma once
 
 // Used to suppress warnings about macros that should be enums
 #define FORWARD(...) __VA_ARGS__
@@ -37,5 +36,3 @@
 	DEFINE_DEFAULT_COPY_ASSIGNMENT(Type); \
 	DEFINE_DEFAULT_MOVE_CONSTRUCTOR(Type); \
 	DEFINE_DEFAULT_MOVE_ASSIGNMENT(Type)
-
-#define DEFINE_ENUM_STRING_CASE(EnumClass, EnumValue) case EnumClass::EnumValue: return #EnumValue

@@ -1,139 +1,65 @@
 ﻿#pragma once
 
-#include "Renderwerk/Core/Assertion.h"
 #include "Renderwerk/Core/CoreMinimal.h"
+#include "Renderwerk/DataTypes/Types.h"
 
-#include "Renderwerk/Platform/Platform.h"
+#if RW_ENABLE_MEMORY_TRACKING
 
-#include <type_traits>
-#include <Windows.h>
-#include <xutility>
-
-enum : uint8
+struct RENDERWERK_API FMemoryStatistics
 {
-	MEMORY_DEFAULT_ALIGNMENT = 16
+	size64 CurrentUsage = 0;
 };
 
-#if RW_ENABLE_MEMORY_TRACKING
-struct ENGINE_API FMemoryTracking
-{
-	using FOnAllocateCallback = TFunction<void(void* Pointer, size64 Size, uint8 Alignment)>;
-	using FOnFreeCallback = TFunction<void(void* Pointer, uint8 Alignment)>;
-
-public:
-	void SetOnAllocateCallback(const FOnAllocateCallback& Callback);
-	void SetOnFreeCallback(const FOnFreeCallback& Callback);
-
-	void OnAllocate(void* Pointer, size64 Size, uint8 Alignment);
-	void OnFree(void* Pointer, uint8 Alignment);
-
-public:
-	[[nodiscard]] size64 GetUsage() const { return Usage; }
-	[[nodiscard]] size64 GetPeakUsage() const { return PeakUsage; }
-
-private:
-	size64 Usage = 0;
-	size64 PeakUsage = 0;
-
-	FOnAllocateCallback OnAllocateCallback;
-	FOnFreeCallback OnFreeCallback;
-};
 #endif
 
-class ENGINE_API FMemory
+#define RW_DEFAULT_MEMORY_ALIGNMENT FORWARD(16)
+
+class RENDERWERK_API FMemory
 {
 public:
-	static void* Allocate(const size64 Size, const uint8 Alignment = MEMORY_DEFAULT_ALIGNMENT)
-	{
-		RW_ASSERT_CRITICAL(Size > 0, "Size must be greater than 0.")
-		RW_ASSERT_CRITICAL(Alignment % 2 == 0, "Alignment must be a power of 2.")
+	NODISCARD static void* Allocate(size64 Size, size64 Alignment = RW_DEFAULT_MEMORY_ALIGNMENT);
+	static void Free(void* Memory);
 
-		void* Pointer = _aligned_malloc(Size, Alignment);
-#if RW_ENABLE_MEMORY_TRACKING
-		GetMemoryTracking().OnAllocate(Pointer, Size, Alignment);
-#endif
-		return Pointer;
+	NODISCARD static void* Reallocate(void* Memory, size64 Size, size64 Alignment = RW_DEFAULT_MEMORY_ALIGNMENT);
+	static void Copy(void* Destination, const void* Source, size64 Size);
+
+	NODISCARD static size64 GetSizeOfMemory(const void* Memory);
+	NODISCARD static size64 CalculateAlignedSize(size64 Size, size64 Alignment);
+
+	template <typename T, typename... TArguments, typename = std::enable_if_t<std::is_constructible_v<T, TArguments...>>>
+	NODISCARD static T* New(TArguments&&... Arguments)
+	{
+		return NewAligned<T>(RW_DEFAULT_MEMORY_ALIGNMENT, std::forward<TArguments>(Arguments)...);
 	}
 
-	static void Free(void* Pointer, const uint8 Alignment = MEMORY_DEFAULT_ALIGNMENT)
-	{
-		RW_ASSERT_CRITICAL(Pointer, "Pointer must be valid.")
-		RW_ASSERT_CRITICAL(Alignment % 2 == 0, "Alignment must be a power of 2.")
-
-#if RW_ENABLE_MEMORY_TRACKING
-		GetMemoryTracking().OnFree(Pointer, Alignment);
-#endif
-		_aligned_free(Pointer);
-	}
-
-	static void Zero(void* Pointer, const size64 Size)
-	{
-		RW_ASSERT_CRITICAL(Pointer, "Pointer must be valid.")
-		RW_ASSERT_CRITICAL(Size > 0, "Size must be greater than 0.")
-
-		ZeroMemory(Pointer, Size);
-	}
-
-	static void Copy(void* Destination, const void* Source, const size64 Size)
-	{
-		RW_ASSERT_CRITICAL(Destination, "Destination must be valid.")
-		RW_ASSERT_CRITICAL(Source, "Source must be valid.")
-		RW_ASSERT_CRITICAL(Size > 0, "Size must be greater than 0.")
-
-		CopyMemory(Destination, Source, Size);
-	}
-
-	static void Fill(void* Destination, const uint8 Value, const size64 Size)
-	{
-		RW_ASSERT_CRITICAL(Destination, "Destination must be valid.")
-		RW_ASSERT_CRITICAL(Size > 0, "Size must be greater than 0.")
-
-		FillMemory(Destination, Size, Value);
-	}
-
-	static void Move(void* Destination, const void* Source, const size64 Size)
-	{
-		RW_ASSERT_CRITICAL(Destination, "Destination must be valid.")
-		RW_ASSERT_CRITICAL(Source, "Source must be valid.")
-		RW_ASSERT_CRITICAL(Size > 0, "Size must be greater than 0.")
-
-		MoveMemory(Destination, Source, Size);
-	}
-
-	template <typename T, typename... TArguments>
-	static T* New(TArguments&&... Arguments)
-	{
-		return NewAligned<T>(MEMORY_DEFAULT_ALIGNMENT, std::forward<TArguments>(Arguments)...);
-	}
-
-	template <typename T, typename... TArguments>
-	static T* NewAligned(const uint8 Alignment, TArguments&&... Arguments)
+	template <typename T, typename... TArguments, typename = std::enable_if_t<std::is_constructible_v<T, TArguments...>>>
+	NODISCARD static T* NewAligned(const size64 Alignment, TArguments&&... Arguments)
 	{
 		void* Memory = Allocate(sizeof(T), Alignment);
-		return std::construct_at(static_cast<T*>(Memory), std::forward<TArguments>(Arguments)...);
+		return new(Memory) T(std::forward<TArguments>(Arguments)...);
 	}
 
 	template <typename T>
 	static void Delete(T* Object)
 	{
-		std::destroy_at(Object);
+		Object->~T();
 		Free(Object);
 	}
 
-	template <typename T, typename... TArguments>
-	static T* NewArray(const size64 Count, TArguments&&... Arguments)
+	template <typename T, typename... TArguments, typename = std::enable_if_t<std::is_constructible_v<T, TArguments...>>>
+	NODISCARD static T* NewArray(const size64 Count, TArguments&&... Arguments)
 	{
-		return NewArrayAligned<T>(Count, MEMORY_DEFAULT_ALIGNMENT, std::forward<TArguments>(Arguments)...);
+		return NewArrayAligned<T>(Count, RW_DEFAULT_MEMORY_ALIGNMENT, std::forward<TArguments>(Arguments)...);
 	}
 
-	template <typename T, typename... TArguments>
-	static T* NewArrayAligned(const size64 Count, const uint8 Alignment, TArguments&&... Arguments)
+	template <typename T, typename... TArguments, typename = std::enable_if_t<std::is_constructible_v<T, TArguments...>>>
+	NODISCARD static T* NewArrayAligned(const size64 Count, const size64 Alignment, TArguments&&... Arguments)
 	{
 		const size64 Size = sizeof(T) * Count;
 		void* Memory = Allocate(Size, Alignment);
 		T* Array = static_cast<T*>(Memory);
 		for (size64 Index = 0; Index < Count; ++Index)
-			std::construct_at(Array + Index, std::forward<TArguments>(Arguments)...);
+			new(Array + Index) T(std::forward<TArguments>(Arguments)...);
 		return Array;
 	}
 
@@ -145,14 +71,13 @@ public:
 		Free(Array);
 	}
 
-
+public:
 #if RW_ENABLE_MEMORY_TRACKING
-	static FMemoryTracking& GetMemoryTracking()
-	{
-		static FMemoryTracking MemoryTracking;
-		return MemoryTracking;
-	}
+	NODISCARD static FMemoryStatistics* GetMemoryStatistics();
 #endif
 
 private:
+#if RW_ENABLE_MEMORY_TRACKING
+	static FMemoryStatistics* MemoryStatistics;
+#endif
 };

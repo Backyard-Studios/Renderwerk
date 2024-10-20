@@ -13,5 +13,14 @@ rw_project('spdlog')
 	})
 
 	defines({
-		'SPDLOG_COMPILED_LIB',
+		'SPDLOG_COMPILED_LIB=1',
 	})
+
+	rw_filter_windows()
+		disablewarnings({
+			'4006',
+		})
+		linkoptions({
+			'/IGNORE:4006',
+		})
+	rw_filter_end()

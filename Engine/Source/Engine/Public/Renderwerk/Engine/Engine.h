@@ -1,58 +1,65 @@
 ﻿#pragma once
 
-#include "Renderwerk/Application/Application.h"
 #include "Renderwerk/Core/CoreMinimal.h"
-#include "Renderwerk/Jobs/JobSystem.h"
-#include "Renderwerk/Memory/DeletionQueue.h"
-
+#include "Renderwerk/DataTypes/Delegates/Delegate.h"
+#include "Renderwerk/DataTypes/Delegates/MulticastDelegate.h"
+#include "Renderwerk/Engine/SubsystemManager.h"
+#include "Renderwerk/Logging/LogCategory.h"
 #include "Renderwerk/Memory/SmartPointers.h"
-#include "Renderwerk/Platform/WindowManager.h"
-#include "Renderwerk/Renderer/Renderer.h"
 
-class ENGINE_API FEngine
+DECLARE_LOG_CATEGORY(LogEngine, Trace);
+
+DECLARE_DELEGATE(SignalReceived, uint32);
+DECLARE_MULTICAST_DELEGATE(Tick, float64);
+
+class RENDERWERK_API FEngine
 {
 public:
-	FEngine(const TSharedPtr<IApplication>& Application);
+	FEngine();
 	~FEngine();
 
+	DELETE_COPY_AND_MOVE(FEngine);
+
 public:
-	void RequestShutdown();
+	void RequestExit();
+
+public:
+	NODISCARD FTickDelegate* GetTickDelegate() { return &OnTick; }
 
 private:
-	void Launch();
+	/**
+	 * Contains the main loop of the engine.
+	 */
+	void Run();
 
 	void Initialize();
-	void RunLoop();
 	void Shutdown();
 
-public:
-	[[nodiscard]] TSharedPtr<FJobSystem> GetJobSystem() const { return JobSystem; }
-	[[nodiscard]] TSharedPtr<FWindowManager> GetWindowManager() const { return WindowManager; }
-	[[nodiscard]] TSharedPtr<FWindow> GetMainWindow() const { return MainWindow; }
-
-	[[nodiscard]] bool IsShutdownRequested() const { return bIsShutdownRequested; }
+	void SignalHandler(int Signal);
 
 private:
-	TSharedPtr<IApplication> Application;
+	static void RegisterInterruptSignals();
 
-	bool bIsShutdownRequested = false;
+private:
+	INLINE static FSignalReceivedDelegate OnSignalReceived;
 
-	FDeletionQueue DeletionQueue;
+private:
+	bool8 bIsRunning = true;
 
-	TSharedPtr<FJobSystem> JobSystem;
+	TUniquePtr<FSubsystemManager> SubsystemManager;
+	FTickDelegate OnTick;
 
-	TSharedPtr<FWindowManager> WindowManager;
-	TSharedPtr<FWindow> MainWindow;
-
-	TSharedPtr<FRenderer> Renderer;
-
-	// TODO: Remove temporary code
-	TSharedPtr<FScene> TestScene;
-
-	friend void Launch(const TSharedPtr<IApplication>& Application);
-	friend void Shutdown();
+	friend void GuardedMain();
 };
 
-ENGINE_API extern TSharedPtr<FEngine> GEngine;
+/**
+ * Global engine pointer. You should use GetEngine() to safely access this pointer.
+ * Please check the validity of the pointer before using it.
+ */
+RENDERWERK_API extern TSharedPtr<FEngine> GEngine;
 
-ENGINE_API TSharedPtr<FEngine> GetEngine();
+/**
+ * Checks the validity of the global engine pointer and returns it.
+ * @return The global engine pointer.
+ */
+RENDERWERK_API TSharedPtr<FEngine> GetEngine();

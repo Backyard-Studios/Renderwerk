@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include "Renderwerk/Core/CoreDefinitions.h"
+
 #if defined(_WIN32) || defined(__WIN32__) || defined(_WIN64)
 #	define RW_PLATFORM_WINDOWS FORWARD(1)
 #	define RW_PLATFORM_NAME "Windows"
@@ -12,21 +14,11 @@
 #	define RW_PLATFORM_WINDOWS FORWARD(0)
 #endif
 
-#if RW_PLATFORM_WINDOWS
-#	include <Windows.h>
-#endif
-
 // Define TEXT macro if it's not defined by the platform
-#ifndef TEXT
-#	ifdef RW_USE_WIDE_STRINGS_AS_DEFAULT
-#		define TEXT(x) L##x
-#	else
+#if !defined(TEXT) && !RW_PLATFORM_WINDOWS
+#	ifdef RW_USE_ANSI_STRINGS
 #		define TEXT(x) x
+#	else
+#		define TEXT(x) L##x
 #	endif
-#endif
-
-#if RW_PLATFORM_WINDOWS
-#	define RW_PLATFORM_SUPPORTS_SEH FORWARD(1)
-#else
-#	define RW_PLATFORM_SUPPORTS_SEH FORWARD(0)
 #endif

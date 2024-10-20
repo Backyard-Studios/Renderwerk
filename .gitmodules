@@ -1,16 +1,6 @@
-[submodule "Engine/ThirdParty/tracy"]
-	path = Engine/ThirdParty/tracy
-	url = https://github.com/wolfpld/tracy
 [submodule "Engine/ThirdParty/spdlog"]
 	path = Engine/ThirdParty/spdlog
 	url = https://github.com/gabime/spdlog
-[submodule "Engine/ThirdParty/D3D12MemoryAllocator"]
-	path = Engine/ThirdParty/D3D12MemoryAllocator
-	url = https://github.com/GPUOpen-LibrariesAndSDKs/D3D12MemoryAllocator
-[submodule "Engine/ThirdParty/flecs"]
-	path = Engine/ThirdParty/flecs
-	url = https://github.com/SanderMertens/flecs
-[submodule "Engine/ThirdParty/imgui"]
-	path = Engine/ThirdParty/imgui
-	url = https://github.com/ocornut/imgui
-	branch = docking
+[submodule "Engine/ThirdParty/tracy"]
+	path = Engine/ThirdParty/tracy
+	url = https://github.com/wolfpld/tracy

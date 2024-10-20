@@ -88,6 +88,11 @@
 #	else
 #		define UNLIKELY
 #	endif
+#	if __has_cpp_attribute(maybe_unused)
+#		define MAYBE_UNUSED [[maybe_unused]]
+#	else
+#		define MAYBE_UNUSED
+#	endif
 #else
 #	define DEPRECATED
 #	define DEPRECATED_MSG(msg)
@@ -95,6 +100,7 @@
 #	define NODISCARD_MSG(msg)
 #	define LIKELY
 #	define UNLIKELY
+#	define MAYBE_UNUSED
 #endif
 
 #ifdef __cpp_static_assert
@@ -109,10 +115,14 @@
 #	define INLINE __inline
 #	define DLL_EXPORT __declspec(dllexport)
 #	define DLL_IMPORT __declspec(dllimport)
+#	define CONSTEXPR constexpr
+#	define DEBUG_BREAK() __debugbreak()
 #elif RW_COMPILER_GCC || RW_COMPILER_CLANG
 #	define FORCEINLINE __attribute__((always_inline)) inline
 #	define NOINLINE __attribute__((noinline))
 #	define INLINE inline
 #	define DLL_EXPORT __attribute__((visibility("default")))
 #	define DLL_IMPORT
+#	define CONSTEXPR constexpr
+#	define DEBUG_BREAK() __builtin_trap()
 #endif

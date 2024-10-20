@@ -4,9 +4,8 @@
 
 #include <format>
 #include <string>
-#include "spdlog/fmt/fmt.h"
 
-class ENGINE_API FGuid
+class RENDERWERK_API FGuid
 {
 public:
 	FGuid();
@@ -35,8 +34,7 @@ private:
 	TVector<uint8_t> Data;
 };
 
-// Platform-specific implementation
-ENGINE_API FGuid NewGuid();
+RENDERWERK_API FGuid NewGuid();
 
 template <>
 struct std::hash<FGuid>
@@ -55,15 +53,5 @@ struct std::formatter<FGuid> : std::formatter<std::string>
 	auto format(const FGuid& Guid, FormatContext& ctx) const
 	{
 		return std::formatter<std::string>::format(Guid.ToString(), ctx);
-	}
-};
-
-template <>
-struct fmt::formatter<FGuid> : formatter<std::string>
-{
-	template <typename FormatContext>
-	auto format(const FGuid& Guid, FormatContext& ctx) const
-	{
-		return formatter<std::string>::format(Guid.ToString(), ctx);
 	}
 };

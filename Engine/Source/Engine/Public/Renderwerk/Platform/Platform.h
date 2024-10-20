@@ -1,49 +1,55 @@
 ﻿#pragma once
 
 #include "Renderwerk/Core/CoreMinimal.h"
+#include "Renderwerk/Memory/SmartPointers.h"
 
-#include <Windows.h>
+struct RENDERWERK_API FProcessorInfo
+{
+	uint32 PhysicalCoreCount = 0;
+	uint32 LogicalCoreCount = 0;
+	bool bIs64Bit = false;
+	FString Name = TEXT("");
+};
 
-struct FAssertionData;
+struct RENDERWERK_API FMemoryInfo
+{
+	uint64 TotalPhysicalMemory = 0;
+	uint64 FreePhysicalMemory = 0;
+};
 
-#define E_FATAL MAKE_HRESULT(SEVERITY_ERROR, FACILITY_ITF, 0x0001)
-#define E_ASSERTION MAKE_HRESULT(SEVERITY_ERROR, FACILITY_ITF, 0x0002)
-
-/**
- * Platform interface class.
- * This class is used to provide platform specific functionality.
- * You should inherit from this class and implement the platform specific functions.
- */
-class ENGINE_API FPlatform
+class RENDERWERK_API FPlatform
 {
 public:
-	static void Initialize();
-	static void Shutdown();
+	FPlatform();
+	~FPlatform();
+
+	DELETE_COPY_AND_MOVE(FPlatform);
 
 public:
-	static void Fatal(const std::string& Reason);
-	static void Assertion(FAssertionData Data);
-
-	[[nodiscard]] static std::string GetResultHandleDescription(HRESULT Result);
-
-	[[nodiscard]] static std::string GetCurrentWorkingDirectory();
-	[[nodiscard]] static std::string AppendPath(const std::string& ParentPath, const std::string& PathToAppend);
+	NODISCARD HMODULE LoadDynamicLibrary(const FString& LibraryPath) const;
+	NODISCARD void UnloadDynamicLibrary(HMODULE LibraryHandle) const;
 
 public:
-	[[nodiscard]] INLINE static int32 GetExitCode() { return ExitCode; }
-	INLINE static void SetExitCode(const int32 NewExitCode) { ExitCode = NewExitCode; }
+	NODISCARD FProcessorInfo GetProcessorInfo() const { return ProcessorInfo; }
+	NODISCARD FMemoryInfo GetMemoryInfo() const { return MemoryInfo; }
 
-	[[nodiscard]] INLINE static WNDCLASSEX GetWindowClass() { return WindowClass; }
+private:
+	static FString QueryCPUName();
+	static uint32 QueryPhysicalCoreCount();
 
-protected:
-	INLINE static int32 ExitCode = 0;
-	INLINE static WNDCLASSEX WindowClass = {};
+private:
+	FProcessorInfo ProcessorInfo = {};
+	FMemoryInfo MemoryInfo = {};
 };
 
 /**
- * Exception handler for the win32 platform.
- * This function is used in the SEH block to handle exceptions.
- * @param ExceptionInfo The exception information.
- * @return The exception handling result.
+ * Global platform pointer. You should use GetPlatform() to safely access this pointer.
+ * Please check the validity of the pointer before using it.
  */
-ENGINE_API LONG ExceptionHandler(EXCEPTION_POINTERS* ExceptionInfo);
+RENDERWERK_API extern TSharedPtr<FPlatform> GPlatform;
+
+/**
+ * Checks the validity of the global platform pointer and returns it.
+ * @return The global platform pointer.
+ */
+RENDERWERK_API TSharedPtr<FPlatform> GetPlatform();

@@ -36,11 +36,6 @@ rw_project('tracy')
 		})
 	rw_filter_end()
 
-	defines({
-		'TRACY_ENABLE',
-		'TRACY_ON_DEMAND',
-	})
-
 	links({
 		'dbghelp.lib'
 	})
@@ -48,8 +43,10 @@ rw_project('tracy')
 	rw_filter_windows()
 		disablewarnings({
 			'4996',
+			'4006',
 		})
 		linkoptions({
 			'/IGNORE:4996',
+			'/IGNORE:4006',
 		})
 	rw_filter_end()

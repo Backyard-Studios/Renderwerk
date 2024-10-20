@@ -95,7 +95,7 @@ function rw_platform_flags(platform)
 			'4251',
 		})
 		links({
-			'Shlwapi.lib'
+			'mincore.lib',
 		})
 	elseif platform == build_platforms.Linux then
 		
@@ -200,8 +200,8 @@ function rw_kind_shared_lib(name)
 		macro_prefix .. 'KIND=TEXT("SharedLib")',
 		macro_prefix .. 'COMPILE_' .. string.upper(name) .. '_API=1',
 		macro_prefix .. 'KIND_CONSOLE_APP=0',
+		macro_prefix .. 'KIND_WINDOWED_APP=0',
 		macro_prefix .. 'KIND_STATIC_LIB=0',
-		macro_prefix .. 'KIND_SHARED_LIB=0',
 	})
 end
 
@@ -239,38 +239,6 @@ function rw_copy_output_to_directory(directory)
 	})
 	postbuildcommands ({
 		('{COPY} %{cfg.buildtarget.relpath} "' .. directory .. '"')
-	})
-end
-
-function rw_link_d3d12()
-  includedirs({
-		rw_make_third_party_location(path.join('AgilitySDK', 'include')),
-		rw_make_third_party_location(path.join('D3D12MemoryAllocator', 'include')),
-		rw_make_third_party_location(path.join('DirectXCompiler', 'inc')),
-  })
-
-  links({
-    'd3d12.lib',
-    'dxgi.lib',
-    'dxguid.lib',
-		'D3D12MemoryAllocator',
-		'dxcompiler.lib',
-  })
-
-  libdirs({
-		rw_make_third_party_location(path.join('AgilitySDK', 'bin', 'x64')),
-		rw_make_third_party_location(path.join('DirectXCompiler', 'lib', 'x64')),
-  })
-end
-
-function rw_copy_d3d12_binaries()
-	prebuildcommands ({
-		('{MKDIR} "' .. path.join(project_build_output_path, '%{prj.name}', 'D3D12') .. '"')
-	})
-
-  postbuildcommands ({
-		('{COPY} ' .. rw_make_third_party_location(path.join('AgilitySDK', 'bin', 'x64')) .. ' "' .. path.join(project_build_output_path, '%{prj.name}', 'D3D12') .. '"'),
-		('{COPY} ' .. rw_make_third_party_location(path.join('DirectXCompiler', 'bin', 'x64')) .. ' "' .. path.join(project_build_output_path, '%{prj.name}') .. '"')
 	})
 end
 

@@ -2,71 +2,63 @@
 
 #include "Renderwerk/Platform/Launch.h"
 
-#include "Renderwerk/Core/LogManager.h"
 #include "Renderwerk/Engine/Engine.h"
+#include "Renderwerk/Platform/ExceptionHandling.h"
 #include "Renderwerk/Platform/Platform.h"
 
-void Launch(const TSharedPtr<IApplication>& Application)
+void GuardedMain()
 {
-	RW_LOG_TRACE("Initializing platform...");
-	FPlatform::Initialize();
-	RW_LOG_TRACE("Launching engine...");
-	GEngine = MakeShared<FEngine>(Application);
-	GEngine->Launch();
+	RW_LOG(LogDefault, Info, "{} {} by {}", TEXT(RW_ENGINE_NAME), TEXT(RW_ENGINE_FULL_VERSION), TEXT(RW_ENGINE_AUTHOR));
+
+	GPlatform = MakeShared<FPlatform>();
+	RW_LOG(LogDefault, Info, "CPU Information:");
+	RW_LOG(LogDefault, Info, "\t- Name: {}", GetPlatform()->GetProcessorInfo().Name);
+	RW_LOG(LogDefault, Info, "\t- Physical Cores: {}", GetPlatform()->GetProcessorInfo().PhysicalCoreCount);
+	RW_LOG(LogDefault, Info, "\t- Logical Cores: {}", GetPlatform()->GetProcessorInfo().LogicalCoreCount);
+	RW_LOG(LogDefault, Info, "\t- x64 Architecture: {}", GetPlatform()->GetProcessorInfo().bIs64Bit);
+
+	RW_LOG(LogDefault, Info, "Memory Information:");
+	RW_LOG(LogDefault, Info, "\t- Total Physical Memory: {} Gb", RW_GIBIBYTE(GetPlatform()->GetMemoryInfo().TotalPhysicalMemory));
+
+	GEngine = MakeShared<FEngine>();
+	GEngine->Run();
+
+	GEngine.reset();
+	GPlatform.reset();
 }
 
-void Shutdown()
+int32 LaunchRenderwerk()
 {
-	if (FPlatform::GetExitCode() != 0)
-		RW_LOG_ERROR("Trying to shutdown gracefully after an error occurred");
-
-	if (GEngine)
+	RW_PROFILER_INIT();
+#if RW_ENABLE_PROFILING
+	while (!RW_IS_PROFILER_STARTED())
 	{
-		GEngine->Shutdown();
-		GEngine.reset();
 	}
-	FPlatform::Shutdown();
-	RW_LOG_INFO("Successfully shut down");
-}
+#endif
+	RW_PROFILING_SET_APP_NAME(RW_ENGINE_NAME);
+	RW_PROFILING_MARK_THREAD("MainThread");
+	FLogManager::Initialize();
+#ifdef RW_CONFIG_DEBUG
+	// Enable heap corruption detection. This will cause the application to crash if the heap is corrupted.
+	HeapSetInformation(nullptr, HeapEnableTerminationOnCorruption, nullptr, 0);
 
-int32 GuardedMain(const TSharedPtr<IApplication>& Application)
-{
-#if RW_PLATFORM_SUPPORTS_SEH
+	// Enable memory leak detection. This will cause the application to report memory leaks after it has exited.
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
+	// Disables the display of the message box when a CRT assertion fails.
+	_CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_DEBUG);
+#endif
 	__try
 	{
-#endif
-		Launch(Application);
-#if RW_PLATFORM_SUPPORTS_SEH
+		GuardedMain();
 	}
-	__except (ExceptionHandler(GetExceptionInformation()))
+	__except (FExceptionHandling::Handler(GetExceptionInformation()))
 	{
+		FLogManager::Shutdown();
+		RW_PROFILER_SHUTDOWN();
+		return EXIT_FAILURE;
 	}
-#endif
-	Shutdown();
-	return FPlatform::GetExitCode();
-}
-
-int32 LaunchRenderwerk(const TSharedPtr<IApplication>& Application)
-{
-	FLogManager::Initialize();
-	RW_LOG_INFO("{} {} [{}]", RW_ENGINE_NAME, RW_ENGINE_FULL_VERSION, RW_PLATFORM_NAME);
-#if RW_ENABLE_MEMORY_TRACKING
-	RW_LOG_DEBUG("Memory tracking enabled");
-#endif
-#if RW_ENABLE_PROFILING
-	RW_LOG_DEBUG("Profiling enabled");
-#endif
-#if RW_ENABLE_PROFILING && RW_ENABLE_MEMORY_TRACKING
-	FMemory::GetMemoryTracking().SetOnAllocateCallback([](const void* Pointer, const size64 Size, uint8 Alignment)
-	{
-		TracyAlloc(Pointer, Size);
-	});
-	FMemory::GetMemoryTracking().SetOnFreeCallback([](const void* Pointer, uint8 Alignment)
-	{
-		TracyFree(Pointer);
-	});
-#endif
-	int32 ExitCode = GuardedMain(Application);
 	FLogManager::Shutdown();
-	return ExitCode;
+	RW_PROFILER_SHUTDOWN();
+	return EXIT_SUCCESS;
 }

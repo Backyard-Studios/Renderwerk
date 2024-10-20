@@ -1,22 +1,20 @@
 ﻿#pragma once
 
 #include "Renderwerk/Core/CoreMinimal.h"
-#include "Renderwerk/Memory/SmartPointers.h"
+#include "Renderwerk/DataTypes/Types.h"
+#include "Renderwerk/DataTypes/Delegates/MulticastDelegate.h"
 
-class FWindow;
+DECLARE_MULTICAST_DELEGATE(WindowResized, uint32, uint32);
+DECLARE_MULTICAST_DELEGATE(ClientAreaResized, uint32, uint32);
+DECLARE_MULTICAST_DELEGATE(FocusChange, bool8);
 
-struct ENGINE_API FWindowSettings
+enum class RENDERWERK_API EWindowStyle : uint8
 {
-	uint32 Width = 1280;
-	uint32 Height = 720;
-	int32 PositionX = 200;
-	int32 PositionY = 200;
-	std::string Title = RW_ENGINE_NAME " " RW_ENGINE_FULL_VERSION;
-	bool bIsVisibleAfterCreation = false;
-	TSharedPtr<FWindow> ParentWindow = nullptr;
+	Windowed = 0,
+	Borderless,
 };
 
-struct ENGINE_API FWindowState
+struct RENDERWERK_API FWindowState
 {
 	uint32 WindowWidth = 0;
 	uint32 WindowHeight = 0;
@@ -24,20 +22,30 @@ struct ENGINE_API FWindowState
 	uint32 ClientHeight = 0;
 	int32 PositionX = 0;
 	int32 PositionY = 0;
-	bool bIsMoving = false;
-	bool bIsResizing = false;
-	bool bIsVisible = false;
-	bool bIsClosed = false;
-	bool bIsDestroyed = false;
-	std::string Title = "";
-	TSharedPtr<FWindow> ParentWindow = nullptr;
+	FString Title = TEXT("");
+	bool8 bIsMoving = false;
+	bool8 bIsResizing = false;
+	bool8 bIsVisible = false;
+	bool8 bIsFocused = false;
 };
 
-class ENGINE_API FWindow
+struct RENDERWERK_API FWindowDesc
+{
+	uint32 Width = 1280;
+	uint32 Height = 720;
+	EWindowStyle Style = EWindowStyle::Windowed;
+	FString Title = TEXT("Renderwerk");
+	bool8 bUseCustomPosition = false;
+	int32 CustomPositionX = 0;
+	int32 CustomPositionY = 0;
+	bool8 bShowAfterCreation = true;
+	TSharedPtr<class FWindow> ParentWindow = nullptr;
+};
+
+class RENDERWERK_API FWindow
 {
 public:
-	FWindow(const FWindowSettings& InWindowSettings);
-	FWindow(const FWindowSettings& InWindowSettings, const FGuid& InGuid);
+	FWindow(const WNDCLASSEX& WindowClass, const FWindowDesc& InDescription);
 	~FWindow();
 
 	DELETE_COPY_AND_MOVE(FWindow);
@@ -50,41 +58,56 @@ public:
 	void Restore() const;
 	void Focus() const;
 	void Close() const;
-	void Destroy() const;
+	void Destroy();
 
 	void SetPosition(int32 PositionX, int32 PositionY) const;
 	void SetSize(int32 Width, int32 Height) const;
-	void SetTitle(const std::string& Title);
-	void AppendTitle(const std::string& Title);
+	void SetTitle(const FString& Title);
+	void AppendTitle(const FString& Title);
 
-	void ResetResizeFlag();
+	NODISCARD bool8 IsValid() const;
 
 public:
-	[[nodiscard]] HWND GetHandle() const { return WindowHandle; }
+	NODISCARD HWND GetHandle() const { return WindowHandle; }
 
-	[[nodiscard]] FWindowState GetWindowState() const { return State; }
-	[[nodiscard]] FGuid GetGuid() const { return Guid; }
+	NODISCARD FGuid GetId() const { return Id; }
+	NODISCARD FWindowState GetState() const { return State; }
+	NODISCARD bool8 IsClosed() const { return bIsClosed; }
+	NODISCARD bool8 IsDestroyed() const { return bIsDestroyed; }
 
-	[[nodiscard]] bool8 DidResize() const { return bDidResize; }
+	NODISCARD FWindowResizedDelegate* GetWindowResizedDelegate() { return &OnWindowResized; }
+	NODISCARD FClientAreaResizedDelegate* GetClientAreaResizedDelegate() { return &OnClientAreaResized; }
+	NODISCARD FFocusChangeDelegate* GetFocusChangeDelegate() { return &OnFocusChange; }
 
 private:
 	LRESULT WindowProcess(HWND InWindowHandle, UINT Message, WPARAM WParam, LPARAM LParam);
 
 	void OnSizeMessage(LPARAM LParam);
 	void OnMoveMessage(LPARAM LParam);
-	void OnCloseMessage();
 	void OnEnterSizeMoveMessage(WPARAM WParam);
 	void OnExitSizeMoveMessage(WPARAM WParam);
 	void OnShowWindowMessage(WPARAM WParam);
+	void OnSetFocusMessage();
+	void OnKillFocusMessage();
+	void OnCloseMessage();
 	void OnDestroyMessage();
 
-protected:
-	FWindowSettings Settings;
-	FGuid Guid;
+private:
+	static uint32 GetStyleFromDescription(const FWindowDesc& Description);
+	static uint32 GetExtendedStyleFromDescription(const FWindowDesc& Description);
 
-	HWND WindowHandle = nullptr;
+private:
+	FGuid Id;
+	FWindowDesc Description;
+	HWND WindowHandle;
+
 	FWindowState State;
-	bool8 bDidResize = false;
+	bool8 bIsClosed = false;
+	bool8 bIsDestroyed = false;
+
+	FWindowResizedDelegate OnWindowResized;
+	FClientAreaResizedDelegate OnClientAreaResized;
+	FFocusChangeDelegate OnFocusChange;
 
 	friend LRESULT CALLBACK WindowProcess(HWND WindowHandle, UINT Message, WPARAM WParam, LPARAM LParam);
 };
