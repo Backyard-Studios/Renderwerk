@@ -95,7 +95,6 @@ function rw_platform_flags(platform)
 			'4251',
 		})
 		links({
-			'Shlwapi.lib',
 			'mincore.lib',
 		})
 	elseif platform == build_platforms.Linux then

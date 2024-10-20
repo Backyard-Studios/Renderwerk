@@ -11,3 +11,4 @@ group('Applications')
 
 group('ThirdParty')
 	include('Projects/ThirdParty/spdlog.lua')
+	include('Projects/ThirdParty/tracy.lua')

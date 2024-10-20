@@ -31,6 +31,8 @@ workspace(project_name)
 		'SPDLOG_USE_STD_FORMAT=1',
 		'SPDLOG_WCHAR_FILENAMES=1',
 		'SPDLOG_WCHAR_TO_UTF8_SUPPORT=1',
+		'TRACY_ENABLE=1',
+		'TRACY_ON_DEMAND=1',
 	})
 
 	rw_filter_configuration_debug()
