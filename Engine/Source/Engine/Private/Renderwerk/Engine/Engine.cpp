@@ -3,6 +3,8 @@
 #include <csignal>
 
 #include "Renderwerk/Engine/Engine.h"
+
+#include "Renderwerk/Jobs/JobSubsystem.h"
 #include "Renderwerk/Platform/WindowSubsystem.h"
 #include "Renderwerk/Utils/Timer.h"
 
@@ -46,6 +48,7 @@ void FEngine::Initialize()
 
 	SubsystemManager = MakeUnique<FSubsystemManager>();
 	SubsystemManager->Register<FWindowSubsystem>();
+	SubsystemManager->Register<FJobSubsystem>();
 }
 
 void FEngine::Shutdown()

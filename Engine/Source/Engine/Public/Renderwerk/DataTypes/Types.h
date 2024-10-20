@@ -1,7 +1,9 @@
 ﻿#pragma once
 
+#include <atomic>
 #include <cstdint>
 #include <functional>
+#include <future>
 #include <source_location>
 
 #pragma region Primitive Types
@@ -28,6 +30,12 @@ using size64 = uint64;
 #pragma endregion
 
 using FSourceLocation = std::source_location;
+
+template <typename T>
+using TFuture = std::future<T>;
+
+template <typename T>
+using TAtomic = std::atomic<T>;
 
 template <typename T>
 using TFunction = std::function<T>;

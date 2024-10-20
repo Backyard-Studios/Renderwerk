@@ -10,10 +10,13 @@ DEFINE_LOG_CATEGORY(LogDefault);
 
 #define LOG_PATTERN "%^[%T.%e] [%t] [%n] %8l:%$ %v"
 
+FMutex FLogManager::Mutex;
+
 void FLogManager::RegisterLogCategory(const ILogCategory& Category)
 {
 	if (spdlog::get(Category.GetName().c_str()) != nullptr)
 		return;
+	FScopedLock Lock(Mutex);
 	spdlog::sinks_init_list Sinks = {
 		std::make_shared<spdlog::sinks::stdout_color_sink_mt>(),
 	};
@@ -28,6 +31,7 @@ TSharedPtr<spdlog::logger> FLogManager::GetLogger(const ILogCategory& Category)
 {
 	if (spdlog::get(Category.GetName().c_str()) == nullptr)
 		RegisterLogCategory(Category);
+	FScopedLock Lock(Mutex);
 	return spdlog::get(Category.GetName().c_str());
 }
 

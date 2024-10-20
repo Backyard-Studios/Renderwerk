@@ -2,6 +2,8 @@
 
 #include "Renderwerk/Core/CoreMinimal.h"
 
+#include <Windows.h>
+
 /**
  * @brief A mutex is a synchronization primitive that can be used to protect shared data from being simultaneously accessed by multiple threads.
  */

@@ -2,6 +2,7 @@
 
 #include "Renderwerk/Core/CoreMinimal.h"
 #include "Renderwerk/Memory/SmartPointers.h"
+#include "Renderwerk/Threading/Mutex.h"
 
 #include "spdlog/async_logger.h"
 #include "spdlog/spdlog.h"
@@ -43,6 +44,9 @@ private:
 	static void Shutdown();
 
 	static ENativeVerbosity ConvertVerbosity(uint32 Verbosity);
+
+private:
+	static FMutex Mutex;
 
 	friend RENDERWERK_API int32 LaunchRenderwerk();
 };

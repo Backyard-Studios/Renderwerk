@@ -87,3 +87,8 @@ void FThread::ForceKill(const bool8 bWaitForCompletion)
 	ThreadHandle = INVALID_HANDLE_VALUE;
 	Context.State = EThreadState::Finished;
 }
+
+bool8 FThread::IsValid() const
+{
+	return ThreadHandle != nullptr;
+}

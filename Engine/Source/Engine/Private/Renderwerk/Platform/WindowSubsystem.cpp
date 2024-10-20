@@ -18,7 +18,7 @@ LRESULT CALLBACK WindowProcess(const HWND WindowHandle, const UINT Message, cons
 	return DefWindowProc(WindowHandle, Message, WParam, LParam);
 }
 
-DEFINE_LOG_CATEGORY(LogWindowSubsystem);
+DEFINE_LOG_CATEGORY(LogWindow);
 
 FWindowSubsystem::FWindowSubsystem() = default;
 
@@ -121,7 +121,7 @@ void FWindowSubsystem::OnTick(MAYBE_UNUSED float64 DeltaTime)
 		if (Id == MainWindowId)
 		{
 			MainWindowId = {};
-			RW_LOG(LogWindowSubsystem, Warn, "Main window was destroyed. Requesting exit...");
+			RW_LOG(LogWindow, Warn, "Main window was destroyed. Requesting exit...");
 			GetEngine()->RequestExit();
 		}
 		WindowsToDelete.pop();

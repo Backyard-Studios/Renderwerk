@@ -23,19 +23,19 @@ struct RENDERWERK_API FThreadContext
 	EThreadState State = EThreadState::Idle;
 };
 
+using FThreadFunction = TFunction<void(const FThreadContext& Context, void* UserData)>;
+
 class RENDERWERK_API FThread
 {
 public:
-	using FThreadFunction = TFunction<void(const FThreadContext& Context, void* UserData)>;
-
-public:
+	FThread() = default;
 	FThread(FThreadFunction&& InThreadFunction, void* InUserData, const EThreadPriority& InPriority = EThreadPriority::Normal);
 	FThread(FThreadFunction&& InThreadFunction, const FString& InTag, const EThreadPriority& InPriority = EThreadPriority::Normal);
 	FThread(FThreadFunction&& InThreadFunction, void* InUserData = nullptr, const FString& InTag = TEXT("UnnamedThread"),
 	        const EThreadPriority& InPriority = EThreadPriority::Normal);
 	~FThread();
 
-	DEFINE_DEFAULT_COPY_AND_MOVE(FThread);
+	DELETE_COPY_AND_MOVE(FThread);
 
 public:
 	/**
@@ -48,6 +48,8 @@ public:
 	 * @note This should only be used in extreme cases where the thread cannot be stopped gracefully.
 	 */
 	void ForceKill(bool8 bWaitForCompletion = false);
+
+	NODISCARD bool8 IsValid() const;
 
 public:
 	NODISCARD HANDLE GetHandle() const { return ThreadHandle; }

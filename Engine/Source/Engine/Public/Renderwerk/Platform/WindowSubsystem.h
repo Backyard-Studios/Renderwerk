@@ -7,7 +7,7 @@
 #include "Renderwerk/Platform/Guid.h"
 #include "Renderwerk/Platform/Window.h"
 
-DECLARE_LOG_CATEGORY(LogWindowSubsystem, Trace);
+DECLARE_LOG_CATEGORY(LogWindow, Trace);
 
 class RENDERWERK_API FWindowSubsystem : public ISubsystem
 {
