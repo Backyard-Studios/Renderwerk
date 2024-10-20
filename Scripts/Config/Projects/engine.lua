@@ -16,3 +16,4 @@ rw_project('Engine')
 	-- Dependencies
 	rw_link_project('spdlog', rw_make_third_party_location(path.join('spdlog', 'include')))
 	rw_link_project('tracy', rw_make_third_party_location(path.join('tracy', 'public')))
+	rw_link_d3d12()
