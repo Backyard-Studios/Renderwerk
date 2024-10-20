@@ -8,14 +8,14 @@
 template <class T>
 struct FDefaultDelete
 {
-	constexpr FDefaultDelete() noexcept = default;
+	CONSTEXPR FDefaultDelete() noexcept = default;
 
 	template <class TOther>
-	constexpr FDefaultDelete(const FDefaultDelete<TOther>&) noexcept requires (std::is_convertible_v<TOther*, T*>)
+	CONSTEXPR FDefaultDelete(const FDefaultDelete<TOther>&) noexcept requires (std::is_convertible_v<TOther*, T*>)
 	{
 	}
 
-	constexpr void operator()(const T* Pointer) const noexcept
+	CONSTEXPR void operator()(const T* Pointer) const noexcept
 	{
 		FMemory::Delete(const_cast<T*>(Pointer));
 	}

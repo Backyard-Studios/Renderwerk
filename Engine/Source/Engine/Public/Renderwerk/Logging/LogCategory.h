@@ -66,4 +66,4 @@ struct std::hash<ILogCategory>
 	} CategoryName
 
 
-#define DEFINE_LOG_CATEGORY(CategoryName) FLogCategory##CategoryName CategoryName;
+#define DEFINE_LOG_CATEGORY(CategoryName) FLogCategory##CategoryName CategoryName

@@ -15,24 +15,24 @@ public:
 	using size_type = size64;
 	using difference_type = std::ptrdiff_t;
 
-	constexpr FSTLAllocator() noexcept = default;
-	constexpr FSTLAllocator(const FSTLAllocator&) noexcept = default;
+	CONSTEXPR FSTLAllocator() noexcept = default;
+	CONSTEXPR FSTLAllocator(const FSTLAllocator&) noexcept = default;
 
 	template <typename TOther>
-	constexpr FSTLAllocator(const FSTLAllocator<TOther>&) noexcept
+	CONSTEXPR FSTLAllocator(const FSTLAllocator<TOther>&) noexcept
 	{
 	}
 
-	constexpr ~FSTLAllocator() = default;
+	CONSTEXPR ~FSTLAllocator() = default;
 
-	constexpr FSTLAllocator& operator=(const FSTLAllocator&) = default;
+	CONSTEXPR FSTLAllocator& operator=(const FSTLAllocator&) = default;
 
-	NODISCARD constexpr value_type* allocate(const size_type Count)
+	NODISCARD CONSTEXPR value_type* allocate(const size_type Count)
 	{
 		return static_cast<T*>(FMemory::Allocate(sizeof(T) * Count));
 	}
 
-	constexpr void deallocate(value_type* Pointer, size_type Count) noexcept
+	CONSTEXPR void deallocate(value_type* Pointer, size_type Count) noexcept
 	{
 		FMemory::Free(Pointer);
 	}

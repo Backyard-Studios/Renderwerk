@@ -39,6 +39,7 @@ workspace(project_name)
 		defines({
 			'RW_ENABLE_MEMORY_TRACKING=1',
 			'RW_ENABLE_PROFILING=1',
+			'RW_ENABLE_GPU_DEBUGGING=1',
 			'TRACY_ENABLE=1',
 			'SPDLOG_ACTIVE_LEVEL=0',
 		})
@@ -48,6 +49,7 @@ workspace(project_name)
 		defines({
 			'RW_ENABLE_MEMORY_TRACKING=1',
 			'RW_ENABLE_PROFILING=1',
+			'RW_ENABLE_GPU_DEBUGGING=1',
 			'TRACY_ENABLE=1',
 			'SPDLOG_ACTIVE_LEVEL=1',
 		})
@@ -57,6 +59,7 @@ workspace(project_name)
 		defines({
 			'RW_ENABLE_MEMORY_TRACKING=0',
 			'RW_ENABLE_PROFILING=0',
+			'RW_ENABLE_GPU_DEBUGGING=0',
 			'TRACY_ENABLE=0',
 			'SPDLOG_ACTIVE_LEVEL=3',
 		})

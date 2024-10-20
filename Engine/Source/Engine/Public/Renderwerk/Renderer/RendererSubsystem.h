@@ -4,7 +4,9 @@
 #include "Renderwerk/DataTypes/Delegates/MulticastDelegate.h"
 #include "Renderwerk/Engine/Subsystem.h"
 #include "Renderwerk/Logging/LogCategory.h"
+#include "Renderwerk/Memory/SmartPointers.h"
 
+class FGraphicsContext;
 class FWindow;
 
 DECLARE_LOG_CATEGORY(LogRenderer, Trace);
@@ -27,4 +29,6 @@ private:
 	FDelegateHandle OnTickHandle;
 
 	TSharedPtr<FWindow> Window;
+
+	TSharedPtr<FGraphicsContext> GraphicsContext;
 };
