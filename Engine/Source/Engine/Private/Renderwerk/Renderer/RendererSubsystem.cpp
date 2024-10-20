@@ -6,6 +6,7 @@
 #include "Renderwerk/Platform/Window.h"
 #include "Renderwerk/Platform/WindowSubsystem.h"
 #include "Renderwerk/Renderer/Graphics/Adapter.h"
+#include "Renderwerk/Renderer/Graphics/Device.h"
 #include "Renderwerk/Renderer/Graphics/GraphicsContext.h"
 
 DEFINE_LOG_CATEGORY(LogRenderer);
@@ -31,11 +32,14 @@ void FRendererSubsystem::Initialize()
 	Window->AppendTitle(std::format(TEXT(" | D3D12<{}, {}>"), ToString(Capabilities.MaxFeatureLevel), ToString(Capabilities.MaxShaderModel)).c_str());
 	RW_LOG(LogRenderer, Info, "Selected Adapter: {}", SelectedAdapter->GetName());
 
+	Device = MakeShared<FDevice>(GraphicsContext, SelectedAdapter);
+
 	RW_LOG(LogRenderer, Info, "Renderer subsystem initialized");
 }
 
 void FRendererSubsystem::Shutdown()
 {
+	Device.reset();
 	GraphicsContext.reset();
 	GetEngine()->GetTickDelegate()->Unbind(OnTickHandle);
 }

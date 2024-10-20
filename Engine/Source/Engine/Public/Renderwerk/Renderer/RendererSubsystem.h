@@ -6,6 +6,7 @@
 #include "Renderwerk/Logging/LogCategory.h"
 #include "Renderwerk/Memory/SmartPointers.h"
 
+class FDevice;
 class FAdapter;
 class FGraphicsContext;
 class FWindow;
@@ -36,4 +37,5 @@ private:
 	TSharedPtr<FWindow> Window;
 
 	TSharedPtr<FGraphicsContext> GraphicsContext;
+	TSharedPtr<FDevice> Device;
 };
