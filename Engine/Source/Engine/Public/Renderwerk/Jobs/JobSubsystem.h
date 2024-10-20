@@ -87,6 +87,8 @@ public:
 	template <typename TFunction, typename... TArguments, typename TReturnType = std::invoke_result_t<TFunction, TArguments...>>
 	FJobHandle<TReturnType> AddJob(TFunction&& Function, TArguments&&... Arguments)
 	{
+		RW_PROFILING_MARK_FUNCTION();
+
 		auto Job = MakeShared<std::packaged_task<TReturnType()>>(std::bind(std::forward<TFunction>(Function), std::forward<TArguments>(Arguments)...));
 		std::future<TReturnType> Future = Job->get_future();
 		{

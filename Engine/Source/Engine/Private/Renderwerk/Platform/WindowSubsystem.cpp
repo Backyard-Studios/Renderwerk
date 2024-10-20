@@ -31,6 +31,8 @@ bool8 FWindowSubsystem::IsValidWindowId(const FGuid& Id) const
 
 TSharedPtr<FWindow> FWindowSubsystem::NewWindow(const FWindowDesc& Description)
 {
+	RW_PROFILING_MARK_FUNCTION();
+
 	TSharedPtr<FWindow> Window = MakeShared<FWindow>(WindowClass, Description);
 	Windows.insert({Window->GetId(), Window});
 	return Window;
@@ -38,6 +40,8 @@ TSharedPtr<FWindow> FWindowSubsystem::NewWindow(const FWindowDesc& Description)
 
 void FWindowSubsystem::DeleteWindow(const FGuid& Id)
 {
+	RW_PROFILING_MARK_FUNCTION();
+
 	TSharedPtr<FWindow> Window = GetWindow(Id);
 	if (Window->IsValid())
 		Window->Destroy();
@@ -68,6 +72,8 @@ void FWindowSubsystem::SetMainWindowId(const TSharedPtr<FWindow>& Window)
 
 void FWindowSubsystem::Initialize()
 {
+	RW_PROFILING_MARK_FUNCTION();
+
 	WindowClass = {};
 	WindowClass.cbSize = sizeof(WNDCLASSEX);
 	WindowClass.style = CS_OWNDC;
@@ -87,6 +93,8 @@ void FWindowSubsystem::Initialize()
 
 void FWindowSubsystem::Shutdown()
 {
+	RW_PROFILING_MARK_FUNCTION();
+
 	for (TSharedPtr<FWindow>& Window : Windows | std::views::values)
 	{
 		Window->Destroy();
@@ -101,29 +109,39 @@ void FWindowSubsystem::Shutdown()
 
 void FWindowSubsystem::OnTick(MAYBE_UNUSED float64 DeltaTime)
 {
-	MSG Message = {};
-	while (PeekMessage(&Message, nullptr, 0, 0, PM_REMOVE))
-	{
-		TranslateMessage(&Message);
-		DispatchMessage(&Message);
-	}
+	RW_PROFILING_MARK_FUNCTION();
 
-	for (TSharedPtr<FWindow>& Window : Windows | std::views::values)
 	{
-		if (!Window->IsValid())
-			WindowsToDelete.push(Window->GetId());
-	}
+		RW_PROFILING_MARK_SCOPE("MessageHandling");
 
-	while (!WindowsToDelete.empty())
-	{
-		FGuid Id = WindowsToDelete.front();
-		DeleteWindow(Id);
-		if (Id == MainWindowId)
+		MSG Message = {};
+		while (PeekMessage(&Message, nullptr, 0, 0, PM_REMOVE))
 		{
-			MainWindowId = {};
-			RW_LOG(LogWindow, Warn, "Main window was destroyed. Requesting exit...");
-			GetEngine()->RequestExit();
+			TranslateMessage(&Message);
+			DispatchMessage(&Message);
 		}
-		WindowsToDelete.pop();
+	}
+
+	{
+		RW_PROFILING_MARK_SCOPE("WindowCleanup");
+
+		for (TSharedPtr<FWindow>& Window : Windows | std::views::values)
+		{
+			if (!Window->IsValid())
+				WindowsToDelete.push(Window->GetId());
+		}
+
+		while (!WindowsToDelete.empty())
+		{
+			FGuid Id = WindowsToDelete.front();
+			DeleteWindow(Id);
+			if (Id == MainWindowId)
+			{
+				MainWindowId = {};
+				RW_LOG(LogWindow, Warn, "Main window was destroyed. Requesting exit...");
+				GetEngine()->RequestExit();
+			}
+			WindowsToDelete.pop();
+		}
 	}
 }

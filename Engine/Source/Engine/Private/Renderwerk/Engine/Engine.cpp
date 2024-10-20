@@ -33,9 +33,14 @@ void FEngine::Run()
 	FTimer Timer;
 	while (bIsRunning)
 	{
+		RW_PROFILING_MARK_FRAME_START();
 		Timer.Start();
-		OnTick.Execute(Timer.GetElapsedTime());
+		{
+			RW_PROFILING_MARK_SCOPE("OnTick");
+			OnTick.Execute(Timer.GetElapsedTime());
+		}
 		Timer.Stop();
+		RW_PROFILING_MARK_FRAME_END();
 	}
 
 	Shutdown();
@@ -43,6 +48,8 @@ void FEngine::Run()
 
 void FEngine::Initialize()
 {
+	RW_PROFILING_MARK_FUNCTION();
+
 	RegisterInterruptSignals();
 	OnSignalReceived.Bind(BIND_MEMBER_ONE(FEngine::SignalHandler));
 
@@ -53,6 +60,8 @@ void FEngine::Initialize()
 
 void FEngine::Shutdown()
 {
+	RW_PROFILING_MARK_FUNCTION();
+
 	SubsystemManager.reset();
 	OnSignalReceived.Unbind();
 }

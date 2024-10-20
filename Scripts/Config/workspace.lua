@@ -31,13 +31,15 @@ workspace(project_name)
 		'SPDLOG_USE_STD_FORMAT=1',
 		'SPDLOG_WCHAR_FILENAMES=1',
 		'SPDLOG_WCHAR_TO_UTF8_SUPPORT=1',
-		'TRACY_ENABLE=1',
-		'TRACY_ON_DEMAND=1',
+		'TRACY_DELAYED_INIT=1',
+		'TRACY_MANUAL_LIFETIME=1',
 	})
 
 	rw_filter_configuration_debug()
 		defines({
 			'RW_ENABLE_MEMORY_TRACKING=1',
+			'RW_ENABLE_PROFILING=1',
+			'TRACY_ENABLE=1',
 			'SPDLOG_ACTIVE_LEVEL=0',
 		})
 	rw_filter_end()
@@ -45,6 +47,8 @@ workspace(project_name)
 	rw_filter_configuration_development()
 		defines({
 			'RW_ENABLE_MEMORY_TRACKING=1',
+			'RW_ENABLE_PROFILING=1',
+			'TRACY_ENABLE=1',
 			'SPDLOG_ACTIVE_LEVEL=1',
 		})
 	rw_filter_end()
@@ -52,6 +56,8 @@ workspace(project_name)
 	rw_filter_configuration_shipping()
 		defines({
 			'RW_ENABLE_MEMORY_TRACKING=0',
+			'RW_ENABLE_PROFILING=0',
+			'TRACY_ENABLE=0',
 			'SPDLOG_ACTIVE_LEVEL=3',
 		})
 	rw_filter_end()

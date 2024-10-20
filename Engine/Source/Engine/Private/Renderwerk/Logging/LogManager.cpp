@@ -37,6 +37,8 @@ TSharedPtr<spdlog::logger> FLogManager::GetLogger(const ILogCategory& Category)
 
 void FLogManager::Initialize()
 {
+	RW_PROFILING_MARK_FUNCTION();
+
 	spdlog::init_thread_pool(8192, 1);
 	spdlog::set_level(ConvertVerbosity(SPDLOG_ACTIVE_LEVEL));
 	spdlog::set_pattern(LOG_PATTERN);
@@ -46,6 +48,8 @@ void FLogManager::Initialize()
 
 void FLogManager::Shutdown()
 {
+	RW_PROFILING_MARK_FUNCTION();
+
 	spdlog::shutdown();
 }
 

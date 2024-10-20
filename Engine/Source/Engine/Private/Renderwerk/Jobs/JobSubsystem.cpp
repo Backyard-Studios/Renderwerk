@@ -12,6 +12,8 @@ FJobSubsystem::~FJobSubsystem() = default;
 
 void FJobSubsystem::StopAndWaitForRemainingJobs()
 {
+	RW_PROFILING_MARK_FUNCTION();
+
 	for (size64 Index = 0; Index < JobQueue.size(); ++Index)
 		Signal.NotifyOne();
 	bIsShutdownRequested = true;
@@ -26,6 +28,8 @@ void FJobSubsystem::StopAndWaitForRemainingJobs()
 
 void FJobSubsystem::Initialize()
 {
+	RW_PROFILING_MARK_FUNCTION();
+
 	FLogManager::RegisterLogCategory(LogJob);
 
 	FProcessorInfo ProcessorInfo = GetPlatform()->GetProcessorInfo();
@@ -35,6 +39,7 @@ void FJobSubsystem::Initialize()
 		Workers.push_back({
 			.Thread = MakeShared<FThread>(std::move([=](const FThreadContext& Context, void* UserData)
 			{
+				RW_PROFILING_MARK_THREAD(std::format("WorkerThread{}", Index).c_str());
 				Worker(Index);
 			})),
 			.bIsIdle = true
@@ -46,6 +51,8 @@ void FJobSubsystem::Initialize()
 
 void FJobSubsystem::Shutdown()
 {
+	RW_PROFILING_MARK_FUNCTION();
+
 	StopAndWaitForRemainingJobs();
 }
 
@@ -60,16 +67,18 @@ void FJobSubsystem::Worker(const uint32 Index)
 		bool8 Result = Signal.Wait([=]() { return bIsShutdownRequested || !JobQueue.empty(); });
 		ASSERTM(Result, "Failed to wait for signal");
 
+		RW_PROFILING_MARK_FUNCTION();
 		FScopedLock Lock(Mutex);
 		if (bIsShutdownRequested && JobQueue.empty())
+
 			continue;
 
 		FJobFunction Job = std::move(JobQueue.front());
 		JobQueue.pop();
-		JobWorker.bIsIdle = false;
 		Lock.Unlock();
+
+		JobWorker.bIsIdle = false;
 		Job();
-		Lock.Lock();
 		JobWorker.bIsIdle = true;
 	}
 }

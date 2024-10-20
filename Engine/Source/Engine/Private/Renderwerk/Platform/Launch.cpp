@@ -29,6 +29,14 @@ void GuardedMain()
 
 int32 LaunchRenderwerk()
 {
+	RW_PROFILER_INIT();
+#if RW_ENABLE_PROFILING
+	while (!RW_IS_PROFILER_STARTED())
+	{
+	}
+#endif
+	RW_PROFILING_SET_APP_NAME(RW_ENGINE_NAME);
+	RW_PROFILING_MARK_THREAD("MainThread");
 	FLogManager::Initialize();
 #ifdef RW_CONFIG_DEBUG
 	// Enable heap corruption detection. This will cause the application to crash if the heap is corrupted.
@@ -47,8 +55,10 @@ int32 LaunchRenderwerk()
 	__except (FExceptionHandling::Handler(GetExceptionInformation()))
 	{
 		FLogManager::Shutdown();
+		RW_PROFILER_SHUTDOWN();
 		return EXIT_FAILURE;
 	}
 	FLogManager::Shutdown();
+	RW_PROFILER_SHUTDOWN();
 	return EXIT_SUCCESS;
 }

@@ -36,6 +36,8 @@ public:
 	template <typename TSubsystem, typename... TArguments, typename = std::is_base_of<ISubsystem, TSubsystem>>
 	void Register(TArguments&&... Arguments)
 	{
+		RW_PROFILING_MARK_FUNCTION();
+
 		const std::type_info& TypeInfo = typeid(TSubsystem);
 		const FAnsiString TypeName = TypeInfo.name();
 		DEBUG_ASSERTM(!Subsystems.contains(TypeName), "Subsystem already registered");
@@ -47,6 +49,8 @@ public:
 	template <typename TSubsystem, typename = std::is_base_of<ISubsystem, TSubsystem>>
 	void Unregister()
 	{
+		RW_PROFILING_MARK_FUNCTION();
+
 		const std::type_info& TypeInfo = typeid(TSubsystem);
 		const FAnsiString TypeName = TypeInfo.name();
 		DEBUG_ASSERTM(Subsystems.contains(TypeName), "Subsystem not registered");

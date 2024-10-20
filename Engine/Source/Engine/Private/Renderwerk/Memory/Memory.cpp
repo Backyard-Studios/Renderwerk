@@ -13,12 +13,15 @@ void* FMemory::Allocate(const size64 Size, const size64 Alignment)
 	DEBUG_ASSERTM(Size > 0, "Size must be greater than 0");
 	DEBUG_ASSERTM(Alignment % 2 == 0, "Alignment must be a power of 2");
 	size64 AlignedSize = CalculateAlignedSize(Size, Alignment);
+	void* Pointer = HeapAlloc(GetProcessHeap(), 0, CalculateAlignedSize(Size, Alignment));
 #if RW_ENABLE_MEMORY_TRACKING
 	if (!MemoryStatistics)
 		MemoryStatistics = new FMemoryStatistics();
 	MemoryStatistics->CurrentUsage += AlignedSize;
+	if (RW_IS_PROFILER_STARTED())
+		RW_PROFILING_MEMORY_ALLOCATION(Pointer, AlignedSize);
 #endif
-	return HeapAlloc(GetProcessHeap(), 0, CalculateAlignedSize(Size, Alignment));
+	return Pointer;
 }
 
 void FMemory::Free(void* Memory)
@@ -28,6 +31,8 @@ void FMemory::Free(void* Memory)
 	if (!MemoryStatistics)
 		MemoryStatistics = new FMemoryStatistics();
 	MemoryStatistics->CurrentUsage -= GetSizeOfMemory(Memory);
+	if (RW_IS_PROFILER_STARTED())
+		RW_PROFILING_MEMORY_FREE(Memory);
 #endif
 	HeapFree(GetProcessHeap(), 0, Memory);
 }
