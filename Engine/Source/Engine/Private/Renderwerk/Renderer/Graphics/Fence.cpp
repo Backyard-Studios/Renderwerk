@@ -21,21 +21,21 @@ FFence::~FFence()
 void FFence::Signal(const TSharedPtr<FCommandQueue>& CommandQueue)
 {
 	++SignaledValue;
-	CHECK_RESULT(CommandQueue->GetHandle()->Signal(Fence.Get(), SignaledValue), "Failed to signal fence")
+	DEBUG_CHECK_RESULTM(CommandQueue->GetHandle()->Signal(Fence.Get(), SignaledValue), "Failed to signal fence")
 }
 
 void FFence::WaitCPU(const uint64 Timeout) const
 {
 	if (IsCompleted(SignaledValue))
 		return;
-	CHECK_RESULT(Fence->SetEventOnCompletion(SignaledValue, FenceEvent), "Failed to set event on completion")
+	DEBUG_CHECK_RESULTM(Fence->SetEventOnCompletion(SignaledValue, FenceEvent), "Failed to set event on completion")
 	DWORD WaitResult = WaitForSingleObject(FenceEvent, static_cast<DWORD>(Timeout));
-	DEBUG_ASSERTM(WaitResult == WAIT_OBJECT_0, "Failed to wait for fence")
+	ASSERTM(WaitResult == WAIT_OBJECT_0, "Failed to wait for fence")
 }
 
 void FFence::WaitGPU(const TSharedPtr<FCommandQueue>& CommandQueue, const uint64 Value) const
 {
-	CHECK_RESULT(CommandQueue->GetHandle()->Wait(Fence.Get(), Value), "Failed to wait for fence")
+	DEBUG_CHECK_RESULTM(CommandQueue->GetHandle()->Wait(Fence.Get(), Value), "Failed to wait for fence")
 }
 
 bool8 FFence::IsCompleted(const uint64 Value) const

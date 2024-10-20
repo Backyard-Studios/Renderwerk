@@ -3,6 +3,7 @@
 #include "Renderwerk/Renderer/Graphics/Device.h"
 
 #include "Renderwerk/Renderer/Graphics/Adapter.h"
+#include "Renderwerk/Renderer/Graphics/CommandList.h"
 #include "Renderwerk/Renderer/Graphics/CommandQueue.h"
 #include "Renderwerk/Renderer/Graphics/Fence.h"
 #include "Renderwerk/Renderer/Graphics/GraphicsContext.h"
@@ -68,6 +69,11 @@ FDevice::~FDevice()
 TSharedPtr<FCommandQueue> FDevice::CreateCommandQueue(const ECommandListType& Type) const
 {
 	return MakeShared<FCommandQueue>(Device, Type);
+}
+
+TSharedPtr<FCommandList> FDevice::CreateCommandList(const ECommandListType& Type) const
+{
+	return MakeShared<FCommandList>(Device, Type);
 }
 
 TSharedPtr<FFence> FDevice::CreateFence() const

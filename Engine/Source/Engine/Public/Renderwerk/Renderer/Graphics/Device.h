@@ -3,6 +3,7 @@
 #include "Renderwerk/Core/CoreMinimal.h"
 #include "Renderwerk/Renderer/Graphics/GraphicsCommon.h"
 
+class FCommandList;
 class FFence;
 class FCommandQueue;
 class FGraphicsContext;
@@ -18,6 +19,8 @@ public:
 
 public:
 	NODISCARD TSharedPtr<FCommandQueue> CreateCommandQueue(const ECommandListType& Type) const;
+	NODISCARD TSharedPtr<FCommandList> CreateCommandList(const ECommandListType& Type) const;
+
 	NODISCARD TSharedPtr<FFence> CreateFence() const;
 
 public:
