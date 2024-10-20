@@ -89,6 +89,8 @@ void FWindowSubsystem::Initialize()
 	FWindowDesc MainWindowDesc = {};
 	TSharedPtr<FWindow> MainWindow = NewWindow(MainWindowDesc);
 	SetMainWindowId(MainWindow);
+
+	RW_LOG(LogWindow, Info, "Window subsystem initialized");
 }
 
 void FWindowSubsystem::Shutdown()

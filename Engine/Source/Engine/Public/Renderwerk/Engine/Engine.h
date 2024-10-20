@@ -25,6 +25,7 @@ public:
 
 public:
 	NODISCARD FTickDelegate* GetTickDelegate() { return &OnTick; }
+	NODISCARD TSharedPtr<FSubsystemManager> GetSubsystemManager() const { return SubsystemManager; }
 
 private:
 	/**
@@ -46,7 +47,7 @@ private:
 private:
 	bool8 bIsRunning = true;
 
-	TUniquePtr<FSubsystemManager> SubsystemManager;
+	TSharedPtr<FSubsystemManager> SubsystemManager;
 	FTickDelegate OnTick;
 
 	friend void GuardedMain();
@@ -63,3 +64,14 @@ RENDERWERK_API extern TSharedPtr<FEngine> GEngine;
  * @return The global engine pointer.
  */
 RENDERWERK_API TSharedPtr<FEngine> GetEngine();
+
+/**
+ * @brief Convenience function to get a subsystem of the specified type.
+ * @tparam T The type of the subsystem.
+ * @return The subsystem of the specified type.
+ */
+template <typename T, typename = std::is_base_of<ISubsystem, T>>
+RENDERWERK_API INLINE TSharedPtr<T> GetSubsystem()
+{
+	return GetEngine()->GetSubsystemManager()->Get<T>();
+}

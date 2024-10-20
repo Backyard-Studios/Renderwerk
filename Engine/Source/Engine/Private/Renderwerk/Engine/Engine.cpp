@@ -6,6 +6,7 @@
 
 #include "Renderwerk/Jobs/JobSubsystem.h"
 #include "Renderwerk/Platform/WindowSubsystem.h"
+#include "Renderwerk/Renderer/RendererSubsystem.h"
 #include "Renderwerk/Utils/Timer.h"
 
 DEFINE_LOG_CATEGORY(LogEngine);
@@ -53,9 +54,10 @@ void FEngine::Initialize()
 	RegisterInterruptSignals();
 	OnSignalReceived.Bind(BIND_MEMBER_ONE(FEngine::SignalHandler));
 
-	SubsystemManager = MakeUnique<FSubsystemManager>();
-	SubsystemManager->Register<FWindowSubsystem>();
+	SubsystemManager = MakeShared<FSubsystemManager>();
 	SubsystemManager->Register<FJobSubsystem>();
+	SubsystemManager->Register<FWindowSubsystem>();
+	SubsystemManager->Register<FRendererSubsystem>();
 }
 
 void FEngine::Shutdown()
