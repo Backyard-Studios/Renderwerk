@@ -62,8 +62,6 @@ void FEngine::Initialize()
 
 void FEngine::Shutdown()
 {
-	RW_PROFILING_MARK_FUNCTION();
-
 	SubsystemManager.reset();
 	OnSignalReceived.Unbind();
 }

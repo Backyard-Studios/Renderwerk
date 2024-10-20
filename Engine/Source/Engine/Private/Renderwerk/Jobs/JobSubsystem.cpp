@@ -51,8 +51,6 @@ void FJobSubsystem::Initialize()
 
 void FJobSubsystem::Shutdown()
 {
-	RW_PROFILING_MARK_FUNCTION();
-
 	StopAndWaitForRemainingJobs();
 }
 

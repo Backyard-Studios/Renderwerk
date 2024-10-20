@@ -89,17 +89,23 @@ bool FGuid::IsValid() const
 	return Data != TVector<uint8_t>(16, 0);
 }
 
-std::string FGuid::ToString() const
+FString FGuid::ToString() const
 {
-	char First[10], Second[6], Third[6], Fourth[6], Fifth[14];
+	FChar First[10], Second[6], Third[6], Fourth[6], Fifth[14];
 	int32 Written = 0;
-	Written += sprintf_s(First, "%02x%02x%02x%02x", Data[0], Data[1], Data[2], Data[3]);
-	Written += sprintf_s(Second, "%02x%02x", Data[4], Data[5]);
-	Written += sprintf_s(Third, "%02x%02x", Data[6], Data[7]);
-	Written += sprintf_s(Fourth, "%02x%02x", Data[8], Data[9]);
-	Written += sprintf_s(Fifth, "%02x%02x%02x%02x%02x%02x", Data[10], Data[11], Data[12], Data[13], Data[14], Data[15]);
+#ifdef RW_USE_ANSI_STRINGS
+#	define PRINTF(...) sprintf_s(__VA_ARGS__)
+#else
+#	define PRINTF(...) wprintf_s(__VA_ARGS__)
+#endif
+	Written += PRINTF(First, "%02x%02x%02x%02x", Data[0], Data[1], Data[2], Data[3]);
+	Written += PRINTF(Second, "%02x%02x", Data[4], Data[5]);
+	Written += PRINTF(Third, "%02x%02x", Data[6], Data[7]);
+	Written += PRINTF(Fourth, "%02x%02x", Data[8], Data[9]);
+	Written += PRINTF(Fifth, "%02x%02x%02x%02x%02x%02x", Data[10], Data[11], Data[12], Data[13], Data[14], Data[15]);
+#undef PRINTF
 	assert(Written == 32);
-	return std::string(First) + "-" + std::string(Second) + "-" + std::string(Third) + "-" + std::string(Fourth) + "-" + std::string(Fifth);
+	return FString(First) + TEXT("-") + FString(Second) + TEXT("-") + FString(Third) + TEXT("-") + FString(Fourth) + TEXT("-") + FString(Fifth);
 }
 
 bool FGuid::operator==(const FGuid& Other) const
@@ -122,7 +128,7 @@ bool FGuid::operator>(const FGuid& Other) const
 	return Data > Other.Data;
 }
 
-FGuid::operator std::string() const
+FGuid::operator FString() const
 {
 	return ToString();
 }

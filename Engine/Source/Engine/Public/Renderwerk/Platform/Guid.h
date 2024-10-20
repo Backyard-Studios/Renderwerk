@@ -16,11 +16,11 @@ public:
 	DEFINE_DEFAULT_COPY_AND_MOVE(FGuid);
 
 public:
-	bool IsValid() const;
-	std::string ToString() const;
+	NODISCARD bool IsValid() const;
+	NODISCARD FString ToString() const;
 
 public:
-	[[nodiscard]] TVector<uint8_t> GetData() const { return Data; }
+	NODISCARD TVector<uint8_t> GetData() const { return Data; }
 
 public:
 	bool operator==(const FGuid& Other) const;
@@ -28,7 +28,7 @@ public:
 	bool operator<(const FGuid& Other) const;
 	bool operator>(const FGuid& Other) const;
 
-	operator std::string() const;
+	operator FString() const;
 
 private:
 	TVector<uint8_t> Data;
@@ -47,11 +47,11 @@ struct std::hash<FGuid>
 };
 
 template <>
-struct std::formatter<FGuid> : std::formatter<std::string>
+struct std::formatter<FGuid> : std::formatter<FAnsiString>
 {
 	template <typename FormatContext>
-	auto format(const FGuid& Guid, FormatContext& ctx) const
+	auto format(const FGuid& Guid, FormatContext& Context) const
 	{
-		return std::formatter<std::string>::format(Guid.ToString(), ctx);
+		return std::formatter<FAnsiString>::format(FStringUtils::ConvertToAnsiString(Guid.ToString()), Context);
 	}
 };

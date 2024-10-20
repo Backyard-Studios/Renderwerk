@@ -6,6 +6,7 @@
 #include "Renderwerk/Logging/LogCategory.h"
 #include "Renderwerk/Memory/SmartPointers.h"
 
+class FAdapter;
 class FGraphicsContext;
 class FWindow;
 
@@ -24,6 +25,9 @@ private:
 	void Shutdown() override;
 
 	void OnTick(float64 DeltaTime) const;
+
+private:
+	static bool8 IsAdapterSuitable(const TSharedPtr<FAdapter>& Adapter);
 
 private:
 	FDelegateHandle OnTickHandle;

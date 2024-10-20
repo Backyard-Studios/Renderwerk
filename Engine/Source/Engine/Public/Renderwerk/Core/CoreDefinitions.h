@@ -36,3 +36,5 @@
 	DEFINE_DEFAULT_COPY_ASSIGNMENT(Type); \
 	DEFINE_DEFAULT_MOVE_CONSTRUCTOR(Type); \
 	DEFINE_DEFAULT_MOVE_ASSIGNMENT(Type)
+
+#define ENUM_CASE(EnumType, EnumValue) case EnumType::EnumValue: return TEXT(#EnumValue)

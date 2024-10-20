@@ -17,6 +17,14 @@ FWindow::FWindow(const WNDCLASSEX& WindowClass, const FWindowDesc& InDescription
 		PositionY = Description.CustomPositionY;
 	}
 
+	State.WindowWidth = Description.Width;
+	State.WindowHeight = Description.Height;
+	State.ClientWidth = Description.Width;
+	State.ClientHeight = Description.Height;
+	State.PositionX = PositionX;
+	State.PositionY = PositionY;
+	State.Title = Description.Title;
+
 	HWND ParentWindowHandle = nullptr;
 	if (Description.ParentWindow)
 		ParentWindowHandle = Description.ParentWindow->GetHandle();

@@ -50,3 +50,74 @@ FString D3D12ResultToString(const HRESULT Result)
 		return TEXT("Unknown");
 	}
 }
+
+FString ToString(const EFeatureLevel& FeatureLevel)
+{
+	switch (FeatureLevel)
+	{
+	ENUM_CASE(EFeatureLevel, Level_11_0);
+	ENUM_CASE(EFeatureLevel, Level_11_1);
+	ENUM_CASE(EFeatureLevel, Level_12_0);
+	ENUM_CASE(EFeatureLevel, Level_12_1);
+	ENUM_CASE(EFeatureLevel, Level_12_2);
+	case EFeatureLevel::None:
+	default:
+		return TEXT("None");
+	}
+}
+
+FString ToString(const EShaderModel& ShaderModel)
+{
+	switch (ShaderModel)
+	{
+	ENUM_CASE(EShaderModel, SM_5_1);
+	ENUM_CASE(EShaderModel, SM_6_0);
+	ENUM_CASE(EShaderModel, SM_6_1);
+	ENUM_CASE(EShaderModel, SM_6_2);
+	ENUM_CASE(EShaderModel, SM_6_3);
+	ENUM_CASE(EShaderModel, SM_6_4);
+	ENUM_CASE(EShaderModel, SM_6_5);
+	ENUM_CASE(EShaderModel, SM_6_6);
+	ENUM_CASE(EShaderModel, SM_6_7);
+	ENUM_CASE(EShaderModel, SM_6_8);
+	ENUM_CASE(EShaderModel, SM_6_9);
+	case EShaderModel::None:
+	default:
+		return TEXT("None");
+	}
+}
+
+FString ToString(const ERayTracingTier& RayTracingTier)
+{
+	switch (RayTracingTier)
+	{
+	ENUM_CASE(ERayTracingTier, Tier_1_0);
+	ENUM_CASE(ERayTracingTier, Tier_1_1);
+	case ERayTracingTier::None:
+	default:
+		return TEXT("None");
+	}
+}
+
+FString ToString(const EVariableShadingRateTier& VariableShadingRateTier)
+{
+	switch (VariableShadingRateTier)
+	{
+	ENUM_CASE(EVariableShadingRateTier, Tier_1);
+	ENUM_CASE(EVariableShadingRateTier, Tier_2);
+	case EVariableShadingRateTier::None:
+	default:
+		return TEXT("None");
+	}
+}
+
+FString ToString(const EMeshShaderTier& MeshShaderTier)
+{
+	switch (MeshShaderTier)
+	{
+	ENUM_CASE(EMeshShaderTier, Tier_1);
+	case EMeshShaderTier::None:
+	default:
+		return TEXT("None");
+	}
+}

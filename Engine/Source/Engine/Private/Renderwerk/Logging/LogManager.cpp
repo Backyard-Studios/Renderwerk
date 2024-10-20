@@ -48,8 +48,6 @@ void FLogManager::Initialize()
 
 void FLogManager::Shutdown()
 {
-	RW_PROFILING_MARK_FUNCTION();
-
 	spdlog::shutdown();
 }
 

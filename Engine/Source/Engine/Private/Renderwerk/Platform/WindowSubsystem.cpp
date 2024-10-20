@@ -95,8 +95,6 @@ void FWindowSubsystem::Initialize()
 
 void FWindowSubsystem::Shutdown()
 {
-	RW_PROFILING_MARK_FUNCTION();
-
 	for (TSharedPtr<FWindow>& Window : Windows | std::views::values)
 	{
 		Window->Destroy();

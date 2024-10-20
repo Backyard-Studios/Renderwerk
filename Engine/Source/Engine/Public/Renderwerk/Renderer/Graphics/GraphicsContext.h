@@ -4,6 +4,8 @@
 #include "Renderwerk/DataTypes/Types.h"
 #include "Renderwerk/Renderer/Graphics/GraphicsCommon.h"
 
+class FAdapter;
+
 class RENDERWERK_API FGraphicsContext
 {
 public:
@@ -11,6 +13,10 @@ public:
 	~FGraphicsContext();
 
 	DELETE_COPY_AND_MOVE(FGraphicsContext);
+
+public:
+	NODISCARD TVector<TSharedPtr<FAdapter>> QueryAdapters() const;
+	NODISCARD TSharedPtr<FAdapter> GetAdapterByIndex(const uint32& Index) const;
 
 public:
 	NODISCARD ComPtr<IDXGIFactory7> GetFactory() const { return Factory; }
