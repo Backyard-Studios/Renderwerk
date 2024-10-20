@@ -39,7 +39,7 @@ public:
 		const std::type_info& TypeInfo = typeid(TSubsystem);
 		const FAnsiString TypeName = TypeInfo.name();
 		DEBUG_ASSERTM(!Subsystems.contains(TypeName), "Subsystem already registered");
-		TSharedPtr<TSubsystem> Subsystem = MakeShared<TSubsystem>(std::forward<TArguments>(Arguments)...);
+		TSharedPtr<ISubsystem> Subsystem = MakeShared<TSubsystem>(std::forward<TArguments>(Arguments)...);
 		Subsystem->Initialize();
 		Subsystems.insert({TypeName, Subsystem});
 	}

@@ -1,9 +1,10 @@
 ﻿#include "pch.h"
 
-#include "Renderwerk/Engine/Engine.h"
-#include "Renderwerk/Utils/Timer.h"
-
 #include <csignal>
+
+#include "Renderwerk/Engine/Engine.h"
+#include "Renderwerk/Platform/WindowSubsystem.h"
+#include "Renderwerk/Utils/Timer.h"
 
 DEFINE_LOG_CATEGORY(LogEngine);
 
@@ -11,20 +12,22 @@ TSharedPtr<FEngine> GEngine = nullptr;
 
 FEngine::FEngine()
 {
-	RegisterInterruptSignals();
-	OnSignalReceived.Bind(BIND_MEMBER_ONE(FEngine::SignalHandler));
-
-	SubsystemManager = MakeUnique<FSubsystemManager>();
 }
 
 FEngine::~FEngine()
 {
-	SubsystemManager.reset();
-	OnSignalReceived.Unbind();
 }
 
-void FEngine::Run() const
+void FEngine::RequestExit()
 {
+	RW_LOG(LogEngine, Warn, "Engine exit requested");
+	bIsRunning = false;
+}
+
+void FEngine::Run()
+{
+	Initialize();
+
 	FTimer Timer;
 	while (bIsRunning)
 	{
@@ -32,6 +35,23 @@ void FEngine::Run() const
 		OnTick.Execute(Timer.GetElapsedTime());
 		Timer.Stop();
 	}
+
+	Shutdown();
+}
+
+void FEngine::Initialize()
+{
+	RegisterInterruptSignals();
+	OnSignalReceived.Bind(BIND_MEMBER_ONE(FEngine::SignalHandler));
+
+	SubsystemManager = MakeUnique<FSubsystemManager>();
+	SubsystemManager->Register<FWindowSubsystem>();
+}
+
+void FEngine::Shutdown()
+{
+	SubsystemManager.reset();
+	OnSignalReceived.Unbind();
 }
 
 void FEngine::SignalHandler(int Signal)

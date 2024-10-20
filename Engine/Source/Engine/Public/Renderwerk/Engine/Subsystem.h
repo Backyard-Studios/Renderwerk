@@ -10,7 +10,7 @@ public:
 
 	DELETE_COPY_AND_MOVE(ISubsystem);
 
-public:
+private:
 	virtual void Initialize()
 	{
 	}
@@ -20,4 +20,5 @@ public:
 	}
 
 private:
+	friend class FSubsystemManager;
 };

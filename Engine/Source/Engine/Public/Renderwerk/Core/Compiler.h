@@ -116,6 +116,7 @@
 #	define DLL_EXPORT __declspec(dllexport)
 #	define DLL_IMPORT __declspec(dllimport)
 #	define CONSTEXPR constexpr
+#	define DEBUG_BREAK() __debugbreak()
 #elif RW_COMPILER_GCC || RW_COMPILER_CLANG
 #	define FORCEINLINE __attribute__((always_inline)) inline
 #	define NOINLINE __attribute__((noinline))
@@ -123,4 +124,5 @@
 #	define DLL_EXPORT __attribute__((visibility("default")))
 #	define DLL_IMPORT
 #	define CONSTEXPR constexpr
+#	define DEBUG_BREAK() __builtin_trap()
 #endif

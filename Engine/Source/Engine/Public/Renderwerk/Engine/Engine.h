@@ -21,13 +21,19 @@ public:
 	DELETE_COPY_AND_MOVE(FEngine);
 
 public:
-	NODISCARD FTickDelegate GetTickDelegate() const { return OnTick; }
+	void RequestExit();
+
+public:
+	NODISCARD FTickDelegate* GetTickDelegate() { return &OnTick; }
 
 private:
 	/**
 	 * Contains the main loop of the engine.
 	 */
-	void Run() const;
+	void Run();
+
+	void Initialize();
+	void Shutdown();
 
 	void SignalHandler(int Signal);
 

@@ -32,7 +32,7 @@ public:
 	 * @param Arguments The arguments to pass to the delegate.
 	 * @return The return value of the delegate.
 	 */
-	NODISCARD TReturnValue Execute(TArguments&&... Arguments) const
+	NODISCARD TReturnValue Execute(TArguments... Arguments) const
 	{
 		ASSERTM(IsBound(), "Attempted to execute an empty delegate");
 		return Function(std::forward<TArguments>(Arguments)...);

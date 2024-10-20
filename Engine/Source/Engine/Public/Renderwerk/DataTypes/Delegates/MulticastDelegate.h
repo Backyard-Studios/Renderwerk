@@ -32,7 +32,7 @@ public:
 		std::erase_if(Delegates, [Handle](const FDelegateEntry& Entry) { return Entry.first == Handle; });
 	}
 
-	NODISCARD void Execute(TArguments&&... Arguments) const
+	NODISCARD void Execute(TArguments... Arguments) const
 	{
 		for (const FDelegateEntry& Entry : Delegates)
 			Entry.second(std::forward<TArguments>(Arguments)...);
