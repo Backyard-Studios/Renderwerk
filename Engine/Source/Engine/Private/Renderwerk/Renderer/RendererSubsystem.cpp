@@ -23,7 +23,7 @@ void FRendererSubsystem::Initialize()
 	Window = WindowSubsystem->GetWindow(WindowSubsystem->GetMainWindowId());
 	ASSERTM(Window, "Failed to get main window");
 
-	Backend = MakeUnique<FRHIBackend>();
+	Backend = MakeLocal<FRHIBackend>();
 
 	RW_LOG(LogRenderer, Info, "Renderer subsystem initialized");
 }

@@ -21,8 +21,13 @@ struct FDefaultDelete
 	}
 };
 
+/**
+ * @brief An object that manages the lifetime of a pointer to an object.
+ * @note Unique pointer was renamed into local pointer to make the use case more clear.
+ * @tparam T The type of the object that the unique pointer is managing.
+ */
 template <typename T>
-using TUniquePtr = std::unique_ptr<T, FDefaultDelete<T>>;
+using TLocalPtr = std::unique_ptr<T, FDefaultDelete<T>>;
 
 template <typename T>
 using TSharedPtr = std::shared_ptr<T>;
@@ -31,7 +36,7 @@ template <typename T>
 using TWeakPtr = std::weak_ptr<T>;
 
 template <typename T, typename... TArguments, typename = std::enable_if_t<std::is_constructible_v<T, TArguments...>>>
-INLINE TUniquePtr<T> MakeUnique(TArguments&&... Arguments)
+INLINE TLocalPtr<T> MakeLocal(TArguments&&... Arguments)
 {
 	T* Pointer = FMemory::New<T>(std::forward<TArguments>(Arguments)...);
 	return TUniquePtr<T>(Pointer, FDefaultDelete<T>());

@@ -28,5 +28,5 @@ private:
 
 	TSharedPtr<FWindow> Window;
 
-	TUniquePtr<FRHIBackend> Backend;
+	TLocalPtr<FRHIBackend> Backend;
 };
