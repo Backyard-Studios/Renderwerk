@@ -208,4 +208,23 @@ private:
 	FAdapter* Adapter;
 };
 
+/**
+ * @brief Base class for all RHI objects that are created from a device.
+ * @note The device pointer is non owning. The lifetime is managed by the backend.
+ */
+class RENDERWERK_API IDeviceChild : public IRHIObject
+{
+public:
+	IDeviceChild(FDevice* InDevice);
+	IDeviceChild(FString&& InDefaultObjectName, FDevice* InDevice);
+	// ReSharper disable once CppEnforceOverridingDestructorStyle
+	virtual ~IDeviceChild() = default;
+
+public:
+	NODISCARD FDevice* GetDevice() const { return Device; }
+
+private:
+	FDevice* Device;
+};
+
 #pragma endregion

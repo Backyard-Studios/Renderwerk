@@ -15,10 +15,14 @@ public:
 
 	DELETE_COPY_AND_MOVE(FRHIBackend);
 
+public:
+	NODISCARD TSharedPtr<FDevice> GetDevice() const { return Device; }
+
 private:
 	static TSharedPtr<FAdapter> SelectSuitableAdapter(const TVector<TSharedPtr<FAdapter>>& Adapters);
 	static bool8 IsAdapterSuitable(const TSharedPtr<FAdapter>& Adapter);
 
 private:
 	TSharedPtr<FRHIContext> Context;
+	TSharedPtr<FDevice> Device;
 };

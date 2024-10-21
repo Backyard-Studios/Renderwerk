@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 
 #include "Renderwerk/RHI/Components/Adapter.h"
+#include "Renderwerk/RHI/Components/Device.h"
 
 EAdapterVendor ConvertVendor(const uint32 VendorId)
 {
@@ -44,9 +45,16 @@ FAdapter::FAdapter(const TComPtr<IDXGIAdapter4>& InAdapter, const uint32 InIndex
 	Capabilities.RaytracingTier = static_cast<ERaytracingTier>(FeatureSupport.RaytracingTier());
 	Capabilities.VariableShadingRateTier = static_cast<EVariableShadingRateTier>(FeatureSupport.VariableShadingRateTier());
 	Capabilities.MeshShaderTier = static_cast<EMeshShaderTier>(FeatureSupport.MeshShaderTier());
+
+	TempDevice.Reset();
 }
 
 FAdapter::~FAdapter()
 {
 	Adapter.Reset();
+}
+
+TSharedPtr<FDevice> FAdapter::CreateDevice()
+{
+	return MakeShared<FDevice>(this);
 }

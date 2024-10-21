@@ -187,4 +187,14 @@ IAdapterChild::IAdapterChild(FString&& InDefaultObjectName, FAdapter* InAdapter)
 {
 }
 
+IDeviceChild::IDeviceChild(FDevice* InDevice)
+	: IRHIObject(), Device(InDevice)
+{
+}
+
+IDeviceChild::IDeviceChild(FString&& InDefaultObjectName, FDevice* InDevice)
+	: IRHIObject(std::move(InDefaultObjectName)), Device(InDevice)
+{
+}
+
 #pragma endregion

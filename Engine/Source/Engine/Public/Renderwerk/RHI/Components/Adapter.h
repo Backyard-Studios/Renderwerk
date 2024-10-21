@@ -20,7 +20,10 @@ public:
 	DELETE_COPY_AND_MOVE(FAdapter);
 
 public:
-	NODISCARD TComPtr<IDXGIAdapter4> GetAdapter() const { return Adapter; }
+	NODISCARD TSharedPtr<FDevice> CreateDevice();
+
+public:
+	NODISCARD TComPtr<IDXGIAdapter4> GetHandle() const { return Adapter; }
 
 	NODISCARD uint32 GetIndex() const { return Index; }
 	NODISCARD FString GetName() const { return Name; }

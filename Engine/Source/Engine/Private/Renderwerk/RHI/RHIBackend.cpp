@@ -24,10 +24,13 @@ FRHIBackend::FRHIBackend()
 	}
 	TSharedPtr<FAdapter> SelectedAdapter = SelectSuitableAdapter(Adapters);
 	RW_LOG(LogRHI, Info, "Selected Adapter: Adapter{} ({})", SelectedAdapter->GetIndex(), SelectedAdapter->GetName());
+
+	Device = SelectedAdapter->CreateDevice();
 }
 
 FRHIBackend::~FRHIBackend()
 {
+	Device.reset();
 	Context.reset();
 }
 
