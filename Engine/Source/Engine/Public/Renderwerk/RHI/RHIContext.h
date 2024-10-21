@@ -11,13 +11,13 @@ public:
 	DELETE_COPY_AND_MOVE(FRHIContext);
 
 public:
-	NODISCARD ComPtr<IDXGIFactory7> GetFactory() const { return Factory; }
+	NODISCARD TComPtr<IDXGIFactory7> GetFactory() const { return Factory; }
 
 private:
 #if RW_ENABLE_GPU_DEBUGGING
-	ComPtr<IDXGIDebug1> DXGIDebug;
-	ComPtr<ID3D12Debug6> D3D12Debug;
+	TComPtr<IDXGIDebug1> DXGIDebug;
+	TComPtr<ID3D12Debug6> D3D12Debug;
 #endif
 
-	ComPtr<IDXGIFactory7> Factory;
+	TComPtr<IDXGIFactory7> Factory;
 };

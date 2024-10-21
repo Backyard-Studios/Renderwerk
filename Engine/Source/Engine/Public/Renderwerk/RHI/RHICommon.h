@@ -69,7 +69,7 @@
 DECLARE_LOG_CATEGORY(LogRHI, Trace);
 
 // For easier access to the ComPtr type
-using Microsoft::WRL::ComPtr;
+using TComPtr = Microsoft::WRL::ComPtr;
 
 #pragma endregion
 
