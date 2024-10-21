@@ -38,6 +38,7 @@ FWindow::FWindow(const WNDCLASSEX& WindowClass, const FWindowDesc& InDescription
 	                              nullptr,
 	                              WindowClass.hInstance,
 	                              this);
+	ASSERTM(WindowHandle, "Failed to create window")
 }
 
 FWindow::~FWindow()

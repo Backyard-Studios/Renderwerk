@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "Renderwerk/Core/CoreMinimal.h"
+#include "Renderwerk/DataTypes/String.h"
 #include "Renderwerk/DataTypes/Types.h"
 
 #if RW_KIND_CONSOLE_APP

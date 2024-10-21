@@ -82,7 +82,7 @@ void FWindowSubsystem::Initialize()
 	WindowClass.hCursor = LoadCursor(nullptr, IDC_ARROW);
 	WindowClass.hbrBackground = CreateSolidBrush(RGB(0, 0, 0));
 	WindowClass.lpszClassName = TEXT("RenderwerkDefaultWindowClass");
-	DEBUG_ASSERTM(RegisterClassEx(&WindowClass) != 0, "Failed to register window class")
+	ASSERTM(RegisterClassEx(&WindowClass) != 0, "Failed to register window class")
 
 	OnTickHandle = GetEngine()->GetTickDelegate()->Bind(BIND_MEMBER_ONE(FWindowSubsystem::OnTick));
 
@@ -101,10 +101,8 @@ void FWindowSubsystem::Shutdown()
 		Window.reset();
 	}
 	Windows.clear();
-
 	GetEngine()->GetTickDelegate()->Unbind(OnTickHandle);
-
-	DEBUG_ASSERTM(UnregisterClass(WindowClass.lpszClassName, WindowClass.hInstance), "Failed to unregister window class")
+	ASSERTM(UnregisterClass(WindowClass.lpszClassName, WindowClass.hInstance), "Failed to unregister window class")
 }
 
 void FWindowSubsystem::OnTick(MAYBE_UNUSED float64 DeltaTime)

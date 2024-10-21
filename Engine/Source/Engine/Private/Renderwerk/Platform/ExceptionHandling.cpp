@@ -5,7 +5,7 @@
 #include <dbghelp.h>
 #include <format>
 
-#include "Renderwerk/Renderer/Graphics/GraphicsCommon.h"
+#include "Renderwerk/RHI/RHICommon.h"
 
 #define CLR_EXCEPTION FORWARD(0xE0434352)
 #define REPORT_EXCEPTION_CODE MAKE_HRESULT(SEVERITY_ERROR, FACILITY_ITF, 0x1001)

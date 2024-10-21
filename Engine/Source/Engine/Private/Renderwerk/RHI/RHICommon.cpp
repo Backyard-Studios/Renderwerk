@@ -1,8 +1,14 @@
 ﻿#include "pch.h"
 
-#include "Renderwerk/Renderer/Graphics/GraphicsCommon.h"
+#include "Renderwerk/RHI/RHICommon.h"
 
-DEFINE_LOG_CATEGORY(LogGraphics);
+#pragma region Utility
+
+DEFINE_LOG_CATEGORY(LogRHI);
+
+#pragma endregion
+
+#pragma region ToString Functions
 
 FString D3D12ResultToString(const HRESULT Result)
 {
@@ -55,14 +61,14 @@ FString ToString(const EFeatureLevel& FeatureLevel)
 {
 	switch (FeatureLevel)
 	{
-	ENUM_CASE(EFeatureLevel, Level_11_0);
-	ENUM_CASE(EFeatureLevel, Level_11_1);
-	ENUM_CASE(EFeatureLevel, Level_12_0);
-	ENUM_CASE(EFeatureLevel, Level_12_1);
-	ENUM_CASE(EFeatureLevel, Level_12_2);
-	case EFeatureLevel::None:
+	ENUM_CASE(EFeatureLevel, None);
+	ENUM_CASE(EFeatureLevel, FL_11_0);
+	ENUM_CASE(EFeatureLevel, FL_11_1);
+	ENUM_CASE(EFeatureLevel, FL_12_0);
+	ENUM_CASE(EFeatureLevel, FL_12_1);
+	ENUM_CASE(EFeatureLevel, FL_12_2);
 	default:
-		return TEXT("None");
+		return TEXT("Unknown");
 	}
 }
 
@@ -70,6 +76,7 @@ FString ToString(const EShaderModel& ShaderModel)
 {
 	switch (ShaderModel)
 	{
+	ENUM_CASE(EShaderModel, None);
 	ENUM_CASE(EShaderModel, SM_5_1);
 	ENUM_CASE(EShaderModel, SM_6_0);
 	ENUM_CASE(EShaderModel, SM_6_1);
@@ -81,9 +88,8 @@ FString ToString(const EShaderModel& ShaderModel)
 	ENUM_CASE(EShaderModel, SM_6_7);
 	ENUM_CASE(EShaderModel, SM_6_8);
 	ENUM_CASE(EShaderModel, SM_6_9);
-	case EShaderModel::None:
 	default:
-		return TEXT("None");
+		return TEXT("Unknown");
 	}
 }
 
@@ -91,11 +97,11 @@ FString ToString(const ERayTracingTier& RayTracingTier)
 {
 	switch (RayTracingTier)
 	{
+	ENUM_CASE(ERayTracingTier, None);
 	ENUM_CASE(ERayTracingTier, Tier_1_0);
 	ENUM_CASE(ERayTracingTier, Tier_1_1);
-	case ERayTracingTier::None:
 	default:
-		return TEXT("None");
+		return TEXT("Unknown");
 	}
 }
 
@@ -103,11 +109,11 @@ FString ToString(const EVariableShadingRateTier& VariableShadingRateTier)
 {
 	switch (VariableShadingRateTier)
 	{
+	ENUM_CASE(EVariableShadingRateTier, None);
 	ENUM_CASE(EVariableShadingRateTier, Tier_1);
 	ENUM_CASE(EVariableShadingRateTier, Tier_2);
-	case EVariableShadingRateTier::None:
 	default:
-		return TEXT("None");
+		return TEXT("Unknown");
 	}
 }
 
@@ -115,10 +121,10 @@ FString ToString(const EMeshShaderTier& MeshShaderTier)
 {
 	switch (MeshShaderTier)
 	{
+	ENUM_CASE(EMeshShaderTier, None);
 	ENUM_CASE(EMeshShaderTier, Tier_1);
-	case EMeshShaderTier::None:
 	default:
-		return TEXT("None");
+		return TEXT("Unknown");
 	}
 }
 
@@ -126,11 +132,13 @@ FString ToString(const ECommandListType& CommandListType)
 {
 	switch (CommandListType)
 	{
+	ENUM_CASE(ECommandListType, None);
 	ENUM_CASE(ECommandListType, Graphics);
 	ENUM_CASE(ECommandListType, Compute);
 	ENUM_CASE(ECommandListType, Copy);
-	case ECommandListType::None:
 	default:
-		return TEXT("None");
+		return TEXT("Unknown");
 	}
 }
+
+#pragma endregion

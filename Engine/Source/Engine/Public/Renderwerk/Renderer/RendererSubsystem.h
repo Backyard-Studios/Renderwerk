@@ -5,10 +5,8 @@
 #include "Renderwerk/Engine/Subsystem.h"
 #include "Renderwerk/Logging/LogCategory.h"
 #include "Renderwerk/Memory/SmartPointers.h"
+#include "Renderwerk/RHI/RHICommon.h"
 
-class FDevice;
-class FAdapter;
-class FGraphicsContext;
 class FWindow;
 
 DECLARE_LOG_CATEGORY(LogRenderer, Trace);
@@ -28,14 +26,9 @@ private:
 	void OnTick(float64 DeltaTime) const;
 
 private:
-	static TSharedPtr<FAdapter> SelectSuitableAdapter(const TVector<TSharedPtr<FAdapter>>& Adapters);
-	static bool8 IsAdapterSuitable(const TSharedPtr<FAdapter>& Adapter);
-
-private:
 	FDelegateHandle OnTickHandle;
 
 	TSharedPtr<FWindow> Window;
 
-	TSharedPtr<FGraphicsContext> GraphicsContext;
-	TSharedPtr<FDevice> Device;
+	TUniquePtr<FRHIBackend> Backend;
 };

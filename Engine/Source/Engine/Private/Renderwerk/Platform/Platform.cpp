@@ -37,6 +37,11 @@ void FPlatform::UnloadDynamicLibrary(const HMODULE LibraryHandle) const
 	FreeLibrary(LibraryHandle);
 }
 
+uint64 FPlatform::GetCurrentThreadId() const
+{
+	return ::GetCurrentThreadId();
+}
+
 FString FPlatform::QueryCPUName()
 {
 	TArray<int32, 4> IntegerBuffer = {};
