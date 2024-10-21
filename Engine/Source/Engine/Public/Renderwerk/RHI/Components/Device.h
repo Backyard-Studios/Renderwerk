@@ -13,6 +13,8 @@ public:
 public:
 	NODISCARD TSharedPtr<FCommandQueue> CreateCommandQueue(ECommandListType Type);
 
+	NODISCARD TSharedPtr<FFence> CreateFence();
+
 	/**
 	 * @brief Function that forwards the capabilities of the adapter.
 	 */
