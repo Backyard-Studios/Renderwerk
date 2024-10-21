@@ -3,8 +3,8 @@
 // ReSharper disable CppClangTidyCppcoreguidelinesSpecialMemberFunctions
 
 #include "Renderwerk/Core/Compiler.h"
+#include "Renderwerk/Core/Memory/Memory.h"
 #include "Renderwerk/Core/Types/Types.h"
-#include "Renderwerk/Memory/Memory.h"
 
 #include <cstddef>
 

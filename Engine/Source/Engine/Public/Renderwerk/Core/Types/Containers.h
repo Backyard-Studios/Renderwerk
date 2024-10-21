@@ -9,8 +9,8 @@
 #include <unordered_set>
 #include <vector>
 
+#include "Renderwerk/Core/Memory/Allocators.h"
 #include "Renderwerk/Core/Types/Types.h"
-#include "Renderwerk/Memory/Allocators.h"
 
 template <typename T, size64 TSize>
 using TArray = std::array<T, TSize>;

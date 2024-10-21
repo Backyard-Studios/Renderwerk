@@ -3,7 +3,6 @@
 #include "Renderwerk/Core/CoreMinimal.h"
 #include "Renderwerk/Engine/Subsystem.h"
 #include "Renderwerk/Logging/LogCategory.h"
-#include "Renderwerk/Memory/SmartPointers.h"
 #include "Renderwerk/RHI/RHICommon.h"
 
 class FWindow;

@@ -3,7 +3,7 @@
 #include <memory>
 #include <type_traits>
 
-#include "Renderwerk/Memory/Memory.h"
+#include "Renderwerk/Core/Memory/Memory.h"
 
 template <class T>
 struct FDefaultDelete

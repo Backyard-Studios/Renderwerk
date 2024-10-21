@@ -3,7 +3,6 @@
 #include "Renderwerk/Core/CoreMinimal.h"
 #include "Renderwerk/Engine/SubsystemManager.h"
 #include "Renderwerk/Logging/LogCategory.h"
-#include "Renderwerk/Memory/SmartPointers.h"
 
 DECLARE_LOG_CATEGORY(LogEngine, Trace);
 

@@ -2,7 +2,10 @@
 
 #include <type_traits>
 
-#include "Renderwerk/Core/CoreMinimal.h"
+#include "Renderwerk/Core/Compiler.h"
+#include "Renderwerk/Core/CoreAPI.h"
+#include "Renderwerk/Core/CoreDefinitions.h"
+#include "Renderwerk/Core/Types/Types.h"
 
 #if RW_ENABLE_MEMORY_TRACKING
 

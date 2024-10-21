@@ -1,7 +1,6 @@
 ﻿#pragma once
 
 #include "Renderwerk/Core/CoreMinimal.h"
-#include "Renderwerk/Memory/SmartPointers.h"
 
 struct RENDERWERK_API FProcessorInfo
 {

@@ -1,8 +1,8 @@
 ﻿#pragma once
 
 #include "Renderwerk/Core/CoreMinimal.h"
+#include "Renderwerk/Core/Memory/SmartPointers.h"
 #include "Renderwerk/Engine/Subsystem.h"
-#include "Renderwerk/Memory/SmartPointers.h"
 
 class RENDERWERK_API FSubsystemManager
 {

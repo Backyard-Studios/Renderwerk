@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
 
-#include "Renderwerk/Memory/Memory.h"
+#include "Renderwerk/Core/Memory/Memory.h"
 
 #include <Windows.h>
 
