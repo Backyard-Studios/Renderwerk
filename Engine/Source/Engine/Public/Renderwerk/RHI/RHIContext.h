@@ -11,6 +11,10 @@ public:
 	DELETE_COPY_AND_MOVE(FRHIContext);
 
 public:
+	NODISCARD TVector<TSharedPtr<FAdapter>> QueryAdapters() const;
+	NODISCARD TSharedPtr<FAdapter> GetAdapterByIndex(uint32 Index) const;
+
+public:
 	NODISCARD TComPtr<IDXGIFactory7> GetFactory() const { return Factory; }
 
 private:

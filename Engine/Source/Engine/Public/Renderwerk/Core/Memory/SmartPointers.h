@@ -39,7 +39,7 @@ template <typename T, typename... TArguments, typename = std::enable_if_t<std::i
 INLINE TLocalPtr<T> MakeLocal(TArguments&&... Arguments)
 {
 	T* Pointer = FMemory::New<T>(std::forward<TArguments>(Arguments)...);
-	return TUniquePtr<T>(Pointer, FDefaultDelete<T>());
+	return TLocalPtr<T>(Pointer, FDefaultDelete<T>());
 }
 
 template <typename T, typename... TArguments, typename = std::enable_if_t<std::is_constructible_v<T, TArguments...>>>

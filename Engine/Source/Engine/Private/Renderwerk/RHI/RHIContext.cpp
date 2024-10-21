@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 
 #include "Renderwerk/RHI/RHIContext.h"
+#include "Renderwerk/RHI/Components/Adapter.h"
 
 FRHIContext::FRHIContext()
 {
@@ -38,4 +39,21 @@ FRHIContext::~FRHIContext()
 	}
 	DXGIDebug.Reset();
 #endif
+}
+
+TVector<TSharedPtr<FAdapter>> FRHIContext::QueryAdapters() const
+{
+	TVector<TSharedPtr<FAdapter>> Adapters;
+	TComPtr<IDXGIAdapter4> TempAdapter;
+	for (uint32 Index = 0; Factory->EnumAdapterByGpuPreference(Index, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, IID_PPV_ARGS(&TempAdapter)) != DXGI_ERROR_NOT_FOUND; ++Index)
+		Adapters.push_back(MakeShared<FAdapter>(TempAdapter, Index));
+	return Adapters;
+}
+
+TSharedPtr<FAdapter> FRHIContext::GetAdapterByIndex(uint32 Index) const
+{
+	TComPtr<IDXGIAdapter4> TempAdapter;
+	if (Factory->EnumAdapterByGpuPreference(Index, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, IID_PPV_ARGS(&TempAdapter)) == DXGI_ERROR_NOT_FOUND)
+		return nullptr;
+	return MakeShared<FAdapter>(TempAdapter, Index);
 }

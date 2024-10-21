@@ -10,3 +10,4 @@
 
 class FRHIBackend;
 class FRHIContext;
+class FAdapter;

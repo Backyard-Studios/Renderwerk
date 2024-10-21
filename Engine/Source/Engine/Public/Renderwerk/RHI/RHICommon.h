@@ -20,13 +20,13 @@
 
 #define D3D_CHECK(ResultPredicate) \
 	{ \
-		HRESULT UNIQUE_NAME(Result) = ResultPredicate; \
+		FD3DResult UNIQUE_NAME(Result) = ResultPredicate; \
 		ASSERTR(SUCCEEDED(UNIQUE_NAME(Result)), UNIQUE_NAME(Result)) \
 	}
 
 #define D3D_CHECKM(ResultPredicate, ...) \
 	{ \
-		HRESULT UNIQUE_NAME(Result) = ResultPredicate; \
+		FD3DResult UNIQUE_NAME(Result) = ResultPredicate; \
 		ASSERTRM(SUCCEEDED(UNIQUE_NAME(Result)), UNIQUE_NAME(Result), __VA_ARGS__) \
 	}
 
@@ -34,8 +34,8 @@
 #	define DEBUG_D3D_CHECK(ResultPredicate) D3D_CHECK(ResultPredicate)
 #	define DEBUG_D3D_CHECKM(ResultPredicate, ...) D3D_CHECKM(ResultPredicate, __VA_ARGS__)
 #else
-#	define DEBUG_D3D_CHECK(ResultPredicate)
-#	define DEBUG_D3D_CHECKM(ResultPredicate, ...)
+#	define DEBUG_D3D_CHECK(ResultPredicate) { ResultPredicate; }
+#	define DEBUG_D3D_CHECKM(ResultPredicate, ...) { ResultPredicate; }
 #endif
 
 #pragma endregion
@@ -69,11 +69,31 @@
 DECLARE_LOG_CATEGORY(LogRHI, Trace);
 
 // For easier access to the ComPtr type
-using TComPtr = Microsoft::WRL::ComPtr;
+template <typename T>
+using TComPtr = Microsoft::WRL::ComPtr<T>;
+
+using FD3DResult = const HRESULT;
 
 #pragma endregion
 
 #pragma region Enums
+
+enum class RENDERWERK_API EAdapterType : uint8
+{
+	Unknown = 0,
+	Software,
+	Discrete,
+};
+
+// https://pcisig.com/membership/member-companies
+enum class RENDERWERK_API EAdapterVendor : uint16
+{
+	Unknown = 0,
+	NVIDIA = 0x10DE,
+	AMD = 0x1002,
+	Intel = 0x8086,
+	Microsoft = 0x1414,
+};
 
 enum class RENDERWERK_API EFeatureLevel
 {
@@ -101,7 +121,7 @@ enum class RENDERWERK_API EShaderModel
 	SM_6_9 = D3D_SHADER_MODEL_6_9,
 };
 
-enum class RENDERWERK_API ERayTracingTier
+enum class RENDERWERK_API ERaytracingTier
 {
 	None = D3D12_RAYTRACING_TIER_NOT_SUPPORTED,
 	Tier_1_0 = D3D12_RAYTRACING_TIER_1_0,
@@ -135,11 +155,57 @@ enum class RENDERWERK_API ECommandListType
 
 RENDERWERK_API FString D3D12ResultToString(HRESULT Result);
 
+RENDERWERK_API FString ToString(const EAdapterType& AdapterType);
+RENDERWERK_API FString ToString(const EAdapterVendor& AdapterVendor);
 RENDERWERK_API FString ToString(const EFeatureLevel& FeatureLevel);
 RENDERWERK_API FString ToString(const EShaderModel& ShaderModel);
-RENDERWERK_API FString ToString(const ERayTracingTier& RayTracingTier);
+RENDERWERK_API FString ToString(const ERaytracingTier& RaytracingTier);
 RENDERWERK_API FString ToString(const EVariableShadingRateTier& VariableShadingRateTier);
 RENDERWERK_API FString ToString(const EMeshShaderTier& MeshShaderTier);
 RENDERWERK_API FString ToString(const ECommandListType& CommandListType);
+
+#pragma endregion
+
+#pragma region Base Types
+
+/**
+ * @brief Base class for all RHI objects.
+ * @note Is used to track rhi objects and their names for debugging purposes.
+ */
+class RENDERWERK_API IRHIObject
+{
+public:
+	IRHIObject() = default;
+	IRHIObject(FString&& InDefaultObjectName);
+	virtual ~IRHIObject() = default;
+
+public:
+	virtual void SetObjectName(FString&& InObjectName);
+
+public:
+	NODISCARD FString GetObjectName() const { return ObjectName; }
+
+private:
+	FString ObjectName;
+};
+
+/**
+ * @brief Base class for all RHI objects that are created from an adapter.
+ * @note The adapter pointer is non owning. The lifetime is managed by the backend.
+ */
+class RENDERWERK_API IAdapterChild : public IRHIObject
+{
+public:
+	IAdapterChild(FAdapter* InAdapter);
+	IAdapterChild(FString&& InDefaultObjectName, FAdapter* InAdapter);
+	// ReSharper disable once CppEnforceOverridingDestructorStyle
+	virtual ~IAdapterChild() override = default;
+
+public:
+	NODISCARD FAdapter* GetAdapter() const { return Adapter; }
+
+private:
+	FAdapter* Adapter;
+};
 
 #pragma endregion

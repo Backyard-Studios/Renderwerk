@@ -57,6 +57,32 @@ FString D3D12ResultToString(const HRESULT Result)
 	}
 }
 
+FString ToString(const EAdapterType& AdapterType)
+{
+	switch (AdapterType)
+	{
+	ENUM_CASE(EAdapterType, Unknown);
+	ENUM_CASE(EAdapterType, Software);
+	ENUM_CASE(EAdapterType, Discrete);
+	default:
+		return TEXT("Unknown");
+	}
+}
+
+FString ToString(const EAdapterVendor& AdapterVendor)
+{
+	switch (AdapterVendor)
+	{
+	ENUM_CASE(EAdapterVendor, Unknown);
+	ENUM_CASE(EAdapterVendor, NVIDIA);
+	ENUM_CASE(EAdapterVendor, AMD);
+	ENUM_CASE(EAdapterVendor, Intel);
+	ENUM_CASE(EAdapterVendor, Microsoft);
+	default:
+		return TEXT("Unknown");
+	}
+}
+
 FString ToString(const EFeatureLevel& FeatureLevel)
 {
 	switch (FeatureLevel)
@@ -93,13 +119,13 @@ FString ToString(const EShaderModel& ShaderModel)
 	}
 }
 
-FString ToString(const ERayTracingTier& RayTracingTier)
+FString ToString(const ERaytracingTier& RaytracingTier)
 {
-	switch (RayTracingTier)
+	switch (RaytracingTier)
 	{
-	ENUM_CASE(ERayTracingTier, None);
-	ENUM_CASE(ERayTracingTier, Tier_1_0);
-	ENUM_CASE(ERayTracingTier, Tier_1_1);
+	ENUM_CASE(ERaytracingTier, None);
+	ENUM_CASE(ERaytracingTier, Tier_1_0);
+	ENUM_CASE(ERaytracingTier, Tier_1_1);
 	default:
 		return TEXT("Unknown");
 	}
@@ -139,6 +165,26 @@ FString ToString(const ECommandListType& CommandListType)
 	default:
 		return TEXT("Unknown");
 	}
+}
+
+IRHIObject::IRHIObject(FString&& InDefaultObjectName)
+	: ObjectName(std::move(InDefaultObjectName))
+{
+}
+
+void IRHIObject::SetObjectName(FString&& InObjectName)
+{
+	ObjectName = std::move(InObjectName);
+}
+
+IAdapterChild::IAdapterChild(FAdapter* InAdapter)
+	: IRHIObject(), Adapter(InAdapter)
+{
+}
+
+IAdapterChild::IAdapterChild(FString&& InDefaultObjectName, FAdapter* InAdapter)
+	: IRHIObject(std::move(InDefaultObjectName)), Adapter(InAdapter)
+{
 }
 
 #pragma endregion
