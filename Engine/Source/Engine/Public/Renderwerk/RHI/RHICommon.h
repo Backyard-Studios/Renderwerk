@@ -3,7 +3,6 @@
 #pragma region Includes
 // ReSharper disable CppUnusedIncludeDirective
 #	include "Renderwerk/Core/CoreMinimal.h"
-#	include "Renderwerk/DataTypes/String.h"
 #	include "Renderwerk/Logging/LogCategory.h"
 #	include "Renderwerk/Platform/Assert.h"
 #	include "Renderwerk/RHI/RHIFwd.h"

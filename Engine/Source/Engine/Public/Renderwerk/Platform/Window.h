@@ -1,8 +1,6 @@
 ﻿#pragma once
 
 #include "Renderwerk/Core/CoreMinimal.h"
-#include "Renderwerk/DataTypes/Types.h"
-#include "Renderwerk/DataTypes/Delegates/MulticastDelegate.h"
 
 DECLARE_MULTICAST_DELEGATE(WindowResized, uint32, uint32);
 DECLARE_MULTICAST_DELEGATE(ClientAreaResized, uint32, uint32);

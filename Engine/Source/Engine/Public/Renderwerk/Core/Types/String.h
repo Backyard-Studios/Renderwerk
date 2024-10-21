@@ -2,7 +2,8 @@
 
 #include <string>
 
-#include "Renderwerk/Memory/Allocators.h"
+template <typename T>
+class FSTLAllocator;
 
 using FAnsiString = std::basic_string<char, std::char_traits<char>, FSTLAllocator<char>>;
 using FAnsiStringView = std::string_view;

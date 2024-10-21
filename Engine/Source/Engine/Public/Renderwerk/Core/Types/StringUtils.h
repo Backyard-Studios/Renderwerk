@@ -1,7 +1,7 @@
 ﻿#pragma once
 
-#include "Renderwerk/Core/CoreMinimal.h"
-#include "Renderwerk/DataTypes/String.h"
+#include "Renderwerk/Core/CoreAPI.h"
+#include "Renderwerk/Core/Types/String.h"
 
 class RENDERWERK_API FStringUtils
 {

@@ -1,7 +1,8 @@
 ﻿#pragma once
 
+#include <type_traits>
+
 #include "Renderwerk/Core/CoreMinimal.h"
-#include "Renderwerk/DataTypes/Types.h"
 
 #if RW_ENABLE_MEMORY_TRACKING
 

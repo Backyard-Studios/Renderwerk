@@ -2,7 +2,8 @@
 // ReSharper disable CppMemberFunctionMayBeStatic
 // ReSharper disable CppClangTidyCppcoreguidelinesSpecialMemberFunctions
 
-#include "Renderwerk/DataTypes/Types.h"
+#include "Renderwerk/Core/Compiler.h"
+#include "Renderwerk/Core/Types/Types.h"
 #include "Renderwerk/Memory/Memory.h"
 
 #include <cstddef>

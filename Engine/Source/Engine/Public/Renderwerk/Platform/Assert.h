@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include <format>
+
 #include "Renderwerk/Core/Compiler.h"
 #include "Renderwerk/Platform/ExceptionHandling.h"
 

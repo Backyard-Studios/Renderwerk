@@ -1,8 +1,8 @@
 ﻿#pragma once
 
 #include <memory>
+#include <type_traits>
 
-#include "Renderwerk/DataTypes/Types.h"
 #include "Renderwerk/Memory/Memory.h"
 
 template <class T>

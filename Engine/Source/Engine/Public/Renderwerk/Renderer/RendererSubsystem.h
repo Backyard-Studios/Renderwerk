@@ -1,7 +1,6 @@
 ﻿#pragma once
 
 #include "Renderwerk/Core/CoreMinimal.h"
-#include "Renderwerk/DataTypes/Delegates/MulticastDelegate.h"
 #include "Renderwerk/Engine/Subsystem.h"
 #include "Renderwerk/Logging/LogCategory.h"
 #include "Renderwerk/Memory/SmartPointers.h"

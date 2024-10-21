@@ -9,6 +9,7 @@
 #include <unordered_set>
 #include <vector>
 
+#include "Renderwerk/Core/Types/Types.h"
 #include "Renderwerk/Memory/Allocators.h"
 
 template <typename T, size64 TSize>

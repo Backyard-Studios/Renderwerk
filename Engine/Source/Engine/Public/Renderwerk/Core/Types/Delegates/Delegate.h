@@ -1,7 +1,8 @@
 ﻿#pragma once
 
-#include "Renderwerk/Core/CoreMinimal.h"
-#include "Renderwerk/DataTypes/Types.h"
+#include "Renderwerk/Core/CoreAPI.h"
+#include "Renderwerk/Core/Types/Types.h"
+#include "Renderwerk/Platform/Assert.h"
 
 template <typename TReturnValue, typename... TArguments>
 class RENDERWERK_API TDelegate

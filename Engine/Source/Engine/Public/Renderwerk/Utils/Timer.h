@@ -1,7 +1,6 @@
 ﻿#pragma once
 
 #include "Renderwerk/Core/CoreMinimal.h"
-#include "Renderwerk/DataTypes/Types.h"
 
 class RENDERWERK_API FTimer
 {

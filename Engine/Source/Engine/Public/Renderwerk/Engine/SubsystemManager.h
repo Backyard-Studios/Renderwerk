@@ -1,8 +1,6 @@
 ﻿#pragma once
 
 #include "Renderwerk/Core/CoreMinimal.h"
-#include "Renderwerk/DataTypes/Containers.h"
-#include "Renderwerk/DataTypes/String.h"
 #include "Renderwerk/Engine/Subsystem.h"
 #include "Renderwerk/Memory/SmartPointers.h"
 

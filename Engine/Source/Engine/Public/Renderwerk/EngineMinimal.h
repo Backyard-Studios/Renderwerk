@@ -1,15 +1,6 @@
 ﻿#pragma once
 
 #include "Renderwerk/Core/CoreMinimal.h"
-#include "Renderwerk/Core/CoreMinimal.h"
-#include "Renderwerk/DataTypes/Containers.h"
-#include "Renderwerk/DataTypes/Containers.h"
-#include "Renderwerk/DataTypes/String.h"
-#include "Renderwerk/DataTypes/String.h"
-#include "Renderwerk/DataTypes/StringUtils.h"
-#include "Renderwerk/DataTypes/StringUtils.h"
-#include "Renderwerk/DataTypes/Types.h"
-#include "Renderwerk/DataTypes/Types.h"
 #include "Renderwerk/Debug/Profiling.h"
 #include "Renderwerk/Logging/LogCategory.h"
 #include "Renderwerk/Logging/LogCategory.h"

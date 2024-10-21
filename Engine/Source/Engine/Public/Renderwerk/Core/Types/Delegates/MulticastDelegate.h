@@ -1,8 +1,8 @@
 ﻿#pragma once
 
-#include "Renderwerk/Core/CoreMinimal.h"
-#include "Renderwerk/DataTypes/Containers.h"
-#include "Renderwerk/DataTypes/Types.h"
+#include "Renderwerk/Core/CoreAPI.h"
+#include "Renderwerk/Core/Types/Containers.h"
+#include "Renderwerk/Core/Types/Types.h"
 
 using FDelegateHandle = uint64;
 

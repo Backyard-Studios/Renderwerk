@@ -1,11 +1,8 @@
 ﻿#pragma once
 
 #include "Renderwerk/Core/CoreMinimal.h"
-#include "Renderwerk/DataTypes/String.h"
-#include "Renderwerk/DataTypes/Types.h"
 
 #if RW_KIND_CONSOLE_APP
-#	include "Renderwerk/DataTypes/String.h"
 #	ifdef RW_USE_ANSI_STRINGS
 #		define ENTRYPOINT_HEADER int main(int32 ArgumentCount, FAnsiChar* Arguments[])
 #	else
