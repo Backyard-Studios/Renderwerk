@@ -44,15 +44,21 @@
 
 #	if RW_ENABLE_GPU_DEBUGGING
 /** @brief Set the name of a native d3d12 object for debugging purposes. */
-#		define D3D12_SET_NAME(Object, Name) Object->SetName(TEXT(Name))
+#		define D3D12_SET_NAME(Object, Name) DEBUG_D3D_CHECKM(Object->SetName(Name), "Failed to set name for object: {}", Name)
 
-/** @brief Set the name of a RHI native object handle for debugging purposes. */
-#		define RHI_SET_NAME(Object, Name) D3D12_SET_NAME(Object->GetHandle(), Name)
+/** @brief Set the name of a RHI object for debugging purposes. */
+#		define RHI_OBJECT_SET_NAME(Object, Name) Object->SetObjectName(Name)
+
+/** @brief Set the name of a RHI object and its underlying native d3d12 object for debugging purposes. */
+#		define RHI_SET_NAME(Object, Name) RHI_OBJECT_SET_NAME(Object, Name); D3D12_SET_NAME(Object->GetHandle(), Name)
 #else
 /** @brief Set the name of a native d3d12 object for debugging purposes. */
 #		define D3D12_SET_NAME(Object, Name)
 
 /** @brief Set the name of a RHI native object handle for debugging purposes. */
+#		define RHI_OBJECT_SET_NAME(Object, Name)
+
+/** @brief Set the name of a RHI object and its underlying native d3d12 object for debugging purposes. */
 #		define RHI_SET_NAME(Object, Name)
 #	endif
 
@@ -203,6 +209,7 @@ public:
 
 public:
 	NODISCARD FAdapter* GetAdapter() const { return Adapter; }
+	NODISCARD TComPtr<IDXGIAdapter4> GetAdapterHandle() const;
 
 private:
 	FAdapter* Adapter;
@@ -222,6 +229,7 @@ public:
 
 public:
 	NODISCARD FDevice* GetDevice() const { return Device; }
+	NODISCARD TComPtr<ID3D12Device> GetDeviceHandle() const;
 
 private:
 	FDevice* Device;

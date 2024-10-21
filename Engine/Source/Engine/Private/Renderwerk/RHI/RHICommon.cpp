@@ -1,6 +1,8 @@
 ﻿#include "pch.h"
 
 #include "Renderwerk/RHI/RHICommon.h"
+#include "Renderwerk/RHI/Components/Adapter.h"
+#include "Renderwerk/RHI/Components/Device.h"
 
 #pragma region Utility
 
@@ -187,6 +189,11 @@ IAdapterChild::IAdapterChild(FString&& InDefaultObjectName, FAdapter* InAdapter)
 {
 }
 
+TComPtr<IDXGIAdapter4> IAdapterChild::GetAdapterHandle() const
+{
+	return Adapter->GetHandle();
+}
+
 IDeviceChild::IDeviceChild(FDevice* InDevice)
 	: IRHIObject(), Device(InDevice)
 {
@@ -195,6 +202,11 @@ IDeviceChild::IDeviceChild(FDevice* InDevice)
 IDeviceChild::IDeviceChild(FString&& InDefaultObjectName, FDevice* InDevice)
 	: IRHIObject(std::move(InDefaultObjectName)), Device(InDevice)
 {
+}
+
+TComPtr<ID3D12Device> IDeviceChild::GetDeviceHandle() const
+{
+	return Device->GetHandle();
 }
 
 #pragma endregion

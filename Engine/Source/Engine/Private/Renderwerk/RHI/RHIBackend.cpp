@@ -2,7 +2,9 @@
 
 #include "Renderwerk/RHI/RHIBackend.h"
 #include "Renderwerk/RHI/RHIContext.h"
+#include "Renderwerk/RHI/Commands/CommandQueue.h"
 #include "Renderwerk/RHI/Components/Adapter.h"
+#include "Renderwerk/RHI/Components/Device.h"
 
 FRHIBackend::FRHIBackend()
 {
@@ -26,10 +28,17 @@ FRHIBackend::FRHIBackend()
 	RW_LOG(LogRHI, Info, "Selected Adapter: Adapter{} ({})", SelectedAdapter->GetIndex(), SelectedAdapter->GetName());
 
 	Device = SelectedAdapter->CreateDevice();
+
+	RW_PROFILING_D3D12_CREATE_CONTEXT(ProfilerGraphicsContext, Device, Device->GetGraphicsQueue(), "Graphics");
+	RW_PROFILING_D3D12_CREATE_CONTEXT(ProfilerComputeContext, Device, Device->GetComputeQueue(), "Compute");
+	RW_PROFILING_D3D12_CREATE_CONTEXT(ProfilerCopyContext, Device, Device->GetCopyQueue(), "Copy");
 }
 
 FRHIBackend::~FRHIBackend()
 {
+	RW_PROFILING_D3D12_DESTROY_CONTEXT(ProfilerCopyContext);
+	RW_PROFILING_D3D12_DESTROY_CONTEXT(ProfilerComputeContext);
+	RW_PROFILING_D3D12_DESTROY_CONTEXT(ProfilerGraphicsContext);
 	Device.reset();
 	Context.reset();
 }

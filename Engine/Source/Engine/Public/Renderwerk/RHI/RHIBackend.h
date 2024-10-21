@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include "Renderwerk/Debug/Profiling.h"
 #include "Renderwerk/RHI/RHICommon.h"
 
 /**
@@ -25,4 +26,8 @@ private:
 private:
 	TSharedPtr<FRHIContext> Context;
 	TSharedPtr<FDevice> Device;
+
+	FD3D12ProfilerContext ProfilerGraphicsContext;
+	FD3D12ProfilerContext ProfilerComputeContext;
+	FD3D12ProfilerContext ProfilerCopyContext;
 };

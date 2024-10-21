@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 
 #include "Renderwerk/RHI/Components/Device.h"
+#include "Renderwerk/RHI/Commands/CommandQueue.h"
 #include "Renderwerk/RHI/Components/Adapter.h"
 
 DECLARE_LOG_CATEGORY(LogD3D12, Trace);
@@ -31,6 +32,7 @@ FDevice::FDevice(FAdapter* Adapter)
 	D3D_FEATURE_LEVEL FeatureLevel = static_cast<D3D_FEATURE_LEVEL>(Adapter->GetCapabilities().FeatureLevel);
 	FD3DResult CreateResult = D3D12CreateDevice(AdapterHandle, FeatureLevel, IID_PPV_ARGS(&Device));
 	D3D_CHECKM(CreateResult, "Failed to create device");
+	D3D12_SET_NAME(Device, GetObjectName().c_str());
 
 #if RW_ENABLE_GPU_DEBUGGING
 	DEBUG_D3D_CHECKM(Device.As(&InfoQueue), "Failed to get info queue");
@@ -44,6 +46,15 @@ FDevice::FDevice(FAdapter* Adapter)
 	DEBUG_D3D_CHECKM(RegisterResult, "Failed to register message callback");
 	RW_LOG(LogRHI, Debug, "Registered info queue callback");
 #endif
+
+	GraphicsQueue = CreateCommandQueue(ECommandListType::Graphics);
+	RHI_SET_NAME(GraphicsQueue, TEXT("GraphicsCommandQueue"));
+
+	ComputeQueue = CreateCommandQueue(ECommandListType::Compute);
+	RHI_SET_NAME(ComputeQueue, TEXT("ComputeCommandQueue"));
+
+	CopyQueue = CreateCommandQueue(ECommandListType::Copy);
+	RHI_SET_NAME(CopyQueue, TEXT("CopyCommandQueue"));
 }
 
 FDevice::~FDevice()
@@ -56,6 +67,11 @@ FDevice::~FDevice()
 	InfoQueue.Reset();
 #endif
 	Device.Reset();
+}
+
+TSharedPtr<FCommandQueue> FDevice::CreateCommandQueue(ECommandListType Type)
+{
+	return MakeShared<FCommandQueue>(this, Type);
 }
 
 const FAdapterCapabilities& FDevice::GetCapabilities() const

@@ -13,3 +13,4 @@ class FRHIContext;
 struct FAdapterCapabilities;
 class FAdapter;
 class FDevice;
+class FCommandQueue;

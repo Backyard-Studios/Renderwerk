@@ -18,7 +18,9 @@
 #
 #	include "tracy/TracyD3D12.hpp"
 using FD3D12ProfilerContext = TracyD3D12Ctx;
-#	define RW_PROFILING_D3D12_CREATE_CONTEXT(Device, CommandQueue) TracyD3D12Context(Device, CommandQueue)
+#	define RW_PROFILING_D3D12_CREATE_CONTEXT(ContextVariable, Device, CommandQueue, Name) ContextVariable = TracyD3D12Context(Device->GetHandle().Get(), CommandQueue->GetHandle().Get()); \
+		FAnsiString UNIQUE_NAME(ContextName) = Name; \
+		TracyD3D12ContextName(ContextVariable, UNIQUE_NAME(ContextName).c_str(), static_cast<uint16>(UNIQUE_NAME(ContextName).length()))
 #	define RW_PROFILING_D3D12_DESTROY_CONTEXT(Context) TracyD3D12Destroy(Context)
 #	define RW_PROFILING_D3D12_COLLECT(Context) TracyD3D12Collect(Context)
 #	define RW_PROFILING_D3D12_MARK_FRAME(Context) TracyD3D12NewFrame(Context)
