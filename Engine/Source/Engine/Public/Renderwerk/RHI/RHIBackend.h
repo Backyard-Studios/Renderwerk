@@ -16,5 +16,9 @@ public:
 	DELETE_COPY_AND_MOVE(FRHIBackend);
 
 private:
+	static TSharedPtr<FAdapter> SelectSuitableAdapter(const TVector<TSharedPtr<FAdapter>>& Adapters);
+	static bool8 IsAdapterSuitable(const TSharedPtr<FAdapter>& Adapter);
+
+private:
 	TSharedPtr<FRHIContext> Context;
 };
